@@ -1,0 +1,27 @@
+name: Validate plugin
+
+# Runs the same check developers run locally before opening a PR: make validate,
+# which runs the Python checks under checks/ (the hook encoder round-trip and the
+# agent frontmatter and handbook-reference checks) plus claude plugin validate --strict,
+# so a stray field, a missing version or a mis-escaped rule cannot land.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    name: make validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: make validate
+        run: make validate

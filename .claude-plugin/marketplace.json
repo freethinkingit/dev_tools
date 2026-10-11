@@ -1,0 +1,14 @@
+{
+  "name": "freethinkingit",
+  "description": "Engineering plugins",
+  "owner": {
+    "name": "Developer Handbook contributors"
+  },
+  "plugins": [
+    {
+      "name": "handbook",
+      "source": "./",
+      "description": "Shared engineering skills: standard workflows and prompts for day-to-day development."
+    }
+  ]
+}
