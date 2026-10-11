@@ -1,4 +1,4 @@
-"""Agent frontmatter is well formed and every handbook:<name> the skills reference exists."""
+"""Agent frontmatter is well formed and every freethinking:<name> the skills reference exists."""
 
 import re
 import unittest
@@ -27,7 +27,7 @@ KNOWN_TOOLS = {
 MODEL_ALIASES = {"sonnet", "opus", "haiku", "fable", "inherit"}
 EFFORTS = {"low", "medium", "high", "xhigh", "max"}
 
-HANDBOOK_REFERENCE = re.compile(r"handbook:([a-z0-9]+(?:-[a-z0-9]+)*)")
+HANDBOOK_REFERENCE = re.compile(r"freethinking:([a-z0-9]+(?:-[a-z0-9]+)*)")
 
 
 def read_frontmatter(path):
@@ -78,7 +78,7 @@ class HandbookReferenceTest(unittest.TestCase):
                     self.assertTrue(
                         (AGENTS_DIR / (name + ".md")).is_file()
                         or (SKILLS_DIR / name / "SKILL.md").is_file(),
-                        "handbook:{} names no agents/{}.md and no skills/{}/SKILL.md".format(name, name, name),
+                        "freethinking:{} names no agents/{}.md and no skills/{}/SKILL.md".format(name, name, name),
                     )
 
 

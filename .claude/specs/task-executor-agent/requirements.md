@@ -6,8 +6,8 @@
 
 ## Glossary
 
-- **Agent**: The `task-executor` plugin agent described by this document, defined in `agents/task-executor.md` and addressed as `handbook:task-executor`.
-- **Reviewer**: The `wave-reviewer` plugin agent, defined in `agents/wave-reviewer.md` and addressed as `handbook:wave-reviewer`, which reviews one set of changes against the requirements and design they implement.
+- **Agent**: The `task-executor` plugin agent described by this document, defined in `agents/task-executor.md` and addressed as `freethinking:task-executor`.
+- **Reviewer**: The `wave-reviewer` plugin agent, defined in `agents/wave-reviewer.md` and addressed as `freethinking:wave-reviewer`, which reviews one set of changes against the requirements and design they implement.
 - **Findings**: The fixed-shape report the Reviewer returns: a verdict, then each finding with its file, an exact quote, the problem and a severity, then anything the Reviewer is unsure of.
 - **Author**: The engineer whose session launches the Agent, directly or through `implement-spec`.
 - **Launcher**: Whatever launches the Agent: the `implement-spec` skill, or the Author by name.
@@ -72,13 +72,13 @@
 
 #### Acceptance Criteria
 
-1. WHEN `implement-spec` launches a sub-agent for a Leaf_Task, THE skill SHALL launch the Agent by its scoped name `handbook:task-executor`.
+1. WHEN `implement-spec` launches a sub-agent for a Leaf_Task, THE skill SHALL launch the Agent by its scoped name `freethinking:task-executor`.
 2. THE launch prompt SHALL say that the Task is a Leaf_Task from a Spec, so the Agent is in Spec_Mode, and SHALL carry the Task text, its cited requirements quoted from `requirements.md`, the design sections the Task touches quoted from `design.md`, the other tasks of the wave in flight with the instruction to touch only the Task's own files, and for a property-test Task the design property to tag.
 3. THE launch prompt SHALL NOT restate the Agent's procedure, the Rules, or the Summary shape.
 4. WHEN the Agent returns `stopped`, THE skill SHALL treat it as Drift under its own step 6 and SHALL NOT retry the Task unprompted.
 5. THE skill's verification, ticking, full-suite and reporting steps SHALL be unchanged, and SHALL run in the session's own model, so the orchestrator is the model the Author chose for the session.
 6. WHEN every Sub_Agent of a Wave has returned and their checks have passed, THE skill SHALL review the Wave as a whole before ticking anything: it SHALL launch the Reviewer as a sub-agent, giving it the list of files the Wave changed or created, the requirements and design sections the Wave's tasks cite, and the files the changes must agree with; the Reviewer gathers the Wave's diff itself so that the diff never enters the orchestrating session, and returns Findings. THE skill SHALL also collect every `unsure` item from the Wave's Summaries. Each finding and each `unsure` item SHALL be either fixed before the tick or carried into the report's follow-ups with the reason. One reader per Wave; no repeated lenses, no refuters.
-7. THE skill SHALL define both agents in its Terms by scoped name, the executor `handbook:task-executor` for one Leaf_Task and the Reviewer `handbook:wave-reviewer` for one Wave, and SHALL name the Reviewer in the wave step at the point it is launched, with what it is given and what it returns.
+7. THE skill SHALL define both agents in its Terms by scoped name, the executor `freethinking:task-executor` for one Leaf_Task and the Reviewer `freethinking:wave-reviewer` for one Wave, and SHALL name the Reviewer in the wave step at the point it is launched, with what it is given and what it returns.
 
 ### Requirement 5: Ship in the handbook
 

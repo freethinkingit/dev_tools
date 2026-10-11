@@ -5,6 +5,6 @@ max_turns: 20
 allowed_tools: [Read, Glob, Grep]
 expected_outcome: Claude runs the starting checks, reads the branch's two commits, drafts a title and description from the author's answers, pushes, and calls `gh pr create` with `--base main` and a body file, then reports the PR URL the stub returns.
 ---
-/handbook:pr
+/freethinking:pr
 
 I am the author and I will not be able to answer questions during this run, so here are my answers in advance. Why: the CLI needed a greeting helper, so the branch adds `greet` and its test. No ticket. Testing: I ran `pytest tests/test_greeting.py` and it passed. Risk and rollout: none. Review focus: `demo/greeting.py`. Open it as a normal PR, not a draft. Treat the draft as approved and create the PR.

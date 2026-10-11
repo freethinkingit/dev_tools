@@ -70,4 +70,4 @@ Ask the author to approve; iterate until they do.
 
 ## 6. Hand off
 
-When `tasks.md` is approved, tell the author where the three files are and how to proceed: run `/handbook:implement-spec <task-name>`, which builds each task in its own sub-agent in wave order, ticks each checkbox when its tests pass, runs the full suite at the end of each wave, and stops for review after each task or each wave, as the author chooses. Point at the first wave. Then stop.
+When `tasks.md` is approved, tell the author where the three files are and how to proceed: run `/freethinking:implement-spec <task-name>`, which builds each task in its own sub-agent in wave order, ticks each checkbox when its tests pass, runs the full suite at the end of each wave, and stops for review after each task or each wave, as the author chooses. Point at the first wave. Then stop.

@@ -5,4 +5,4 @@ max_turns: 8
 allowed_tools: [Read, Glob, Grep]
 expected_outcome: Claude reads `.claude/specs/link-shortener/`, finds that leaf task 4.2 is missing from the graph, proposes a corrected `waves` block that includes 4.2, and stops for approval. It writes nothing.
 ---
-/handbook:implement-spec link-shortener
+/freethinking:implement-spec link-shortener

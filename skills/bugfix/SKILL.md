@@ -114,4 +114,4 @@ Tell the author, briefly:
 - **Prevention**: the regression test added, or the recorded manual check if the project has no test framework.
 - **Verification**: what was run and the result, including anything that could not be verified.
 
-Then recommend opening a pull request with the `pr` skill (`/handbook:pr`), which will walk the changes with the author and draft the description to the team standard. The reproduction and verification runs above are what its Testing section should say. Do not open the PR from here.
+Then recommend opening a pull request with the `pr` skill (`/freethinking:pr`), which will walk the changes with the author and draft the description to the team standard. The reproduction and verification runs above are what its Testing section should say. Do not open the PR from here.

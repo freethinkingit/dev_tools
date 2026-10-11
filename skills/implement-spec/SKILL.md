@@ -20,8 +20,8 @@ Terms used below:
 - A **wave** is one entry of the Task Dependency Graph at the end of `tasks.md`. Waves run in order. Task numbers only identify tasks; the graph decides the order of work.
 - The **cadence** is the author's choice of when a run hands back: after each leaf task, or after each wave.
 - A **skipped test** is an optional test the author chose not to do in this run. It stays unticked.
-- An **executor** is the plugin's `task-executor` agent, launched as `handbook:task-executor`, one per leaf task. Its own definition holds its procedure, so the launch carries only the task: it gathers the context the task needs, implements exactly what the task describes, proves it, and returns a summary with a `status` of `done` or `stopped`, the files it changed, the checks it ran, its ephemeral check's code, what it is unsure of and, when stopped, why. Tests are tasks of their own in a spec, so an executor writes a test only when its task is a test task.
-- The **reviewer** is the plugin's `wave-reviewer` agent, launched as `handbook:wave-reviewer`, one per wave. It is read-only and changes nothing; it gathers the wave's diff itself and returns Findings: a `verdict` of `holds` or `findings`, then each finding with its file, an exact quote, the problem and a severity of `blocker`, `should-fix` or `nit`, then what it is `unsure` of. Its own definition holds its procedure, so the launch carries only what to review.
+- An **executor** is the plugin's `task-executor` agent, launched as `freethinking:task-executor`, one per leaf task. Its own definition holds its procedure, so the launch carries only the task: it gathers the context the task needs, implements exactly what the task describes, proves it, and returns a summary with a `status` of `done` or `stopped`, the files it changed, the checks it ran, its ephemeral check's code, what it is unsure of and, when stopped, why. Tests are tasks of their own in a spec, so an executor writes a test only when its task is a test task.
+- The **reviewer** is the plugin's `wave-reviewer` agent, launched as `freethinking:wave-reviewer`, one per wave. It is read-only and changes nothing; it gathers the wave's diff itself and returns Findings: a `verdict` of `holds` or `findings`, then each finding with its file, an exact quote, the problem and a severity of `blocker`, `should-fix` or `nit`, then what it is `unsure` of. Its own definition holds its procedure, so the launch carries only what to review.
 - A **sub-agent**, below, means either.
 
 ## 1. Find the spec
@@ -29,9 +29,9 @@ Terms used below:
 Take the task name from the arguments: the first word that is not `task` or `wave`. The cadence is a second argument of `task` or `wave`, or an explicit phrase in the author's message such as "one task at a time" or "a wave at a time". The word "task" on its own in a sentence is not a cadence.
 
 - With a task name, the spec is `.claude/specs/<task-name>/`.
-- With no task name, run `ls .claude/specs/*/tasks.md` and look at each list for an unticked non-optional leaf task. Exactly one such spec: name it and confirm it with the author. Several: list them and ask which to work. None: say there is nothing to implement, name any spec whose only unticked tasks are optional tests, recommend `/handbook:start-task` otherwise, and stop.
+- With no task name, run `ls .claude/specs/*/tasks.md` and look at each list for an unticked non-optional leaf task. Exactly one such spec: name it and confirm it with the author. Several: list them and ask which to work. None: say there is nothing to implement, name any spec whose only unticked tasks are optional tests, recommend `/freethinking:start-task` otherwise, and stop.
 
-If the spec has no `tasks.md`, say so, recommend `/handbook:start-task`, and stop without changing anything. One look at `.claude/specs/<task-name>/tasks.md` settles it; do not search elsewhere for the spec.
+If the spec has no `tasks.md`, say so, recommend `/freethinking:start-task`, and stop without changing anything. One look at `.claude/specs/<task-name>/tasks.md` settles it; do not search elsewhere for the spec.
 
 Read `tasks.md`, `requirements.md` and `design.md` in full before anything else. The requirements and design are read again task by task later, but the whole has to be in view first.
 
@@ -54,7 +54,7 @@ If `tasks.md` has no graph, or any check fails, list each problem by task id, pr
 
 Walk the waves in order and find the first wave with an unticked non-optional leaf task; that wave is the position. Ticked tasks are done; never redo one. A wave whose only unticked tasks are optional tests counts as finished for finding the position; those tests were skipped in an earlier run, and the author can ask for them at the end.
 
-If every non-optional leaf task is already ticked, report the spec complete. If optional tests remain unticked, name them and ask whether to do them now; if yes, they are the work for this run, worked wave by wave as in step 5 with the full suite at the end of each; the earliest such wave becomes the position that step 4 states. Otherwise recommend `/handbook:pr` and stop.
+If every non-optional leaf task is already ticked, report the spec complete. If optional tests remain unticked, name them and ask whether to do them now; if yes, they are the work for this run, worked wave by wave as in step 5 with the full suite at the end of each; the earliest such wave becomes the position that step 4 states. Otherwise recommend `/freethinking:pr` and stop.
 
 ## 4. Set up the run
 
@@ -70,7 +70,7 @@ Make no code change until the author has answered.
 
 ## 5. Work the wave
 
-Work one wave at a time; waves run in order. Each leaf task in a wave gets its own executor, launched with the Agent tool as `subagent_type: handbook:task-executor`, which returns at once and runs the sub-agent in the background; once every executor of the wave has returned, the wave gets one reviewer. At wave cadence, launch every task of the wave before waiting on any of them, all in one message, so they run concurrently. At task cadence, launch one and wait for its result before the next, so that the hand-back after each task still makes sense. Each agent runs on the model its own definition pins; verifying, ticking, the full suite and the report are not delegated: they are done in this session, on the session's own model.
+Work one wave at a time; waves run in order. Each leaf task in a wave gets its own executor, launched with the Agent tool as `subagent_type: freethinking:task-executor`, which returns at once and runs the sub-agent in the background; once every executor of the wave has returned, the wave gets one reviewer. At wave cadence, launch every task of the wave before waiting on any of them, all in one message, so they run concurrently. At task cadence, launch one and wait for its result before the next, so that the hand-back after each task still makes sense. Each agent runs on the model its own definition pins; verifying, ticking, the full suite and the report are not delegated: they are done in this session, on the session's own model.
 
 Beyond ticking checkboxes, do not edit `tasks.md`, `requirements.md` or `design.md` in this step. A change any of them needs goes to step 6 as a proposal.
 
@@ -80,7 +80,7 @@ If the wave contains optional tests and the author has not yet said whether to d
 
 ### Launching a task
 
-For each task that is left, other than a skipped test, state its number, its text and the requirements it cites. Then launch the agent with `subagent_type: handbook:task-executor` and a prompt that holds:
+For each task that is left, other than a skipped test, state its number, its text and the requirements it cites. Then launch the agent with `subagent_type: freethinking:task-executor` and a prompt that holds:
 
 - the mode sentence, verbatim, "This task is a leaf task from a spec; tests are tasks of their own.", which puts the agent in its spec mode;
 - the task text and its cited requirements, quoted from `requirements.md`;
@@ -111,7 +111,7 @@ Skipped tests stay unticked and are listed as skipped in the report.
 
 Once every executor of the wave has returned, whatever each returned, and before any tick, review the wave as a whole. The review covers the tasks that passed their own checks, together with any task that appeared already done; those are fixed and ticked after it as below, and then a task that stopped, or still fails after two fix attempts, goes to step 6. At task cadence, where the wave's earlier tasks were ticked at their hand-backs, the review runs once, when the wave's last task has passed its checks and before its tick, and covers the whole wave; a task that stops or will not pass before then goes to step 6 at once, and the review waits for the wave's last task. The file list and the `unsure` items come from this run's summaries and, after a resume, from the reports of the earlier hand-backs: their Files changed and follow-ups.
 
-Launch the reviewer with `subagent_type: handbook:wave-reviewer`, once, and a prompt that holds:
+Launch the reviewer with `subagent_type: freethinking:wave-reviewer`, once, and a prompt that holds:
 
 - the sentence, verbatim, "These changes come from a spec wave", which tells the reviewer that a code task correctly lacks a test;
 - the list of files the wave changed or created, taken from the `files changed` of the wave's summaries, with the files of tasks that appeared already done or that the author did by hand, as under "Starting a wave", and with any file two executors changed named as such;
@@ -172,4 +172,4 @@ When the author asks to skip a non-optional task or to work out of wave order, s
 
 ## 8. Finish
 
-When every leaf task is ticked, apart from skipped tests and any non-optional task the author chose to skip under step 7, and the final wave's full suite passes, write the report for the final wave with its full suite result in place of step 6, note any skipped tests, and recommend `/handbook:pr` to open the pull request. Then stop.
+When every leaf task is ticked, apart from skipped tests and any non-optional task the author chose to skip under step 7, and the final wave's full suite passes, write the report for the final wave with its full suite result in place of step 6, note any skipped tests, and recommend `/freethinking:pr` to open the pull request. Then stop.

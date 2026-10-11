@@ -6,7 +6,7 @@
   },
   "plugins": [
     {
-      "name": "handbook",
+      "name": "freethinking",
       "source": "./",
       "description": "Shared engineering skills: standard workflows and prompts for day-to-day development."
     }

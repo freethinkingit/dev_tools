@@ -4,4 +4,4 @@ tags: [skill, start-task]
 max_turns: 4
 expected_outcome: Claude proposes `link-shortener` (or similar kebab-case name), says the spec will live under .claude/specs/, and asks the author questions. It writes nothing.
 ---
-/handbook:start-task Link shortener: users submit a long URL and get a short code; visiting the code redirects and counts the click.
+/freethinking:start-task Link shortener: users submit a long URL and get a short code; visiting the code redirects and counts the click.

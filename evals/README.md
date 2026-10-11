@@ -142,7 +142,7 @@ worked example.
   is granted, and so is a shell fallback. A skill that writes there (ticking a
   spec's task list) cannot be graded on that write; grade the rest and expect
   the skill to report the refusal.
-- A prompt that starts with `/handbook:<skill>` is expanded before the model
+- A prompt that starts with `/freethinking:<skill>` is expanded before the model
   runs, so a `tool_used` grader on `Skill` never fires for it; grade the
   behaviour instead. A prompt that merely describes the work does trigger the
   Skill tool, which is what the workflow-rule cases grade.

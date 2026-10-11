@@ -11,7 +11,7 @@ repo. From any terminal:
 
 ```bash
 claude plugin marketplace add freethinkingit/dev_tools
-claude plugin install handbook@freethinkingit
+claude plugin install freethinking@freethinkingit
 ```
 
 The plugin loads the next time you start Claude Code. In a session that is
@@ -32,17 +32,17 @@ Auto-update is off by default for team marketplaces. Turn it on once:
 To update by hand:
 
 ```bash
-claude plugin update handbook@freethinkingit
+claude plugin update freethinking@freethinkingit
 ```
 
 ## Skills
 
 | Skill | Run it with | What it does |
 | ----- | ----------- | ------------ |
-| `start-task` | `/handbook:start-task <task>`, or ask Claude to start or spec a task | Writes the spec before any code: `requirements.md`, `design.md` and `tasks.md` in `.claude/specs/<task>/`, following the team template, with you approving each document before the next. |
-| `implement-spec` | `/handbook:implement-spec [task] [task\|wave]`, or ask Claude to implement, build or continue a spec | Builds a task from its approved spec, wave by wave from `tasks.md`, each leaf task in its own sub-agent, ticking a task only once its tests pass, running the full suite at the end of every wave, and handing back to you after each task or each wave, whichever you chose. Pauses with a proposal when the design cannot be followed, and hands off to `pr` when the spec is done. |
-| `bugfix` | `/handbook:bugfix <ticket>`, or ask Claude to fix a bug | Reads the ticket, reproduces the bug before touching code, confirms the root cause with you, fixes the cause with a regression test, verifies the fix, then hands off to `pr`. |
-| `pr`  | `/handbook:pr`, or ask Claude to open a PR | Walks the branch's changes with you, asks what the code can't answer, drafts the title and description to the team standard, and opens the PR with `gh` once you approve. Needs the `gh` CLI signed in. |
+| `start-task` | `/freethinking:start-task <task>`, or ask Claude to start or spec a task | Writes the spec before any code: `requirements.md`, `design.md` and `tasks.md` in `.claude/specs/<task>/`, following the team template, with you approving each document before the next. |
+| `implement-spec` | `/freethinking:implement-spec [task] [task\|wave]`, or ask Claude to implement, build or continue a spec | Builds a task from its approved spec, wave by wave from `tasks.md`, each leaf task in its own sub-agent, ticking a task only once its tests pass, running the full suite at the end of every wave, and handing back to you after each task or each wave, whichever you chose. Pauses with a proposal when the design cannot be followed, and hands off to `pr` when the spec is done. |
+| `bugfix` | `/freethinking:bugfix <ticket>`, or ask Claude to fix a bug | Reads the ticket, reproduces the bug before touching code, confirms the root cause with you, fixes the cause with a regression test, verifies the fix, then hands off to `pr`. |
+| `pr`  | `/freethinking:pr`, or ask Claude to open a PR | Walks the branch's changes with you, asks what the code can't answer, drafts the title and description to the team standard, and opens the PR with `gh` once you approve. Needs the `gh` CLI signed in. |
 
 ## Rules
 
@@ -71,9 +71,9 @@ that. A rule a repository needs to override belongs in that repository's own
 
 The plugin ships two agents under `agents/`. `implement-spec` launches both,
 and you can launch either directly: mention it in a session as
-`@agent-handbook:task-executor` or `@agent-handbook:wave-reviewer`, or have a
+`@agent-freethinking:task-executor` or `@agent-freethinking:wave-reviewer`, or have a
 skill or session launch it with the Agent tool as
-`subagent_type: handbook:task-executor` or `handbook:wave-reviewer`.
+`subagent_type: freethinking:task-executor` or `freethinking:wave-reviewer`.
 
 What the prompt carries:
 
@@ -113,7 +113,7 @@ claude --plugin-dir .      # load your working copy for one session
 make validate              # the unit tests and the validator under Testing; CI runs this on every PR
 ```
 
-Then open a PR. `/handbook:pr` works on this repo too. Evals are tests like the
+Then open a PR. `/freethinking:pr` works on this repo too. Evals are tests like the
 rest, so the table for any skill, rule, agent or hook you changed goes in the
 PR's Testing section with everything else you ran.
 
@@ -143,7 +143,7 @@ plugin's development and evals depend on:
 
 - `test_hook_encoder.py`: the sub-agent hook's JSON encoder, with a fixed
   table, a seeded fuzz and a real run of the hook.
-- `test_agents.py`: every agent's frontmatter, and every `handbook:<name>` a
+- `test_agents.py`: every agent's frontmatter, and every `freethinking:<name>` a
   skill references names an existing agent or skill.
 
 ```bash
