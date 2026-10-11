@@ -77,7 +77,7 @@ The hook script and the agent file come first, because the checks, the evals and
     - After 6.3 has landed, `make eval-hook`, `make eval-agent-task-executor` and `make eval-agent-wave-reviewer` at three runs each. Keep one Spec_Mode run (`--keep-temp`) and read the sub-agent's model and effort from its trace; record them in the PR, since no grader can see them. Record the tables for the PR's Testing section
     - _Requirements: 1.4, 2.1, 5.2, 5.3_
 
-- [ ] 5. Manual check: use the agent directly
+- [x] 5. Manual check: use the agent directly
   - In a session started with `claude --plugin-dir .`, address `@agent-freethinking:task-executor` with one small contained change in a scratch copy of a project, without the mode sentence. Confirm it gathers context, makes the change with a test, returns the Summary shape with `status: done`, and leaves no scratch files. Record the transcript summary for the PR
   - _Requirements: 2.3, 2.7, 2.10, 3.1_
 
