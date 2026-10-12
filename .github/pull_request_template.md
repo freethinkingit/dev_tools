@@ -1,6 +1,6 @@
 ## Why
 
-<!-- The problem or goal behind the change. Link the ticket if there is one. -->
+<!-- The problem or goal behind the change. Link the issue, and write `Closes #<number>` when merging finishes it. -->
 
 ## What
 

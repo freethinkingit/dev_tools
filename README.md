@@ -106,16 +106,9 @@ changes come from a spec wave.
 ## Add or change a skill or rule
 
 Each skill is a folder under `skills/` with a `SKILL.md`; each rule is a Markdown
-file under `rules/`. To work on one:
-
-```bash
-claude --plugin-dir .      # load your working copy for one session
-make validate              # the unit tests and the validator under Testing; CI runs this on every PR
-```
-
-Then open a PR. `/freethinking:pr` works on this repo too. Evals are tests like the
-rest, so the table for any skill, rule, agent or hook you changed goes in the
-PR's Testing section with everything else you ran.
+file under `rules/`. The [contributing guide](.github/CONTRIBUTING.md) says how
+to set up, test and submit a change. Testing below says how the checks and evals
+work.
 
 ## Testing
 
@@ -204,9 +197,7 @@ invocation runs under a list-price ceiling, `EVAL_MAX_COST_USD`, default $2.
 Each case runs three times by default; iterate with `EVAL_ARGS="--runs 1"`, and
 run the table you paste for a rule or skill-description change with
 `EVAL_ARGS="--ablation with-without"` so the Δ column shows what the plugin
-added. Results land in `evals/results/<timestamp>/` (gitignored). Paste the
-table the command prints into the PR's Testing section. A new skill needs at
-least one case under `evals/skills/<name>/`.
+added. Results land in `evals/results/<timestamp>/` (gitignored).
 
 `evals/README.md` covers writing a case, reading results, keeping a run's
 transcript to debug a failure, and what the eval sandbox allows.

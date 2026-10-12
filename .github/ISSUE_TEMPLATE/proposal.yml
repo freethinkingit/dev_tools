@@ -1,0 +1,65 @@
+name: "Proposal: a new or changed skill, agent or rule"
+description: Propose a new skill, agent or rule, or a change to one that exists.
+labels: ["triage"]
+type: Feature
+body:
+  - type: markdown
+    attributes:
+      value: Before you file, read the [Issues section of the contributing guide](https://github.com/freethinkingit/dev_tools/blob/main/.github/CONTRIBUTING.md#issues).
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before you file
+      options:
+        - label: I searched the existing issues.
+          required: true
+        - label: I looked in [Discussions under Ideas](https://github.com/freethinkingit/dev_tools/discussions/categories/ideas).
+          required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      description: What the proposal adds or changes.
+      options:
+        - New skill
+        - Change to a skill
+        - New agent
+        - Change to an agent
+        - New rule
+        - Change to a rule
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: For a change, the component it changes. Leave it empty for something new.
+      options:
+        - start-task (skill)
+        - implement-spec (skill)
+        - pr (skill)
+        - bugfix (skill)
+        - task-executor (agent)
+        - wave-reviewer (agent)
+        - code-changes (rule)
+        - comments (rule)
+        - workflow (rule)
+        - SessionStart hook
+        - SubagentStart hook
+        - Something else
+    validations:
+      required: false
+  - type: textarea
+    id: behaviour
+    attributes:
+      label: Proposed behaviour
+      description: The behaviour or wording you propose.
+    validations:
+      required: true
+  - type: textarea
+    id: case
+    attributes:
+      label: Motivating case
+      description: "The case that motivates it: what went wrong, or took too long, without it."
+    validations:
+      required: true
