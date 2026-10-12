@@ -6,7 +6,7 @@ The labels and the two pull request templates come first, because the issues, th
 
 ## Tasks
 
-- [ ] 1. Repository settings
+- [x] 1. Repository settings
   - [x] 1.1 Create the three new labels
     - `gh label create quality --color 5319e7 --description "The behaviour of the skills, agents and rules, and the evals and checks that guard it"`, `gh label create compatibility --color 1d76db --description "Working across Claude Code, Cursor, Codex and other agent tools"`, `gh label create triage --color e4e669 --description "Not yet classified by a maintainer"`. Prove it with `gh label list --json name,color,description`: the three present with those colours and descriptions
     - _Requirements: 3.1, 7.5_
@@ -17,7 +17,7 @@ The labels and the two pull request templates come first, because the issues, th
     - `gh label delete <name> --yes` for `bug`, `enhancement`, `documentation`, `duplicate`, `invalid`, `wontfix`, `effort: high`, `effort: medium`, `effort: low` and `area: quality`; after 1.2, so that the issues already carry `quality`. Prove it with `gh label list`: exactly the nine of the design's Labels table, each once, nothing else
     - **Property 1: Label closure**
     - **Validates: Requirements 3.1, 7.5**
-  - [ ] 1.4 The author makes the repository public and enables private vulnerability reporting
+  - [x] 1.4 The author makes the repository public and enables private vulnerability reporting
     - An action for the author, by hand: `gh repo edit freethinkingit/dev_tools --visibility public --accept-visibility-change-consequences`, then `gh api -X PUT repos/freethinkingit/dev_tools/private-vulnerability-reporting`. Ticked on their report, checked with `gh repo view --json visibility` showing `PUBLIC` and `gh api repos/freethinkingit/dev_tools/private-vulnerability-reporting` showing `"enabled": true`
     - _Requirements: 6.4, 7.5_
 
@@ -31,7 +31,7 @@ The labels and the two pull request templates come first, because the issues, th
   - [x] 2.3 Run the pr eval and keep one transcript
     - `make eval-skill-pr`, both cases at three runs, then `make eval-skill-pr EVAL_ARGS="--keep-temp --runs 1 --case opens-pr-with-stub-gh"`. Read the kept run's `out/trace.jsonl` by its full path from outside the directory, as `evals/README.md` says, and confirm a Read of a path ending `skills/pr/pull_request_template.md` and a `gh pr create` body carrying the template's six headings; the graders cannot see either. Record the eval table and the two facts for the PR's Testing section, then `rm -rf` the kept directory. This run is the no-ticket half of Property 4, the case's "No ticket" answer being unchanged
     - _Requirements: 7.2_
-  - [ ] 2.4 Manual check: the pr skill with an issue number as the ticket
+  - [x] 2.4 Manual check: the pr skill with an issue number as the ticket
     - An action for the author: in a session started with `claude --plugin-dir .` on this branch, run `/freethinking:pr`, answer the ticket question with `#<n>` for an open issue of this repository, and stop at the draft without approving it. Confirm that the question says any form works, that the title begins `[#n]`, that the skill asked whether merging finishes the issue unless the answer came with the ticket, that Why names `#n` and ends with `Closes #n` when it does, and that the description carries this repository's six headings. Record it for the PR; the real pull request is opened afterwards with the skill as usual
     - **Property 4: The ticket passes through untouched**
     - **Validates: Requirements 4.1, 4.2, 4.5**
