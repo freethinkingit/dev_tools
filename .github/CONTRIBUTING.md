@@ -107,8 +107,7 @@ in an issue rather than create it.
 repository's contribute page and GitHub's surfacing of approachable issues.
 `help wanted` marks work a maintainer would merge but will not write.
 
-A milestone names a goal. The open milestones are the roadmap, and at most
-three are open at a time.
+A milestone names a goal. The open milestones are the roadmap.
 
 ## Compatibility
 

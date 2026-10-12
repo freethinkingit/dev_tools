@@ -59,7 +59,7 @@ The contributing guide is the one document that tells a contributor how to devel
 
 1. THE repository SHALL carry exactly nine labels: the three Priority_Labels, the Area_Labels `quality` and `compatibility`, the Triage_Label, the Info_Label, `good first issue` and `help wanted`; every other label SHALL be removed: GitHub's `bug`, `enhancement` and `documentation` because the Issue_Types carry kind, `duplicate`, `invalid` and `wontfix` because close reasons cover them, and the `effort:` and `area:` labels created earlier, whose values move into this set.
 2. THE Guide SHALL say that every issue has one Issue_Type, SHALL define each label group in one sentence, and SHALL say that an issue carries at most one Priority_Label and the Area_Labels that apply, so that an issue with no Area_Label is normal.
-3. THE Guide SHALL say that a Milestone names a goal, that the open Milestones are the repository's roadmap, and that at most three are open at a time.
+3. THE Guide SHALL say that a Milestone names a goal and that the open Milestones are the repository's roadmap.
 4. IF a label or an Area_Label outside these seems needed, THEN THE Guide SHALL say to propose it in an issue rather than create it, so that the vocabulary stays small.
 5. THE Guide SHALL say that `good first issue` is the one label with behaviour on GitHub, feeding the repository's contribute page and GitHub's surfacing of approachable issues, and that `help wanted` marks work a Maintainer would merge but will not write.
 6. THE label names SHALL be lowercase throughout, in the repository, the Guide and the Issue_Forms, and the Issue_Types SHALL be written as GitHub names them, `Bug`, `Feature` and `Task`, in the forms' `type` keys and in the Guide.
