@@ -107,8 +107,7 @@ changes come from a spec wave.
 
 Each skill is a folder under `skills/` with a `SKILL.md`; each rule is a Markdown
 file under `rules/`. The [contributing guide](.github/CONTRIBUTING.md) says how
-to set up, test and submit a change. Testing below says how the checks and evals
-work.
+to set up, test and submit a change.
 
 ## Testing
 
