@@ -39,9 +39,13 @@ For how the checks and evals work, see the README's
 
 ## Make a change
 
-A small change, such as a typo or a one-line fix: make it. A sizeable change:
-run `/freethinking:start-task` to write the spec, then
-`/freethinking:implement-spec` to build it. A bug: run `/freethinking:bugfix`.
+A small change, such as a typo, a one-line fix or a rename: make it. A bug:
+run `/freethinking:bugfix`. Anything else: run `/freethinking:start-task`. It
+reads the code and decides between the `task-executor` agent for one contained
+change, `bugfix` for a defect, and a spec for the rest, and asks before taking
+the first two. When it writes a spec, `/freethinking:implement-spec` builds it.
+On every route, `start-task` proposes the branch name, and you or
+`implement-spec` create it.
 
 Work on a branch named `<issue number>-<short slug>` when an issue exists, such
 as `12-ticket-reference`, and on a short slug otherwise. Never work on the

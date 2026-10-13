@@ -39,7 +39,7 @@ claude plugin update freethinking@freethinkingit
 
 | Skill | Run it with | What it does |
 | ----- | ----------- | ------------ |
-| `start-task` | `/freethinking:start-task <task>`, or ask Claude to start or spec a task | Writes the spec before any code: `requirements.md`, `design.md` and `tasks.md` in `.claude/specs/<task>/`, following the team template, with you approving each document before the next. |
+| `start-task` | `/freethinking:start-task <task>`, or ask Claude to change something, or to start or spec a task | The front door for any change: reads the code the request touches, then sends one contained change to the `task-executor` agent, a defect to `bugfix` and everything else to a spec, asking you before taking either of the first two. On the spec route, writes `requirements.md`, `design.md` and `tasks.md` in `.claude/specs/<task>/` before any code, following the team template, with you approving each document before the next. |
 | `implement-spec` | `/freethinking:implement-spec [task] [task\|wave]`, or ask Claude to implement, build or continue a spec | Builds a task from its approved spec, wave by wave from `tasks.md`, each leaf task in its own sub-agent, ticking a task only once its tests pass, running the full suite at the end of every wave, and handing back to you after each task or each wave, whichever you chose. Pauses with a proposal when the design cannot be followed, and hands off to `pr` when the spec is done. |
 | `bugfix` | `/freethinking:bugfix <ticket>`, or ask Claude to fix a bug | Reads the ticket, reproduces the bug before touching code, confirms the root cause with you, fixes the cause with a regression test, verifies the fix, then hands off to `pr`. |
 | `pr`  | `/freethinking:pr`, or ask Claude to open a PR | Walks the branch's changes with you, asks what the code can't answer, drafts the title and description to the team standard, and opens the PR with `gh` once you approve. Needs the `gh` CLI signed in. |
@@ -52,9 +52,10 @@ in every repository, so Claude follows them without being asked. They live in
 
 | File | Covers |
 | ---- | ------ |
-| `rules/workflow.md` | Which skill to use when: spec new work with `start-task`, build an existing spec with `implement-spec`, fix bugs with `bugfix`, open PRs with `pr`, never work on the default branch, and when a change is small enough to skip all of that. |
+| `rules/workflow.md` | Which skill to use when, routing on what you said or a file on disk and taking the first rule that matches: `bugfix` when you call it a bug, `implement-spec` when a spec exists, `pr` for pull requests, no skill for a typo-sized change, and `start-task` for any other change, which reads the code and picks between the `task-executor` agent for one contained change, `bugfix` for a defect and a spec for the rest, asking before the first two. Also: never work on the default branch, and say so when the approach changes. |
 | `rules/code-changes.md` | How to change code: read the surrounding code first, match the project's style and libraries, make the smallest change that does the job, add a test with every behaviour change, run what you touched, and leave no debug residue behind. |
 | `rules/comments.md` | How to comment: docstrings on public contracts only, saying intent, parameters, returns and exceptions; inline comments only for non-obvious details such as workarounds and edge cases, never for what a line does; no divider or closing-brace comments; no commented-out dead code. |
+| `rules/collaboration.md` | How skills and agents work with you: ask in the shape of the answer, with fixed options or in prose; batch the questions; say the plan before acting; take only a plain yes as approval; report failures and anything not run before any recommendation; and say where the work is and which skill is next when a skill ends. |
 
 Claude Code does not load a `CLAUDE.md` or a `rules/` folder from a plugin by
 itself, so `hooks/hooks.json` registers two hooks. The `SessionStart` hook runs
@@ -64,13 +65,15 @@ a resume, a clear, a compact or a fork). The `SubagentStart` hook runs
 `hooks/load-rules-subagent.sh`, which puts the same rules into every sub-agent,
 which is how both agents below get them. Keep the
 combined rules under 10,000 characters; Claude Code truncates hook output past
-that. A rule a repository needs to override belongs in that repository's own
-`CLAUDE.md`, which Claude reads alongside these.
+that, and `make validate` fails when they go over. A rule a repository needs
+to override belongs in that repository's own `CLAUDE.md`, which Claude reads
+alongside these.
 
 ## Agents
 
 The plugin ships two agents under `agents/`. `implement-spec` launches both,
-and you can launch either directly: mention it in a session as
+`start-task` launches the executor for one contained change, and you can
+launch either directly: mention it in a session as
 `@agent-freethinking:task-executor` or `@agent-freethinking:wave-reviewer`, or have a
 skill or session launch it with the Agent tool as
 `subagent_type: freethinking:task-executor` or `freethinking:wave-reviewer`.
@@ -87,7 +90,7 @@ What the prompt carries:
 
 | Agent | What it does | What it returns |
 | ----- | ------------ | --------------- |
-| `task-executor` | Builds one well-specified change as the smallest change in the project's style, proves it, and deletes its scratch work. Stops and asks instead of guessing when the task is unclear, the design does not fit the code, or the task would need a new dependency, framework or tool. `implement-spec` launches it for every leaf task. | A Summary: `status` (`done` or `stopped`), `files changed`, `checks run` with their results, the ephemeral check it ran, or why none applied, what it is `unsure` of, and, when stopped, the question or evidence under `stopped because`. |
+| `task-executor` | Builds one well-specified change as the smallest change in the project's style, proves it, and deletes its scratch work. Stops and asks instead of guessing when the task is unclear, the design does not fit the code, or the task would need a new dependency, framework or tool. `start-task` launches it for one contained change, and `implement-spec` for every leaf task. | A Summary: `status` (`done` or `stopped`), `files changed`, `checks run` with their results, the ephemeral check it ran, or why none applied, what it is `unsure` of, and, when stopped, the question or evidence under `stopped because`. |
 | `wave-reviewer` | Reviews one set of changes against the requirements and design they implement and the files that cite them, gathering the diff itself and changing nothing. `implement-spec` launches it at the end of every wave. | Findings: a `verdict` (`holds` or `findings`), then each problem with its `file`, an exact `quote`, the `problem` and a `severity` (`blocker`, `should-fix` or `nit`), and what it is `unsure` of. |
 
 The executor works in one of two modes, set by the launch prompt alone:
@@ -131,12 +134,8 @@ with a description exists.
 ### Unit tests
 
 `checks/` holds standard-library `unittest` files, written for the tooling the
-plugin's development and evals depend on:
-
-- `test_hook_encoder.py`: the sub-agent hook's JSON encoder, with a fixed
-  table, a seeded fuzz and a real run of the hook.
-- `test_agents.py`: every agent's frontmatter, and every `freethinking:<name>` a
-  skill references names an existing agent or skill.
+plugin's development and evals depend on. `make check` discovers every one of
+them, and each file covers one concern, named by its module docstring.
 
 ```bash
 make check                                                 # all of them

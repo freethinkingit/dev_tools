@@ -42,6 +42,7 @@ body:
         - task-executor (agent)
         - wave-reviewer (agent)
         - code-changes (rule)
+        - collaboration (rule)
         - comments (rule)
         - workflow (rule)
         - SessionStart hook
