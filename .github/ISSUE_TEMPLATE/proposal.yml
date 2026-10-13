@@ -1,4 +1,4 @@
-name: "Proposal: a new or changed skill, agent or rule"
+name: Propose a new or changed skill, agent or rule
 description: Propose a new skill, agent or rule, or a change to one that exists.
 labels: ["triage"]
 type: Feature

@@ -67,7 +67,7 @@ Four files under `.github/ISSUE_TEMPLATE/`. Fields are in Data Models.
 | File | `name` | Issue_Type | Labels | Requirements |
 |---|---|---|---|---|
 | `misbehaving-skill-or-agent.yml` | Misbehaving skill or agent | Bug | `triage` | 2.1, 2.2, 2.3 |
-| `proposal.yml` | Proposal: a new or changed skill, agent or rule | Feature | `triage` | 2.1, 2.2, 2.3 |
+| `proposal.yml` | Propose a new or changed skill, agent or rule | Feature | `triage` | 2.1, 2.2, 2.3 |
 | `eval-case.yml` | New eval case | Task | `triage` | 2.1, 2.2, 2.3 |
 | `config.yml` | blank issues off; links for a question, an idea and a vulnerability | | | 2.4, 5.2 |
 
