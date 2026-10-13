@@ -1,9 +1,9 @@
 name: Validate plugin
 
 # Runs the same check developers run locally before opening a PR: make validate,
-# which runs the Python checks under checks/ (the hook encoder round-trip and the
-# agent frontmatter and handbook-reference checks) plus claude plugin validate --strict,
-# so a stray field, a missing version or a mis-escaped rule cannot land.
+# which runs the unittest files under checks/, each one concern, plus
+# claude plugin validate --strict, so a stray field, a missing version or a
+# mis-escaped rule cannot land.
 on:
   pull_request:
   push:
