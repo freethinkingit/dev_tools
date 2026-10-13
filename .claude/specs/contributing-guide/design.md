@@ -66,9 +66,9 @@ Four files under `.github/ISSUE_TEMPLATE/`. Fields are in Data Models.
 
 | File | `name` | Issue_Type | Labels | Requirements |
 |---|---|---|---|---|
-| `misbehaving-skill-or-agent.yml` | Misbehaving skill or agent | Bug | `triage` | 2.1, 2.2, 2.3 |
-| `proposal.yml` | Proposal: a new or changed skill, agent or rule | Feature | `triage` | 2.1, 2.2, 2.3 |
-| `eval-case.yml` | New eval case | Task | `triage` | 2.1, 2.2, 2.3 |
+| `misbehaving-skill-or-agent.yml` | Report a misbehaving skill or agent | Bug | `triage` | 2.1, 2.2, 2.3 |
+| `proposal.yml` | Propose a new or changed skill, agent or rule | Feature | `triage` | 2.1, 2.2, 2.3 |
+| `eval-case.yml` | Propose an eval case | Task | `triage` | 2.1, 2.2, 2.3 |
 | `config.yml` | blank issues off; links for a question, an idea and a vulnerability | | | 2.4, 5.2 |
 
 ### Community_Files
@@ -154,7 +154,7 @@ Constraints: a Triaged issue carries exactly one Priority_Label, the Area_Labels
 
 Every form opens with a one-line Markdown pointer to the Guide's Issues section, then the preflight checkboxes, each required. Every field with a known answer set is a dropdown or checkboxes, and every field triage reads is required, so a submission is typed and complete (Requirement 2.3). Field ids are the YAML `id` values.
 
-Misbehaving skill or agent (`type: Bug`):
+Report a misbehaving skill or agent (`type: Bug`):
 
 | id | Kind | Required | Content |
 |---|---|---|---|
@@ -176,7 +176,7 @@ Proposal (`type: Feature`):
 | `behaviour` | textarea | yes | The behaviour or wording you propose |
 | `case` | textarea | yes | The case that motivates it: what went wrong, or took too long, without it |
 
-New eval case (`type: Task`):
+Propose an eval case (`type: Task`):
 
 | id | Kind | Required | Content |
 |---|---|---|---|

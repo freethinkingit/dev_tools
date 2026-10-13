@@ -54,17 +54,17 @@ ticket. The [pull request template](pull_request_template.md) is the one place
 that says how the issue is linked and when to write `Closes #<number>`.
 
 A new skill, agent, rule or hook is also added to the `component` dropdown of
-the "Misbehaving skill or agent", "Proposal: a new or changed skill, agent or
-rule" and "New eval case" forms.
+the "Report a misbehaving skill or agent", "Propose a new or changed skill,
+agent or rule" and "Propose an eval case" forms.
 
 ## Issues
 
 New issues start from one of three forms:
 
-- **Misbehaving skill or agent**, for something the plugin did wrong.
-- **Proposal: a new or changed skill, agent or rule**, for something it should
+- **Report a misbehaving skill or agent**, for something the plugin did wrong.
+- **Propose a new or changed skill, agent or rule**, for something it should
   do.
-- **New eval case**, for a behaviour an eval should guard.
+- **Propose an eval case**, for a behaviour an eval should guard.
 
 Submitting a form labels the issue `triage` and sets its Issue_Type: `Bug`,
 `Feature` and `Task` respectively. Blank issues are off. The new-issue page
