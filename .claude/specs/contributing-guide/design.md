@@ -14,7 +14,7 @@ flowchart LR
     TC -->|a form| I["Issue<br/>label triage, Issue_Type set"]
     TC -->|question or idea| D["Discussions<br/>Q&A, Ideas"]
     TC -->|vulnerability| S["Report a vulnerability<br/>security policy page"]
-    I --> T["Weekly triage<br/>type confirmed, priority and areas or question,<br/>milestone or not planned, triage removed"]
+    I --> T["Weekly triage<br/>type confirmed, priority and areas or question,<br/>kept or not planned, milestone only when a goal has one, triage removed"]
     T --> B["Branch n-short-slug"]
     B --> PR["/freethinking:pr<br/>ticket #n in the title and Why,<br/>Closes #n when the merge finishes it"]
     PT["PR_Template<br/>.github/pull_request_template.md"] -.used by.-> PR

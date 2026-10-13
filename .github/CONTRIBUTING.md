@@ -78,7 +78,9 @@ At least weekly, a maintainer triages:
 3. Sets one priority label and the area labels that apply, none, one or both.
 4. Applies `question` instead when the issue cannot be classified without more
    from its author.
-5. Assigns a milestone, or closes the issue as not planned.
+5. Closes the issue as not planned, or keeps it. A kept issue goes into a
+   milestone only when it serves a goal that already has one; otherwise it
+   waits in the backlog, the open issues with no milestone.
 6. Removes `triage`.
 
 An issue opened without a form gets `triage` by hand at the next triage. A
@@ -107,7 +109,9 @@ in an issue rather than create it.
 repository's contribute page and GitHub's surfacing of approachable issues.
 `help wanted` marks work a maintainer would merge but will not write.
 
-A milestone names a goal. The open milestones are the roadmap.
+A milestone names a goal. The open milestones are the roadmap. Milestones
+are made in a planning pass, separate from triage: when a goal is chosen, it
+gets a milestone and the issues that serve it are pulled in from the backlog.
 
 ## Compatibility
 
