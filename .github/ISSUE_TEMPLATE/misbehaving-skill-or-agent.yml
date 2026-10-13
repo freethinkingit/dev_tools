@@ -1,0 +1,75 @@
+name: Misbehaving skill or agent
+description: A skill, agent, rule or hook of the plugin did not do what it says it does.
+labels: ["triage"]
+type: Bug
+body:
+  - type: markdown
+    attributes:
+      value: Before you file, read the [Issues section of the contributing guide](https://github.com/freethinkingit/dev_tools/blob/main/.github/CONTRIBUTING.md#issues).
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before you file
+      options:
+        - label: I searched the existing issues and found nothing that covers this.
+          required: true
+        - label: I am on the latest plugin version.
+          required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: The skill, agent, rule or hook that misbehaved.
+      options:
+        - start-task (skill)
+        - implement-spec (skill)
+        - pr (skill)
+        - bugfix (skill)
+        - task-executor (agent)
+        - wave-reviewer (agent)
+        - code-changes (rule)
+        - comments (rule)
+        - workflow (rule)
+        - SessionStart hook
+        - SubagentStart hook
+        - Something else
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Plugin version
+      description: The plugin version, as `claude plugin list` shows it.
+    validations:
+      required: true
+  - type: textarea
+    id: prompt
+    attributes:
+      label: Prompt
+      description: The prompt or command you gave.
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+      description: What happened.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: What you expected, with the sentence of the skill, agent, rule or hook it should have followed.
+    validations:
+      required: true
+  - type: dropdown
+    id: reproduces
+    attributes:
+      label: Does it reproduce?
+      options:
+        - Every time
+        - Sometimes
+        - Once so far
+    validations:
+      required: true

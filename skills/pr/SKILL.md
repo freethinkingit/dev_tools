@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Open or update a GitHub pull request for the current branch using the team's PR standard. Use when asked to open, create, raise, or update a PR. Walks the diff between the branch and its target one change at a time, saying what each source change does and asking the author to say why in their own words, which become the description's Changes bullets; asks once for what the diff cannot answer, drafts the title and description from the team template, and creates the PR with the gh CLI after the author approves.
+description: Open or update a GitHub pull request for the current branch using the team's PR standard. Use when asked to open, create, raise, or update a PR. Walks the diff between the branch and its target one change at a time, saying what each source change does and asking the author to say why in their own words, which become the description's Changes bullets; asks once for what the diff cannot answer, drafts the title and description from the repository's own pull request template or the skill's default one, and creates the PR with the gh CLI after the author approves.
 argument-hint: "[base-branch]"
 allowed-tools: Bash(git status *) Bash(git branch *) Bash(git remote *) Bash(git rev-parse *) Bash(git fetch *) Bash(git log *) Bash(git diff *) Bash(gh auth status *) Bash(gh repo view *) Bash(gh pr view *) Bash(gh pr list *)
 ---
@@ -66,7 +66,7 @@ Before leaving this step, check the list from `git diff --name-status` against t
 Ask once, in plain prose in a single message, and only for what the walkthrough and the author's earlier answers have not already covered. Where an earlier answer covered part of a question, ask only for the missing part.
 
 - **Why**: the problem or goal behind the branch, when the group reasons do not already say it.
-- **Ticket**: the ticket key if there is one (for example `ENG-1234`).
+- **Ticket**: the ticket if there is one, in whatever form the author has it: an issue number such as `#12`, an issue URL, or a key from another tracker such as `ENG-1234`. Say that any form works.
 - **Testing**: what they ran or checked, and the result.
 - **Risk and rollout**: anything that needs care on deploy, such as migrations, flags, config, infra, or a required order of deploys.
 - **Review focus**: where reviewers should look hardest, whether this should open as a draft, and for a UI change the screenshots or recording to attach.
@@ -77,13 +77,13 @@ Never invent an answer. If the author did not test the change, the Testing secti
 
 **Title.** PRs are squash-merged, so the title becomes the commit on the base branch.
 
-- With a ticket: `[ENG-1234] Add retry to upload worker`
+- With a ticket: `[#12] Add retry to upload worker` or `[ENG-1234] Add retry to upload worker`, the ticket written the way its tracker writes it
 - Without: `Add retry to upload worker`
 - Imperative mood, under 70 characters, no trailing period, specific enough to make sense in `git log` a year from now.
 
-**Description.** If the repository has its own template (`.github/pull_request_template.md`), use it. Otherwise use the team template at `${CLAUDE_PLUGIN_ROOT}/.github/pull_request_template.md`.
+**Description.** If the repository has its own template (`.github/pull_request_template.md`), use it: its sections and the comments inside them say what that repository wants in each, and they take precedence over the bullets below; when a comment asks for something the author's answers did not give, ask before drafting. Otherwise use the skill's default template at `${CLAUDE_PLUGIN_ROOT}/skills/pr/pull_request_template.md`.
 
-- Write the Why section from the ticket and the group reasons, or from the author's step 5 answer when those do not give the goal. Write the Changes section from the settled groups: one bullet per logical change, saying what changed and, in the author's words, why. Every source change in the branch is covered by some bullet. Export glue and generated files are left out.
+- Write the Why section from the ticket and the group reasons, or from the author's step 5 answer when those do not give the goal. Name the ticket as its tracker writes it, and link it when the author gave a URL; add nothing the author's answers or the repository's own template did not call for. Write the Changes section from the settled groups: one bullet per logical change, saying what changed and, in the author's words, why. Every source change in the branch is covered by some bullet. Export glue and generated files are left out.
 - A group the author called self-explanatory gets a bullet that says what changed and nothing more. A change the author did not explain keeps its bullet, with "Reason not provided by the author" in place of the why, and is repeated under Notes for reviewers.
 - Fill every section. Write "None" where a section does not apply, except Notes for reviewers, which is removed when empty.
 - Say only what the diff and the author's answers support. No filler, no claims about quality.

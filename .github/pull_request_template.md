@@ -1,6 +1,6 @@
 ## Why
 
-<!-- The problem or goal behind the change. Link the ticket if there is one. -->
+<!-- The problem or goal behind the change. Link the issue, and write `Closes #<number>` when merging finishes it. -->
 
 ## What
 
@@ -8,11 +8,11 @@
 
 ## Changes
 
-<!-- How it was done. One bullet per logical change: what changed and why. Every source change is covered. Export-only index files and generated files are left out. -->
+<!-- How it was done. One bullet per logical change: what changed, then why in your own words, e.g. "Move the default template under skills/pr/. The skill is repository-agnostic and this repository's own template carries the Closes convention." Every source change is covered. Export-only index files and generated files are left out. -->
 
 ## Testing
 
-<!-- What was actually run or checked, and the result. "Not tested" is a valid answer. For UI changes, attach screenshots or a recording here. -->
+<!-- What was actually run or checked, and the result. "Not tested" is a valid answer. A change to a skill, agent, rule or hook pastes the eval table here. For UI changes, attach screenshots or a recording here. -->
 
 ## Risk and rollout
 

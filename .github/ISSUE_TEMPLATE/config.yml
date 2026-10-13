@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: https://github.com/freethinkingit/dev_tools/discussions/categories/q-a
+    about: Ask how to use the plugin or its skills in Discussions.
+  - name: Share an idea
+    url: https://github.com/freethinkingit/dev_tools/discussions/categories/ideas
+    about: Talk through an idea before it becomes a feature request.
+  - name: Report a vulnerability
+    url: https://github.com/freethinkingit/dev_tools/security/policy
+    about: Report security issues privately, never in a public issue.

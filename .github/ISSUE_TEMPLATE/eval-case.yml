@@ -1,0 +1,58 @@
+name: New eval case
+description: Propose an eval case that guards a behaviour of a skill, agent, rule or hook.
+labels: ["triage"]
+type: Task
+body:
+  - type: markdown
+    attributes:
+      value: "Before you file, read the [Issues section of the contributing guide](https://github.com/freethinkingit/dev_tools/blob/main/.github/CONTRIBUTING.md#issues)."
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before you file
+      options:
+        - label: I searched the existing issues.
+          required: true
+        - label: "I read [`evals/README.md`](https://github.com/freethinkingit/dev_tools/blob/main/evals/README.md)."
+          required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: The skill, agent, rule or hook the case would guard.
+      options:
+        - start-task (skill)
+        - implement-spec (skill)
+        - pr (skill)
+        - bugfix (skill)
+        - task-executor (agent)
+        - wave-reviewer (agent)
+        - code-changes (rule)
+        - comments (rule)
+        - workflow (rule)
+        - SessionStart hook
+        - SubagentStart hook
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: behaviour
+    attributes:
+      label: Behaviour
+      description: The behaviour the case should guard.
+    validations:
+      required: true
+  - type: textarea
+    id: grading
+    attributes:
+      label: Grading
+      description: "How a run would be graded: what in the transcript or in the files shows pass or fail."
+    validations:
+      required: true
+  - type: textarea
+    id: prompt
+    attributes:
+      label: Prompt
+      description: A prompt that would exercise it.
+    validations:
+      required: false
