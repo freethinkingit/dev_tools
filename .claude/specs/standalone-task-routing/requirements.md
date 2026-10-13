@@ -92,6 +92,10 @@
 5. THE existing Eval_Case `evals/skills/start-task/names-task-and-asks` SHALL still pass, with its prompt sized so that Triage chooses Spec_Route.
 6. THE existing Eval_Cases under `evals/rules/workflow/` SHALL still pass after the Rule changes, with their prompts or graders adjusted only where the Rule's new wording requires it.
 7. THE `make validate` target SHALL pass.
+8. THE README's paragraph on the rules' size limit SHALL say that `make validate` fails when the combined rules exceed it, since the size check now runs there.
+9. THE README's description of the free checks SHALL describe them as the `unittest` files under `checks/` that `make check` discovers, each one concern named by its module docstring, and SHALL NOT list them by name, so that a new check needs no README change.
+10. THE `task-executor` agent's description and the README's Agents section SHALL name `start-task` as a launcher of the executor beside `implement-spec`, since every text that names the executor's launchers must stay true.
+11. THE `eval-skill-start-task` Makefile target SHALL grant `Write` and `Edit` with `--allow-tools`, which per `evals/README.md` is the only way a case gets them (its own `allowed_tools` lists read-only tools), so that a Skill that writes a spec document or edits source before the Question is caught by the graders rather than prevented by the tool list.
 
 ### Requirement 6: The Collaboration_Rule
 

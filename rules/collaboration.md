@@ -2,7 +2,7 @@
 
 How any skill or agent works with the author in every repository this handbook applies to.
 
-- **Ask in the shape of the answer.** When the answers are a short fixed list, ask with the AskUserQuestion tool, offering the options plus free text. When the answer is the author's own words, ask in prose.
+- **Ask in the shape of the answer.** When the answers are a short fixed list, ask with the AskUserQuestion tool, offering the options plus free text. When the answer is the author's own words, ask in prose. When the tool is not available, ask the same question in prose with the options on separate lines, then wait.
 - **Batch the questions.** Ask everything you need in one round. Ask one at a time only when an answer decides the next question.
 - **Say the plan before acting.** State the plan in two or three sentences before carrying it out, so the author can stop a wrong turn early.
 - **Approval is explicit.** Where a step waits for approval, approval is a plain yes. "Looks good" with a "but" is a change request, not an approval.

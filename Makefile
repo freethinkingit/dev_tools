@@ -59,6 +59,7 @@ eval-agent-wave-reviewer: CASE_ARGS += --allow-tools Bash --scaffold
 eval-agent-wave-reviewer: export PATH := bin:$(PATH)
 eval-skill-pr: CASE_ARGS += --allow-tools Bash --scaffold
 eval-skill-pr: export PATH := bin:$(PATH)
+eval-skill-start-task: CASE_ARGS += --allow-tools Write Edit --scaffold
 eval-rule-code-changes: CASE_ARGS += --allow-tools Write Edit --scaffold
 
 # Runs all evals and needs all flags
