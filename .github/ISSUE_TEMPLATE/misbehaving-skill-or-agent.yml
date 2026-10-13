@@ -1,4 +1,4 @@
-name: Misbehaving skill or agent
+name: Report a misbehaving skill or agent
 description: A skill, agent, rule or hook of the plugin did not do what it says it does.
 labels: ["triage"]
 type: Bug

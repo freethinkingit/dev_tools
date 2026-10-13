@@ -1,4 +1,4 @@
-name: New eval case
+name: Propose an eval case
 description: Propose an eval case that guards a behaviour of a skill, agent, rule or hook.
 labels: ["triage"]
 type: Task
