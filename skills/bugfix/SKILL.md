@@ -1,13 +1,13 @@
 ---
 name: bugfix
-description: Fix a bug the disciplined way, starting from a ticket. Use when asked to fix, debug, investigate, or resolve a bug, issue, or defect. Reads the ticket, reproduces the bug before touching code (by a test or script when possible, by guiding the author through manual steps when the bug involves a UI flow, an external service or generated output), keeps the steps, observations, evidence and hypotheses in the conversation so the fix is informed by what was seen, drives to the real root cause, fixes the cause and adds a regression test, verifies the repro no longer triggers and nothing else broke, then stops and recommends opening a PR. Confirms the diagnosis with the author before changing any code.
+description: Fix a bug the disciplined way, starting from a ticket. Use when asked to fix, debug, investigate, or resolve a bug, issue, or defect. Reads the ticket, reproduces the bug before touching code (by a test or script when possible, by guiding the author through manual steps when the bug involves a UI flow, an external service or generated output), keeps the steps, observations, evidence and hypotheses in the conversation so the fix is informed by what was seen, drives to the real root cause, fixes the cause and adds a regression test, verifies the repro no longer triggers and nothing else broke, then hands off to the pr skill, which walks the changes with the author before anything is opened. Confirms the diagnosis with the author before changing any code.
 argument-hint: "[ticket-key-url-or-description]"
 allowed-tools: Bash(git status *) Bash(git branch *) Bash(git remote *) Bash(git rev-parse *) Bash(git log *) Bash(git diff *) Bash(gh issue view *) Bash(gh auth status *)
 ---
 
 # Fix a bug
 
-Fix a bug by driving from the ticket to a reproduction, then to the root cause, then to a fix that is guarded by a regression test. Confirm the diagnosis with the author before changing any code, and stop once the fix is verified so the author can open the PR.
+Fix a bug by driving from the ticket to a reproduction, then to the root cause, then to a fix that is guarded by a regression test. Confirm the diagnosis with the author before changing any code, and once the fix is verified hand off to the pr skill so the author walks the changes before the PR is opened.
 
 The author is accountable for the fix. The root cause and the fix must be understood, not guessed. A bug that merely stopped reproducing is not the same as a bug whose cause is known and prevented; do not treat "it works now" as a fix. Help the author understand the cause; do not assert one you cannot support from evidence.
 
@@ -105,7 +105,7 @@ Clean up anything added only for investigation: debug output, temporary scripts,
 
 If reproduction was waived in step 2, state clearly which of these checks could not be done and that the fix is unverified against a repro.
 
-## 6. Summarise and recommend a PR
+## 6. Summarise and hand off to the pr skill
 
 Tell the author, briefly:
 
@@ -114,4 +114,4 @@ Tell the author, briefly:
 - **Prevention**: the regression test added, or the recorded manual check if the project has no test framework.
 - **Verification**: what was run and the result, including anything that could not be verified.
 
-Then recommend opening a pull request with the `pr` skill (`/freethinking:pr`), which will walk the changes with the author and draft the description to the team standard. The reproduction and verification runs above are what its Testing section should say. Do not open the PR from here.
+Then ask the author whether to open the pull request now. On yes, invoke the `pr` skill with the Skill tool (`freethinking:pr`), with the ticket as its argument when there is one: it walks every change with the author, drafts the description to the team standard, and creates the PR only after the author approves the draft. The reproduction and verification runs above are what its Testing section should say. Do not draft or open the PR any other way; a bare `gh pr create` skips the walkthrough.
