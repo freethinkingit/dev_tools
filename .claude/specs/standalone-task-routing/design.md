@@ -95,7 +95,7 @@ CX_Block, the section each skill opens with. For `start-task`:
 
 | Bullet | Content |
 |--------|---------|
-| Stops | Triage Question when the Route is Bug or Executor; approval of each of the three documents; the relaunch Question after a `stopped` Summary |
+| Stops | Triage Question when the Route is Bug or Executor; the fit Question when the Request extends nothing in the codebase; approval of each of the three documents; the relaunch Question after a `stopped` Summary |
 | How it asks | AskUserQuestion with fixed options plus free text at every stop; the spec questions of step 3 in prose, because the answers are the Author's own words |
 | Hand-backs | On Executor_Route: the Summary verbatim, the diff, failures first; on Spec_Route: each document in full |
 | Hand-offs | `bugfix` on Bug_Route; `pr` after a `done` Summary; `implement-spec` after `tasks.md` is approved. The branch name proposed in step 1 is created by the author, or by `implement-spec` at its set-up, never by this skill |
@@ -155,6 +155,7 @@ Rule text, `rules/collaboration.md`, one bullet per criterion 6.2 to 6.7, each b
 | Spec directory already exists for the task name | RESUME | Spec_Route, no Triage, resume at first unapproved document | 1.7 |
 | Author picks a different Route than recommended | OVERRIDE | Take the Author's Route, no argument | 1.6 |
 | Author's free-text answer is neither Route | UNCLEAR | Restate the two Routes in one sentence and ask again, once | 1.4 |
+| Request extends nothing in the codebase | WRONG_PLACE | Say so in the route statement; Question with header `Fit`: `Spec it here` and `Wrong repository`; on the second, stop and say where it belongs if known | 1.11 |
 | Executor returns `stopped` | DRIFT | Show Summary; Question: answer and relaunch, or Spec_Route; no unprompted relaunch | 3.5 |
 | Executor returns `done` with a failed check | FAILED_CHECK | Say the failure first, show the Summary and diff, then recommend `pr` with the failure named | 3.6 |
 | AskUserQuestion is not available (headless run) | FALLBACK | Ask the same question in prose with the same options on separate lines, then wait | 6.2, 6.10 |
@@ -164,6 +165,7 @@ Rule text, `rules/collaboration.md`, one bullet per criterion 6.2 to 6.7, each b
 
 - Free checks, run by `make validate`: the existing `checks/test_issue_forms.py` proves Property 5 once `collaboration (rule)` is in the forms; a new check in `checks/test_rules_size.py` proves Property 4 by running `hooks/load-rules.sh` and measuring, and by measuring `rules/collaboration.md` alone. The size check also closes issue #3's first half. `claude plugin validate --strict` proves the frontmatter.
 - Eval case `contained-change-offers-executor` (Property 1, 3; Requirement 5.3): scaffold the calc fixture; prompt `/freethinking:start-task Add subtract(a, b) to calc/ops.py in the style of add`; `allowed_tools: [Read, Glob, Grep, Agent, Skill]`; `max_turns: 6`. Write and Edit come from the Makefile target's `--allow-tools` grant, the only route for them per `evals/README.md`, on purpose: a skill that writes a spec document or edits source before the Question must be caught by the `file_exists` and file-content graders, not prevented by the tool list. Graders: regex `executor` with `flags: i` in the final output (the harness's engine rejects inline `(?i)`); `file_exists` `.claude/specs/**` false; `tool_used` Agent with max 0; `tool_used` Skill with max 0; and the question grader, which task 3.1 settled as two regexes with `flags: im`, one per option as a list item at a line start. No `\?` grader: the prose fallback does not always end in a question mark, and the two option graders are the stronger proof that the question was put.
+- Eval case `wrong-repo-asks-fit` (Requirement 1.11): scaffold the calc fixture; prompt the link shortener; graders: the two fit options as list items (`Spec it here`, `Wrong repository`), `file_exists` `.claude/specs/**` false, `tool_used` Agent and Skill max 0.
 - Eval case `bug-offers-bugfix` (Property 1; Requirement 5.4): same fixture with `add` returning `a - b`; prompt `/freethinking:start-task Adding 2 and 3 in calc returns -1`; graders: regex `Bug_Route|bugfix`; `file_exists` `**/*.py` unchanged by a regex on `calc/ops.py` still containing the planted body; `tool_used` Skill max 0; the same question grader.
 - Eval case `short-list-asks-with-tool` under `evals/rules/collaboration/` (Requirement 6.10): no plugin skill invoked; prompt asks Claude to pick between three named options for a config value it cannot infer; grader as the question grader above.
 - Existing cases: `names-task-and-asks` run twice; `eval-rule-workflow` run twice; `eval-skill-start-task` twice. Each result table goes into the PR's Testing section.

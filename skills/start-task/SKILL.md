@@ -20,7 +20,7 @@ Task, as the author gave it: $ARGUMENTS
 
 ## Working with the author
 
-- **Stops.** The route question at triage, when the route is Bug_Route or Executor_Route; the approval of each of the three documents on Spec_Route; the relaunch question after a `stopped` Summary on Executor_Route.
+- **Stops.** The route question at triage, when the route is Bug_Route or Executor_Route; the fit question at triage, when the request extends nothing in the codebase; the approval of each of the three documents on Spec_Route; the relaunch question after a `stopped` Summary on Executor_Route.
 - **How it asks.** With the AskUserQuestion tool, fixed options plus free text, at every stop. The spec questions at the head of the requirements step are the exception: ask them in prose, because the answers are the author's own words.
 - **Hand-backs.** On Executor_Route, the executor's Summary verbatim and the diff, failures first. On Spec_Route, each document in full.
 - **Hand-offs.** `bugfix` on Bug_Route; `pr` after a `done` Summary; `implement-spec` after `tasks.md` is approved. The branch name proposed in step 1 is created by the author before the first commit, or by `implement-spec` at its set-up when the author gives it that name; never by this skill.
@@ -44,6 +44,8 @@ Before asking any spec question or writing any document, decide which route the 
 - **Spec_Route** for every other request.
 
 State the route you chose and the reason for it in two or three sentences that name the code you read; on Spec_Route, one sentence that names the route is enough.
+
+If step 2 found nothing the request would extend, no module, pattern or test it builds on, say so in the route statement, then, before any other question, put one question with the AskUserQuestion tool, header `Fit`, with two options in this order: `Spec it here`, to write the spec in this repository anyway, and `Wrong repository`, to stop, each with a one-sentence description. Act only on the author's answer. On `Wrong repository`, say where the work belongs if the request or the code says, then stop and write nothing. On `Spec it here`, go on with the route, asking the route question after this one when the route has one, since there is no point sizing work that does not belong here.
 
 On Bug_Route or Executor_Route, put one question to the author with the AskUserQuestion tool, header `Route`, with two options in this order: the route you chose, marked "(Recommended)", then `Spec_Route`, each with a one-sentence description. The tool adds the free-text answer itself. Act only on the author's answer. If the author picks the other route, take it without arguing for yours. If the free-text answer is neither route, restate the two routes in one sentence and ask once more.
 

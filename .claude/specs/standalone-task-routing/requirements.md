@@ -41,6 +41,7 @@
 7. WHEN a spec for the Request already exists in `.claude/specs/<task-name>/`, THE Skill SHALL take Spec_Route and resume at the first unapproved document, without Triage, since the sizing decision was already made.
 8. THE Skill SHALL open with a CX_Block, placed after its ground rules, that lists every point at which it stops for the Author (the Question at Triage, then approval of each document), says that each stop asks with the AskUserQuestion tool except where the answer is the Author's own words, says what each hand-back contains, and names the skills it hands off to.
 9. THE CX_Block SHALL state only what is specific to the Skill or departs from the Collaboration_Rule, and SHALL NOT restate the Collaboration_Rule.
+11. WHEN Triage finds that the Request would extend nothing in the codebase (no module, pattern or test it builds on), THE Skill SHALL say so in the route statement and put a Question, before any spec question, offering to write the spec here anyway or to stop because this is the wrong repository, and on the second answer SHALL stop after saying where the work belongs if the Request or the code says.
 10. WHEN the Skill derives the task name, THE Skill SHALL propose a branch name in the contributing guide's shape, the issue number and the task name when the Request names or links an issue and the task name alone otherwise, and SHALL NOT create the branch.
 
 ### Requirement 2: Bug_Route
