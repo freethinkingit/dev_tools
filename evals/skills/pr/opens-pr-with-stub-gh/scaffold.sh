@@ -21,6 +21,7 @@ case "$1 $2" in
   "pr list")     ;;
   "pr create")   echo "https://github.com/example/demo/pull/1" ;;
   "pr edit")     echo "https://github.com/example/demo/pull/1" ;;
+  "issue view")  printf 'title:\tAdd a greeting helper\nstate:\tOPEN\nauthor:\texample-user\nlabels:\tenhancement\nnumber:\t7\n\nThe demo CLI needs a greeting helper. It should take a name and return a friendly hello.\n--\nauthor:\texample-user\nCloses on merge.\n' ;;
   *)             echo "fake gh: unsupported: $*" >&2; exit 2 ;;
 esac
 FAKE
