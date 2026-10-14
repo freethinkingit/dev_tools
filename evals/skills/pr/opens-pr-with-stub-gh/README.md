@@ -2,6 +2,9 @@
 
 Tests the pr skill's happy path end to end: starting checks, walkthrough, draft,
 push, `gh pr create`. Real GitHub cannot be part of an eval, so the case fakes it.
+`opens-pr-with-ticket` and `offers-branch-on-default` copy this scaffold, one
+adding the pull request template on `main` and one ending on `main` with the
+commits, so the fake lives in three files.
 
 ## What the scaffold builds
 
@@ -32,6 +35,7 @@ pr skill runs, the way real gh would:
 | `gh pr view ...` | "no pull requests found", exit 1 (gh's real behaviour when the branch has no PR) |
 | `gh pr list ...` | nothing, exit 0 |
 | `gh pr create ...`, `gh pr edit ...` | `https://github.com/example/demo/pull/1` |
+| `gh issue view <n> --comments` | a canned issue, the same for any number and any flags; every `gh issue view` call gets it, including `--json title`, which therefore gets the whole canned issue rather than a title: `title:`, `state:`, `author:`, `labels:`, `number:` lines, a body saying the CLI needs a greeting helper, `--`, and one comment from `example-user`: "Closes on merge." |
 | anything else | error, exit 2, so an unexpected call fails visibly |
 
 ## The git wrapper, and why git is real
@@ -62,8 +66,8 @@ Everything else passes straight through to real git. Fetch and push go to
 ## The prompt
 
 The walkthrough asks the author questions, and nothing can answer in a headless
-run, so the prompt gives the answers up front (why, ticket, testing, risk, review
-focus) and says to treat the draft as approved. The skill then runs to
+run, so the prompt answers the five review prompts, the ticket, testing, risk,
+review focus and draft status up front and says to treat the draft as approved. The skill then runs to
 `gh pr create` on its own.
 
 ## Graders

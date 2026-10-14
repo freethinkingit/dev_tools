@@ -159,8 +159,11 @@ workspace, commits it and checks out the branch; `wrappers` adds the `bin/`
 wrappers for cases that grant Bash and put `bin` on the PATH. Each case's
 `scaffold.sh` is its own regular file, never a symlink: it finds the setup
 script from the repository root, `git -C "$(dirname "$0")" rev-parse
---show-toplevel`, calls it and adds only what the case needs. Extra files a
-case needs live in its own `files/` folder; the harness copies nothing from
+--show-toplevel`, calls it and adds only what the case needs. The pr cases
+are the exception to the fixture rule: each carries a full copy of the fake
+`gh` and the git wrapper in its own scaffold, because the fake must be
+reachable through a relative `bin` entry built in the workspace, so a change
+to the fake is made in every pr scaffold. Extra files a case needs live in its own `files/` folder; the harness copies nothing from
 it, the case's scaffold does. Copied before `setup.sh` runs, they land in its
 one commit, on main and on the branch, as works-one-wave does; copied after,
 they are left uncommitted. Give a case one grader on the result and one on the

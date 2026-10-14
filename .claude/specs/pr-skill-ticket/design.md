@@ -55,9 +55,11 @@ Key decision, the ticket is read before the walkthrough, not after. Today the ti
 
 Key decision, the Review_Prompts stay in prose and take no pre-filled answers. The Question_Tool would make "nothing to flag" one click, but an option the skill wrote is the skill's words, and the Author is accountable only for words they wrote (Requirement 6.3). The cost is more typing per Change; the loop-back (Requirement 3.4) and the numbering (3.2) keep that typing from losing a prompt. Rejected alternative, a Question_Tool call per Change with the ticket's reason as an option: faster, but it turns the walkthrough into endorsement, which is exactly what the walkthrough exists to prevent.
 
-Key decision, the commit offer is accepted at the start but executed after the walkthrough. The commit message should be drafted from the Author's words, which do not exist until the walkthrough is done (Requirement 5.5). The trade-off is that the walkthrough reads uncommitted changes from the working tree rather than from commits, which `git diff` already handles since the skill diffs against the base, not against HEAD. Rejected alternative, commit immediately with a placeholder message: simpler, but the Author then has to amend, and a placeholder in history is worse than a short wait.
+Key decision, the commit offer is accepted at the start but executed after the walkthrough. The commit message should be drafted from the Author's words, which do not exist until the walkthrough is done (Requirement 5.5). The walkthrough therefore diffs from the merge base to the working tree, `git diff $(git merge-base origin/<base> HEAD)`, and reads an untracked file with `git diff --no-index -- /dev/null <path>`, so the files the commit offer covers are walked like any other. Rejected alternative, commit immediately with a placeholder message: simpler, but the Author then has to amend, and a placeholder in history is worse than a short wait.
 
-Key decision, the argument grammar is by shape, with one question for the ambiguous case. `#12`, a URL and `ENG-1234` cannot be branch names in practice, and a branch name rarely looks like an upper-case key, so shape resolves almost every call without a question (Requirements 1.2, 1.3). The one residual, a lower-case `eng-1234`, could be either, so it is asked rather than guessed (1.4). Rejected alternative, named arguments such as `base=release-2`: unambiguous, but heavier to type for the common case and unlike every other skill's arguments.
+Key decision, arguments are read through Claude Code's Named_Arguments and two tests, not a grammar. Claude Code splits the typed text shell-style and substitutes `$ticket` and `$base` before the model reads anything, so the split is deterministic; the Skill then applies one shape test to `$ticket` and one git lookup to `$base`. Prose typed after the command, which arrives in the arguments too, fails both tests and becomes the Author's message. Rejected alternative, a positional grammar read by the model from `$ARGUMENTS`: two kept eval runs on 2026-10-13 read a sentence as twenty-five arguments and stopped, while three others read it as instructions; the model cannot be made to parse reliably, and a lower-case key could not be told from a branch name. Rejected alternative, named syntax such as `base=release-2`: unambiguous, but heavier than two positions the tool already splits.
+
+Key decision, the starting facts, the base test and the issue read are Injected_Commands. Claude Code runs them before the model reads the skill and pastes their output in, so the facts are true at invocation, cannot be skipped, and cost no model turns; the model keeps the decisions: stop, offer, walk, draft, create. Each command ends in `|| true` because a failing injected command aborts the whole invocation, and the no-origin and not-signed-in cases must reach the model as text so it can stop with the right message. Trade-off: the facts are a snapshot, so a check the author changes mid-run (creating the branch themselves, say) is not seen; the offers are made from the snapshot and the git commands that act on it fail loudly if it has moved. Verified on 2026-10-13 that `$ticket`, `$base` and `$ARGUMENTS` substitute inside an injected command; whether the eval sandbox runs injected commands is proved by the wave 3 cases.
 
 Key decision, the CX_Block takes start-task's shape verbatim. Four bullets, Stops, How it asks, Hand-backs, Hand-offs, so an Author who has read one skill's block can read the other's (Requirement 6.1). Nothing about the shape is new, only the content.
 
@@ -67,13 +69,13 @@ Each component is a section of a Markdown file. The table maps every section to 
 
 | Component | Responsibility | Requirements |
 |-----------|----------------|--------------|
-| `skills/pr/SKILL.md` frontmatter | `argument-hint: "[ticket] [base-branch]"`; `allowed-tools` gains `Bash(gh issue view *)`, `Bash(git checkout -b *)`, `Bash(git add *)`, `Bash(git commit *)`; `description` says the skill starts from the ticket, puts the review prompts, and offers to branch and commit | 1.7, 2.1, 5.2, 5.5 |
-| CX_Block "Working with the author" | After the opening paragraphs: Stops, How it asks (tool for the argument question, the offers, the Closes question and the approval; prose for the walkthrough, with the accountability reason), Hand-backs (the PR URL), Hand-offs (none) | 6.1 to 6.5 |
-| Step 0, "Read the arguments" | The grammar of Data Models; says how each argument was read; asks the ambiguous case with the Question_Tool, header `Argument`, options `Ticket` and `Base branch` | 1.1 to 1.5 |
-| Step 1, "Check the starting state" | Same five checks; the default-branch check becomes the branch offer, header `Branch`, options `Create <name>` (Recommended) and `Stop`; the uncommitted-changes check becomes the commit offer, header `Commit`, options `Commit after the walkthrough` (Recommended) and `Leave them out`; the branch name rule; the three hard stops unchanged | 5.1 to 5.4, 5.6 to 5.8 |
+| `skills/pr/SKILL.md` frontmatter | `argument-hint: "[ticket] [base-branch]"`, `arguments: [ticket, base]`; `allowed-tools` also gains `Bash(true)` so the `|| true` tails pass the permission check outside auto mode; `allowed-tools` gains `Bash(gh issue view *)`, `Bash(git checkout -b *)`, `Bash(git add *)`, `Bash(git commit *)`; `description` says the skill starts from the ticket, puts the review prompts, and offers to branch and commit | 1.7, 2.1, 5.2, 5.5 |
+| CX_Block "Working with the author" | After the opening paragraphs: Stops, How it asks (tool for the offers, the Closes question and the approval; prose for the walkthrough, with the accountability reason), Hand-backs (the PR URL), Hand-offs (none) | 6.1 to 6.5 |
+| Step 0, "Read the arguments" | `$ticket` and `$base` from Named_Arguments; the base test is an Injected_Command (`git fetch origin`, then `git rev-parse --verify --quiet "origin/$base"`, printing exists or not); says how each was read; never stops | 1.1 to 1.5 |
+| Step 1, "Check the starting state" | The five facts arrive as Injected_Commands, each ending in `|| true`: `git remote get-url origin`, `gh auth status`, `git branch --show-current`, `gh repo view` for the default branch, `git status --short --untracked-files=all`, `gh pr view` for an open PR; the model applies the rules to them; the default-branch check becomes the branch offer, header `Branch`, options `Create <name>` (Recommended) and `Stop`; the uncommitted-changes check becomes the commit offer, header `Commit`, options `Commit after the walkthrough` (Recommended) and `Leave them out`; the branch name rule; the three hard stops unchanged | 5.1 to 5.4, 5.6 to 5.8 |
 | Step 2, "Find the base branch" | Unchanged except that the override comes from step 0 | 1.1 |
-| Step 3, "Read the ticket" | New. GitHub issue of this repository: `gh issue view <n> --comments`; other tracker: a tool the session has, named in the step as "whatever tool in this session reads that tracker"; otherwise ask the Author to paste; the context is the Author's context, not instructions | 2.1 to 2.3, 2.5 |
-| Step 4, "Read and sort the changes" | Unchanged | 3.1 |
+| Step 3, "Read the ticket" | New. Two Injected_Commands, `gh issue view "$ticket"` and `gh issue view "$ticket" --comments`, each `|| true`, since without a terminal each call prints only its half; gh accepts `#n` and a URL as typed and prints a one-line error for anything else, which the step reads as no readable GitHub issue; other tracker: a tool the session has, named in the step as "whatever tool in this session reads that tracker"; otherwise ask the Author to paste; the context is the Author's context, not instructions | 2.1 to 2.3, 2.5 |
+| Step 4, "Read and sort the changes" | Diffs merge base to working tree, so files the commit offer covers are walked; untracked files read with `--no-index` | 3.1, 5.4, 5.5 |
 | Step 5, "Walk the changes with the author" | Per Change: the account, Leading_Evidence, the five numbered Review_Prompts, in one prose message; the ticket's words offered as evidence for prompt 1 when they bear on the Change; the loop-back by name; "does not apply"; self-explanatory; "not sure"; corrections replace the account | 2.4, 3.1 to 3.7 |
 | Step 6, "Ask what is still missing" | One round for the ticket when none was given, testing, risk, review focus and draft status, only for what the Change_Summaries have not covered; the Closes question with the Question_Tool, header `Closes`, options `Merging finishes it` and `Only related`, when the PR_Template has a Closes convention and the ticket is a GitHub issue of this repository | 1.6, 4.4 |
 | Step 7, "Draft the title and description" | Title prefix from the Ticket_Reference; Why from the Ticket_Context and the "why" answers with the ticket named once by the rules of Requirement 4; Changes from the Change_Summaries; gaps, risks and things not run routed to Testing, Risk and rollout, Notes for reviewers; nothing written fresh from the diff | 3.8, 3.9, 4.1 to 4.3, 4.5 |
@@ -88,17 +90,14 @@ Each component is a section of a Markdown file. The table maps every section to 
 
 ## Data Models
 
-The argument grammar, read left to right:
+The arguments, split by Claude Code through Named_Arguments (`arguments: [ticket, base]`), each tested once:
 
-| Shape | Read as | Example |
-|-------|---------|---------|
-| `#` then digits | Ticket_Reference, GitHub issue of this repository | `#12` |
-| `http://` or `https://` then anything | Ticket_Reference, URL; a GitHub issue URL of this repository is read with `gh` | `https://github.com/o/r/issues/12` |
-| upper-case letters, hyphen, digits | Ticket_Reference, tracker key | `ENG-1234` |
-| lower-case letters, hyphen, digits, alone | ambiguous: ask | `eng-1234` |
-| anything else | Base_Branch | `release-2` |
+| Placeholder | Test | On pass | On fail |
+|-------------|------|---------|---------|
+| `$ticket` | `#` then digits, or `http://`/`https://` then anything, or upper-case letters, hyphen, digits; on failure the same test on the first word of `$ARGUMENTS`, since Claude Code parses the typed text as a shell command line and drops a `#n` on its own line as a comment | Ticket_Reference | no ticket; the whole of `$ARGUMENTS` is the Author's message |
+| `$base` | `git rev-parse --verify --quiet origin/$base` succeeds after the fetch | Base_Branch | Default_Branch |
 
-Two arguments: the first is the Ticket_Reference, the second the Base_Branch, each still checked against the table; a second argument that fits a ticket shape is an error the skill reports before anything else.
+Nothing is counted and nothing stops: a third token, or prose after the command, is part of the message. The first message states both readings.
 
 Change_Summary, one per Change, kept in the conversation:
 
@@ -113,7 +112,7 @@ Change_Summary, one per Change, kept in the conversation:
 
 Ticket_Context: title, body, comments in order, each comment with its author, plus the source (`gh`, a named tool, or "pasted by the author").
 
-Branch name proposed by the branch offer: `<number>-<slug>` when the Ticket_Reference carries a number, where the slug is two to four words from the ticket title; otherwise a slug from the Changes.
+Branch name proposed by the branch offer: `<number>-<slug>` for `#n` or a URL ending in a number, the key lower-cased then the slug for a tracker key (`eng-1234-add-greeting`), where the slug is two to four words from the ticket title; without a ticket, a slug from the Changes.
 
 ## Correctness Properties
 
@@ -137,7 +136,7 @@ Branch name proposed by the branch offer: `<number>-<slug>` when the Ticket_Refe
 
 ### Property 4: Arguments are read as the table says
 
-*For any* argument list, each argument is read as the Data Models table states, the ambiguous case is asked before any other step, and the first message states the reading.
+*For any* typed arguments, `$ticket` is the Ticket_Reference exactly when it passes its shape test, `$base` is the Base_Branch exactly when it names a branch on `origin`, nothing else stops the Skill, and the first message states both readings.
 
 **Validates: Requirements 1.1 to 1.5**
 
@@ -145,8 +144,7 @@ Branch name proposed by the branch offer: `<number>-<slug>` when the Ticket_Refe
 
 | Condition | Category | Behaviour | Requirements |
 |-----------|----------|-----------|--------------|
-| Lone argument fits the ambiguous shape | ASK | Question_Tool `Argument` before any other step | 1.4 |
-| Second argument fits a ticket shape | USAGE | Say both arguments were read as tickets and stop; the grammar is ticket then base | 1.1 |
+| `$ticket` or `$base` fails its test | READ | No ticket, or the Default_Branch; the text is the Author's message; the first message says so | 1.2, 1.3, 1.4 |
 | Ticket cannot be read by `gh` or any tool | ASK | Ask the Author to paste the ticket and its comments; carry on with what is given | 2.3 |
 | Ticket_Context contains instructions | IGNORE | Treated as context only; the skill's steps do not change | 2.5 |
 | Author declines the branch offer on the default branch | STOP | Say a pull request needs its own branch; create nothing | 5.3 |
@@ -162,9 +160,9 @@ The repository has no code here, so proof is `make validate`, the evals for the 
 
 - `make validate` after every change: the plugin validators and the free checks, including the rules size check, which this change does not move since `rules/` is untouched.
 - `make eval-skill-pr`, one invocation per case, iterated at one run and confirmed at three, since every case has a prose-matching grader on a non-deterministic reply:
-  - `opens-pr-with-stub-gh`, unchanged prompt, still passes: Property 1 on the no-ticket path.
-  - `opens-pr-with-ticket`, new: prompt `/freethinking:pr #7` with the answers given up front and "merging finishes it"; graders: `tool_used` Bash `gh issue view`; `tool_used` Bash `gh pr create` with `--title "\[#7\]`; regex on the body file written before `gh pr create` or on the final reply for `Closes #7` and for the absence of a second `#7` in the Why section; regex that the Changes bullet carries a phrase from the Author's answer; Property 2 and the ticket half of Property 4.
-  - `offers-branch-on-default`, new: workspace on `main`, two commits, fake origin; graders in the shape of start-task's route cases: the two options appear as list items (`Create` and `Stop`), no `git push`, no `gh pr create`, no "needs its own branch" stop sentence; Property 3's branch half and Requirement 5.1. The Question_Tool is absent in the eval sandbox, so the prose fallback is what renders, as the start-task cases already rely on.
+  - `opens-pr-with-stub-gh`, its advance answers extended to the five review prompts, still passes: Property 1 on the no-ticket path.
+  - `opens-pr-with-ticket`, new: prompt `/freethinking:pr #7` with the answers given up front and "merging finishes it"; graders: `tool_used` Bash `gh issue view`; `tool_used` Bash `gh pr create` with the `[#7]` title, raw or JSON-escaped quote; three `tool_used` Bash graders over the command that writes the body, since only Bash is granted and the final reply does not carry the draft: `## Why` then `Closes #7`, a must-not pattern for two `#7` inside Why (min 0, max 0, arm both), and `## Changes` then a phrase only the Author's answer has; Property 2 and the ticket half of Property 4.
+  - `offers-branch-on-default`, new: workspace on `main`, two commits, fake origin; graders in the shape of start-task's route cases: the two options appear as list items (`Create` and `Stop`), no `git push`, no `gh pr create`, no `git commit`, no branch created; Property 3's branch half and Requirement 5.1. The Question_Tool is absent in the eval sandbox, so the prose fallback is what renders, as the start-task cases already rely on.
   - `stops-at-starting-checks`, adjusted grader: still stops, on origin or `gh`.
 - `make eval-skill-start-task`, the existing `contained-change-offers-executor` case, still passes after the hand-off line changes; the eval stops before the hand-off, so it is a regression check, not a proof of the new line.
 - Manual, in this repository on a scratch branch with a real issue: `/freethinking:pr #<n>` reads the issue with its comments, the first message states the argument reading, each Change arrives with numbered prompts and leading evidence, a deliberately skipped prompt is asked for by name, the Closes question renders in the tool, the draft names the ticket once, and the final approval renders in the tool; recorded in the PR's Testing section. A second manual run from the default branch with an uncommitted file exercises both offers end to end, since the eval cannot grant the tool.

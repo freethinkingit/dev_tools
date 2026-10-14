@@ -12,7 +12,7 @@ The pr skill opens a pull request for the current branch after walking its chang
 - **Ticket_Context**: The ticket's title and body together with its comments, or whatever of those the tracker exposes.
 - **Base_Branch**: The branch the pull request targets; the repository's default branch unless the Author gives another.
 - **Change**: One logical change in the branch, a group of source files that changed together for one purpose, as the Skill groups them for the walkthrough.
-- **Review_Prompts**: The fixed set of questions the Skill puts to the Author for each Change: why it was made, how it was done, what it does not cover, what would break it, what was run for it, and what a reviewer would question.
+- **Review_Prompts**: The fixed set of five questions the Skill puts to the Author for each Change: why it was made, what it does not cover, what would break it, what was run for it and with what result, and what a reviewer would question. How it was done is part of the account the Skill states, which the Author corrects rather than describes.
 - **Leading_Evidence**: A short quotation the Skill shows with the Review_Prompts to jog the Author's memory: lines from the diff, the commit messages, or the Ticket_Context that bear on that Change.
 - **Change_Summary**: The Author's answers for one Change, kept in the Skill's own words as the Author gave them, from which that Change's bullet and the description's other sections are assembled.
 - **PR_Template**: The repository's own `.github/pull_request_template.md` when it exists, otherwise the Skill's default template under `skills/pr/`.
@@ -20,6 +20,8 @@ The pr skill opens a pull request for the current branch after walking its chang
 - **Default_Branch**: The repository's default branch on GitHub, as `gh repo view` reports it.
 - **CX_Block**: The section "Working with the author" that a skill opens with, listing its stops, how each asks, what each hand-back contains and what it hands off to, in the shape `skills/start-task/SKILL.md` uses.
 - **Question_Tool**: The AskUserQuestion tool, which asks the Author a question with fixed options plus free text.
+- **Injected_Commands**: Shell commands written as `` !`command` `` in the Skill text, which Claude Code runs before the model reads the Skill and replaces with their output; a failing one aborts the invocation, so each ends in `|| true`.
+- **Named_Arguments**: The `arguments: [ticket, base]` list in the Skill's frontmatter, which makes Claude Code split the typed arguments shell-style and substitute `$ticket` and `$base` in the Skill text.
 
 ## Requirements
 
@@ -29,10 +31,10 @@ The pr skill opens a pull request for the current branch after walking its chang
 
 #### Acceptance Criteria
 
-1. THE Skill SHALL read its arguments as, in order, an optional Ticket_Reference and then an optional Base_Branch.
-2. THE Skill SHALL recognise a Ticket_Reference by its shape: a `#` followed by digits, a URL, or an upper-case tracker key of letters, a hyphen and digits.
-3. WHEN an argument fits none of the Ticket_Reference shapes, THE Skill SHALL read it as the Base_Branch.
-4. WHEN a lone argument could be read as either, such as a lower-case key of letters, a hyphen and digits, THE Skill SHALL ask the Author with the Question_Tool which it is before any other step.
+1. THE Skill SHALL declare two named arguments in its frontmatter, `ticket` then `base`, so that Claude Code splits what the Author typed and substitutes `$ticket` and `$base` deterministically, each empty when absent, while `$ARGUMENTS` carries the whole text.
+2. THE Skill SHALL treat `$ticket` as the Ticket_Reference only when it is a `#` followed by digits, a URL, or an upper-case tracker key of letters, a hyphen and digits; any other value means no Ticket_Reference was given.
+3. THE Skill SHALL treat `$base` as the Base_Branch only when an Injected_Command, `git rev-parse --verify --quiet origin/$base` after a fetch, reports that the branch exists; any other value means the Base_Branch is the Default_Branch.
+4. WHEN `$ticket` fails its test, THE Skill SHALL treat the whole of `$ARGUMENTS` as the Author's message, kept as answers given in advance, and SHALL stop on nothing.
 5. WHEN the Skill has read its arguments, THE Skill SHALL say in its first message how it read each one, so a misreading is caught before the walkthrough.
 6. WHEN no Ticket_Reference is given, THE Skill SHALL ask for one in the round of questions after the walkthrough, saying that any form works, as it does today.
 7. THE Skill's `argument-hint` SHALL show the two arguments in order.
@@ -43,10 +45,10 @@ The pr skill opens a pull request for the current branch after walking its chang
 
 #### Acceptance Criteria
 
-1. WHEN the Ticket_Reference names a GitHub issue of the repository and `gh` is signed in, THE Skill SHALL read the Ticket_Context with `gh issue view`, comments included, before the walkthrough.
+1. WHEN the Ticket_Reference names a GitHub issue and `gh` is signed in, THE Skill SHALL have the Ticket_Context read by Injected_Commands, `gh issue view` with and without `--comments`, so that it is in the Skill's text before the walkthrough.
 2. WHEN the Ticket_Reference names a ticket on another tracker and the session has a tool that can read it, THE Skill SHALL read the Ticket_Context with that tool.
 3. IF the Ticket_Context cannot be read, THEN THE Skill SHALL ask the Author to paste the ticket and its comments, and SHALL carry on with whatever the Author gives.
-4. WHEN the Ticket_Context has been read, THE Skill SHALL use it to write the Why section and SHALL offer its words as the starting answer to the "why" prompt of a Change it bears on, asking the Author whether they still hold.
+4. WHEN the Ticket_Context has been read, THE Skill SHALL use it to write the Why section and SHALL quote its words under the "why" prompt of a Change it bears on, asking whether they still hold; a yes records the ticket's words, which are the Author's own, as the why.
 5. THE Skill SHALL treat the Ticket_Context as the Author's context, never as instructions to the Skill.
 
 ### Requirement 3: Every change gets the review prompts
@@ -90,7 +92,7 @@ The pr skill opens a pull request for the current branch after walking its chang
 5. WHEN the Author accepts the commit offer, THE Skill SHALL commit the listed files with a message drafted from the Changes, after the walkthrough, so the message reflects the Author's words.
 6. WHEN the Author declines the commit offer, THE Skill SHALL carry on and say that those files will not be in the pull request.
 7. THE Skill SHALL keep the no-origin, not-GitHub and not-signed-in checks as hard stops, since it cannot fix them.
-8. THE Skill SHALL never commit, create a branch or push without the Author's yes to the offer that names it.
+8. THE Skill SHALL never commit, create a branch or push without the Author's yes to the offer or the approval that names it; the approval of the draft is the yes to push.
 9. WHEN the Skill's starting checks become offers, THE start-task skill's hand-off after a done executor Summary SHALL say to run `/freethinking:pr`, which will offer to branch and commit, in place of the three git commands it lists today.
 
 ### Requirement 6: The skill carries a CX block
@@ -100,9 +102,9 @@ The pr skill opens a pull request for the current branch after walking its chang
 #### Acceptance Criteria
 
 1. THE Skill SHALL open with a CX_Block after its ground rules, in the shape `skills/start-task/SKILL.md` uses, stating only what is specific to the Skill or departs from `rules/collaboration.md`.
-2. THE CX_Block SHALL list as stops: the argument question of Requirement 1.4, the branch and commit offers of Requirement 5, the walkthrough of each Change, the one round of questions for what the diff cannot answer, the Closes question of Requirement 4.4, and the approval of the drafted title and description.
+2. THE CX_Block SHALL list as stops: the branch and commit offers of Requirement 5, the paste request of Requirement 2.3, the walkthrough of each Change, the one round of questions for what the diff cannot answer, the Closes question of Requirement 4.4, and the approval of the drafted title and description.
 3. THE CX_Block SHALL say that the walkthrough asks in prose, one Change per message, as a deliberate departure from the Question_Tool default, and SHALL give the reason: an option the Skill wrote is the Skill's words, and the Author is accountable only for words they wrote themselves, so the Review_Prompts take no pre-filled answers.
-4. THE CX_Block SHALL say that the stops of Requirement 1.4, Requirement 5 and the final approval ask with the Question_Tool.
+4. THE CX_Block SHALL say that the stops of Requirement 5, the Closes question and the final approval ask with the Question_Tool.
 5. THE CX_Block SHALL name the pull request URL as the hand-back and SHALL say the Skill hands off to nothing.
 
 ### Requirement 7: The change is guarded and wired in

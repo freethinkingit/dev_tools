@@ -1,0 +1,10 @@
+---
+description: On a feature branch with commits, a GitHub origin and a signed-in gh (both provided by scaffold stubs), pr is passed the ticket #7 as its argument, reads it with the fake gh, and opens the PR with the ticket in the title and a Closes line in Why. Needs the Makefile's pr target, which grants Bash, runs the scaffold, and puts the stub bin on the PATH.
+tags: [skill, pr]
+max_turns: 20
+allowed_tools: [Read, Glob, Grep]
+expected_outcome: Claude reads ticket #7 with `gh issue view`, takes the author's advance answers to all five review prompts without waiting, drafts a title starting with [#7] and a description whose Why carries `Closes #7` once and whose Changes bullet carries the author's words, pushes, calls `gh pr create` with that title, and reports the PR URL the stub returns.
+---
+/freethinking:pr #7
+
+I am the author and I will not be able to answer questions during this run, so here are my answers in advance. They apply to every change you walk, so do not wait for me. Why was it made: the CLI needed a greeting helper, so the branch adds `greet` and its test. What it does not cover: anything beyond a fixed "Hello, name!" string; there is no localisation. What would break it: `greet` no longer returning a string. What was run: I ran `pytest tests/test_greeting.py` and it passed. What a reviewer should question: nothing in particular beyond `demo/greeting.py`. Merging finishes the ticket. Risk and rollout: none. Open it as a normal PR, not a draft. Treat the draft as approved and create the PR.

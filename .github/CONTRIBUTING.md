@@ -45,7 +45,8 @@ reads the code and decides between the `task-executor` agent for one contained
 change, `bugfix` for a defect, and a spec for the rest, and asks before taking
 the first two. When it writes a spec, `/freethinking:implement-spec` builds it.
 On every route, `start-task` proposes the branch name, and you or
-`implement-spec` create it.
+`implement-spec` create it; `pr` can also create it at its branch offer,
+naming it from the issue you pass it.
 
 Work on a branch named `<issue number>-<short slug>` when an issue exists, such
 as `12-ticket-reference`, and on a short slug otherwise. Never work on the
