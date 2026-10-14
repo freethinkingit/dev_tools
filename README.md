@@ -192,8 +192,9 @@ the four that grant Bash put `bin` first on the PATH for the wrappers the
 scaffolds write. `eval` carries the union so the whole suite runs. Each
 invocation runs under a list-price ceiling, `EVAL_MAX_COST_USD`, default $2.
 
-Each case runs three times by default; iterate with `EVAL_ARGS="--runs 1"`, and
-run the table you paste for a rule or skill-description change with
+Each case runs three times by default; iterate with `EVAL_ARGS="--runs 1"`,
+confirm as `evals/README.md` says (2 runs for deterministic graders, 3 when any
+is llm), and run the table you paste for a rule or skill-description change with
 `EVAL_ARGS="--ablation with-without"` so the Δ column shows what the plugin
 added. Results land in `evals/results/<timestamp>/` (gitignored).
 

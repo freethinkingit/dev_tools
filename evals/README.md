@@ -37,9 +37,17 @@ make eval-rule-code-changes EVAL_ARGS="--case smallest-change"   # one case
 make eval EVAL_MAX_COST_USD=5
 ```
 
-A single run is noisy, so a plain `make eval-…` runs each case three times, the
-documented confirmation, and the table shows the mean. Iterate with
-`EVAL_ARGS="--runs 1"`, then confirm at three before trusting a change.
+Run only the target of the component your change touched, never the whole
+suite, unless the change is to `hooks/` or the Makefile. A single run is noisy,
+so iterate with `EVAL_ARGS="--runs 1"`, then confirm before trusting a change:
+pass `--runs 2` when every grader of the case is `regex`, `tool_used` or
+`file_exists`, and `--runs 3` when any grader is `llm`. A target whose cases
+mix the two confirms at 3, or run it at 2 and then each `llm` case at 3 with
+one `--case` each. Without `--runs`, a plain `make eval-…` still runs each case
+three times and the table shows the mean.
+
+`--case` takes one glob, and when you pass it more than once the last flag
+wins, so run several named cases with one invocation each.
 
 Every target runs one arm, the plugin loaded, which answers "does the skill
 work". For a change to a rule or to a skill's `description`, the question is
@@ -172,5 +180,8 @@ during the run, so a scaffold-created or edited file is invisible to it. A
 so it is scored the same with and without the plugin. A case that needs flags
 gets one line in the Makefile; a new skill or rule folder gets its `make`
 target with no Makefile change.
+
+`checks/test_eval_cases.py`, run by `make validate`, keeps every case's tag,
+graders and scaffold valid.
 
 Reference: https://code.claude.com/docs/en/plugin-evals

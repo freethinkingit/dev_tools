@@ -13,6 +13,9 @@
 # in CI. Defaults: one arm (plugin on), the case's own runs count, list-price
 # ceiling $(EVAL_MAX_COST_USD). Add flags with EVAL_ARGS, for example
 #   make eval-skill-pr EVAL_ARGS="--runs 2 --ablation with-without"
+# Iterate at --runs 1; confirm at 2 when every grader of the case is
+# deterministic, 3 when any is llm or the target mixes both. --case takes one
+# glob and the last --case wins, so run one invocation per named case.
 # The eval-skill-*, eval-rule-* and eval-agent-* targets are enumerated from
 # the evals/ directories and select their cases with --tag, so every case
 # carries its component's name as a tag and a new case needs no Makefile
