@@ -21,12 +21,10 @@ xcrun cache the sandbox forbids; the Makefile's implement-spec target puts
 `bin` on the PATH and grants Bash, Write and Edit.
 
 The prompt gives the start answers up front (spec cadence, no optional tests,
-already on a branch), since nothing can answer mid-run. It also says the Agent
-tool has no fork in this run, for the reason works-one-wave gives: in the
-headless eval sandbox the Agent tool answers "Agent type 'fork' not found", so
-implement-spec takes its inline fallback and invokes the Skill tool with
-`freethinking:report` and `handback` itself for each report. That fallback is
-the path this case grades; the fork path is not exercised.
+already on a branch), since nothing can answer mid-run. implement-spec writes
+each wave report and the final report by invoking the Skill tool with
+`freethinking:report` and `handback` in the session itself, which is what the
+`invokes-report` and `problems-first` graders read.
 
 ## Graders
 

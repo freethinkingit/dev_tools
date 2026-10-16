@@ -85,7 +85,7 @@ The plugin's skills and agents write to the author in a way that hides what matt
 
 #### Acceptance Criteria
 
-1. WHEN `implement-spec` hands back at step 6 or writes its final report at step 8, THE Skill SHALL be invoked in Handback_Mode in place of the report template in step 6, inside a foreground fork of the conversation whose result `implement-spec` pastes verbatim as the Message, or inline when the Agent tool offers no fork; the step's text SHALL name the Skill and carry no shape of its own.
+1. WHEN `implement-spec` hands back at step 6 or writes its final report at step 8, THE Skill SHALL be invoked in Handback_Mode in place of the report template in step 6, inline in the session that runs `implement-spec` (a fork was chosen first and reversed by issue #33 after measurement); the step's text SHALL name the Skill and carry no shape of its own.
 2. THE Handback_Mode shape SHALL hold everything the final review of `implement-spec` reads back from a wave report: the tasks done, the checks and the full-suite result, the review verdict with each carried item, the files, and the follow-ups.
 3. WHEN `bugfix` reaches its summary step, THE Skill SHALL be invoked in Handback_Mode in place of the step's own list of headings.
 4. WHEN `start-task` has shown the executor's Summary and the change on its executor route, THE Skill SHALL be invoked in Handback_Mode for the Message that says where the change sits and what to do next.
