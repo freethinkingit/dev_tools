@@ -78,10 +78,11 @@ this:
 make eval-skill-pr EVAL_ARGS="--keep-temp --case opens-pr-with-stub-gh"
 ```
 
-The run prints `kept temp: /private/tmp/e-XXXXXX` for each run (failed runs
-are kept even without the flag). Inside it, `out/trace.jsonl` is the session
-as JSON, one message per line: Claude's text, every tool call with its input,
-and every tool result. `home/cwd/` is the workspace after the run.
+The run prints `kept temp: /private/tmp/e-XXXXXX` for each run. A run is
+kept only with `--keep-temp`, so pass it whenever a failure may need reading.
+Inside it, `out/trace.jsonl` is the session as JSON, one message per line:
+Claude's text, every tool call with its input, and every tool result.
+`home/cwd/` is the workspace after the run.
 
 Treat a kept directory as the output of an untrusted session: read its files,
 do not run things inside it. The agent wrote the workspace, home and tmp in
@@ -152,7 +153,9 @@ the worked example.
   the skill to report the refusal.
 - A prompt that starts with `/freethinking:<skill>` is expanded before the model
   runs, so a `tool_used` grader on `Skill` never fires for it; grade the
-  behaviour instead. A prompt that merely describes the work does trigger the
+  behaviour instead. A Skill call the model makes later, to another skill, is
+  still seen by a `tool_used` grader, which is how the bugfix hand-off case
+  grades its call to `freethinking:pr`. A prompt that merely describes the work does trigger the
   Skill tool, which is what the workflow-rule cases grade.
 
 ## Writing a case
