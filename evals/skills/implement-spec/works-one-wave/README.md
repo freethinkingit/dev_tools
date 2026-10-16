@@ -18,12 +18,10 @@ need an xcrun cache the sandbox forbids; the Makefile's implement-spec target
 puts `bin` on the PATH and grants Bash, Write and Edit.
 
 The prompt gives the start answers up front (wave cadence, no optional tests,
-already on a branch), since nothing can answer mid-run. It also says the Agent
-tool has no fork in this run: in the headless eval sandbox the Agent tool
-answers "Agent type 'fork' not found", so implement-spec's step 6 takes its
-inline fallback and invokes the Skill tool with `freethinking:report` and
-`handback` itself. That fallback is the path this case grades; the fork path
-is not exercised.
+already on a branch), since nothing can answer mid-run. implement-spec's step 6
+writes the hand-back by invoking the Skill tool with `freethinking:report` and
+`handback` in the session itself, which is what the `invokes-report` and
+`problems-first` graders read.
 
 ## Graders
 
