@@ -144,7 +144,7 @@ Make no change that fixes the bug before the author has answered with `Confirmed
 
 Fix the root cause confirmed in step 4, not the symptom.
 
-- Make the smallest change that corrects the cause. Do not refactor unrelated code, add unrequested features, or clean up surrounding code while you are here; note anything worth a follow-up instead.
+- Make the smallest change that corrects the cause. Do not refactor unrelated code, add unrequested features, or clean up surrounding code while you are here; say what else you found and roughly how much it would add, and let the author choose between this branch and an issue.
 - Match the project's existing style, patterns, and libraries. Read the surrounding code before writing.
 
 Add a regression test that fails before the fix and passes after, so the bug cannot return unnoticed:
