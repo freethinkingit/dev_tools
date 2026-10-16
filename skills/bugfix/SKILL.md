@@ -34,7 +34,7 @@ Ask only what the ticket cannot answer, and only what you need to reproduce the 
 The conversation is the investigation's record; there is no separate notes file. What matters is that the context is there when it is needed: the root cause is argued from the evidence gathered, the regression test is shaped by the reproduction, and the PR's Testing section is written from what was run. So, as you go:
 
 - State observations back in the author's words and keep exact error text, log lines, request ids and values verbatim rather than paraphrased.
-- After each reproduction attempt and each hypothesis, give a short running summary: what has been tried, what was observed, which causes are open, confirmed or ruled out.
+- After each reproduction attempt and each hypothesis, give a short running summary: what has been tried, what was observed, which causes are open, confirmed or ruled out. This summary is the record of observations and hypotheses the investigation needs, not a running account of tool calls, so the communication rule's bullet against narrating the work does not apply to it.
 - Ask the author to paste or attach evidence into the conversation (screenshots, recordings, log excerpts, the generated output) rather than describing it from memory.
 
 ## 2. Reproduce the bug
@@ -107,11 +107,4 @@ If reproduction was waived in step 2, state clearly which of these checks could 
 
 ## 6. Summarise and recommend a PR
 
-Tell the author, briefly:
-
-- **Root cause**: what was actually wrong, confirmed in step 3.
-- **Fix**: what changed and why it corrects the cause, with the files involved.
-- **Prevention**: the regression test added, or the recorded manual check if the project has no test framework.
-- **Verification**: what was run and the result, including anything that could not be verified.
-
-Then recommend opening a pull request with the `pr` skill (`/freethinking:pr`), which will walk the changes with the author and draft the description to the team standard. The reproduction and verification runs above are what its Testing section should say. Do not open the PR from here.
+Do not open the PR from here. Invoke the Skill tool with `skill: freethinking:report` and `args: handback` to write the hand-back to the author. Under Done it must carry the root cause confirmed in step 3, and the fix, why it corrects the cause and the files involved; under Checks, the regression test added, or the recorded manual check if the project has no test framework, and what was run with its result. Anything that could not be verified is a Problem, which the report puts first. Its Next section recommends opening a pull request with `/freethinking:pr` and says that the reproduction and verification runs above are what its Testing section should say. If the Skill tool cannot find `freethinking:report`, say the plugin's `report` skill is missing and write the hand-back yourself, problems first.

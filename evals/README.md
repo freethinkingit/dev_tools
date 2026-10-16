@@ -124,8 +124,8 @@ What to look for:
 
 ## What the sandbox allows
 
-Learned by probing; see `skills/pr/opens-pr-with-stub-gh/README.md` for the
-worked example.
+Learned by probing; see `evals/skills/pr/opens-pr-with-stub-gh/README.md` for
+the worked example.
 
 - Only the read-only tools a case lists in `allowed_tools` are available.
   `Bash`, `Write`, `Edit` and the web tools need `--allow-tools`, which a

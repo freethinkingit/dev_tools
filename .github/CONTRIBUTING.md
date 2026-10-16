@@ -130,8 +130,10 @@ far:
 2. A skill's steps run on commands anyone has, `git`, `gh`, `make`, and name a
    Claude-only tool only where no command does the job.
 3. The Claude-only pieces are listed so a `compatibility` issue can start from
-   the list: `$ARGUMENTS` and `${CLAUDE_PLUGIN_ROOT}` in skills, the hooks that
-   load the rules, and the agents' frontmatter.
+   the list: `$ARGUMENTS`, `${CLAUDE_PLUGIN_ROOT}`, `${CLAUDE_SKILL_DIR}` and
+   the `arguments:` frontmatter list in skills, the `subagent_type: fork` that
+   `implement-spec` relies on, the hooks that load the rules, and the agents'
+   frontmatter.
 
 The list grows from issues labelled `compatibility`.
 

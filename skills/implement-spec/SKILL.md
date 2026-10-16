@@ -33,7 +33,7 @@ Terms used below:
   - Only when something is wrong: the approval of a graph fix in step 2; the question in step 6 of how to proceed after a failing suite, a task that will not pass or an unfixed finding; the proposal in step 6 when the design cannot be followed or a task needs a new dependency.
   - Only when the author asks for it: the question in step 3 whether to do the remaining optional tests of an otherwise complete spec; the optional-tests question at the start of each wave that has one, in step 5, when the author chose to be asked, or at spec cadence the one offer of every skipped optional test at the end of the run, in step 8; the confirmation in step 7 before skipping a non-optional task or working out of wave order; the request in step 5 for a task done by hand, when the spec has one.
 - **How it asks.** With the AskUserQuestion tool, fixed options plus free text. The set-up round of step 4 is one call holding the cadence (after each task; after each wave; run every wave and hand back only at the end), the optional tests (ask about them, at each wave that has one or at spec cadence once at the end; always do them; never do them) and the branch (create it under the proposed name). The tool also asks the per-wave optional-tests question (do them in this wave, skip them), the end-of-run optional-tests offer at spec cadence (do them now, leave them), the choice of spec in step 1, the confirmations of steps 3 and 7, and the approval of a graph fix or spec edit once the edit is shown in full. The question of how to proceed after a hand-back, and the request for a task done by hand, are prose, since the answer is the author's own words.
-- **Hand-backs.** The two tables of step 2; the report of step 6 in its fixed shape, with the failing output verbatim or the proposed edit quoted as it would read when the hand-back is for one; at spec cadence, the report of step 6 for each wave, written without waiting, and the report of step 8, covering the run with a line for the final review.
+- **Hand-backs.** The two tables of step 2; the report of step 6, written by the plugin's `report` skill in a fork of the conversation, with the failing output verbatim or the proposed edit quoted as it would read when the hand-back is for one; at spec cadence, the report of step 6 for each wave, written without waiting, and the report of step 8, covering the run with a line for the final review.
 - **Hand-offs.** `start-task` when there is no spec or no `tasks.md`; `pr` when every non-optional task is ticked, at step 3 or step 8.
 
 ## 1. Find the spec
@@ -108,7 +108,7 @@ Nothing more. The agent's own definition carries its procedure, the shape of its
 
 At wave or spec cadence, wait until every executor of the wave has returned before verifying or ticking any task that had one, so that nothing is run while a sibling is still editing and a file two of them changed is judged as a whole. At task cadence handle each task as it returns. For each task:
 
-1. Read the summary's `status` first. `stopped` is drift: the agent found that the design does not fit the code, that the task would need a new dependency, framework or tool, or that the task is unclear, and it changed nothing more. Do not let it work around that, and do not relaunch or retry the task unprompted. The task stays unticked, and its `files changed` goes under the report's Files changed as what it had already touched. Finish judging the wave's other tasks as below, through the wave review, then go to step 6 once, with its `stopped because` as the evidence, and propose the spec edit. The rest of this list is for a summary with `status: done`.
+1. Read the summary's `status` first. `stopped` is drift: the agent found that the design does not fit the code, that the task would need a new dependency, framework or tool, or that the task is unclear, and it changed nothing more. Do not let it work around that, and do not relaunch or retry the task unprompted. The task stays unticked, and its `files changed` goes under the report's files (its Files section in the plugin's template) as what it had already touched. Finish judging the wave's other tasks as below, through the wave review, then go to step 6 once, with its `stopped because` as the evidence, and propose the spec edit. The rest of this list is for a summary with `status: done`.
 2. Read the rest of the summary. A summary whose `checks run` lists nothing and whose `ephemeral check` gives no reason why none applied goes back to the executor.
 3. Run every command under `checks run` yourself, and the ephemeral check from the code given under `ephemeral check`, re-created in the scratchpad and deleted afterwards. The summary is a report, not evidence.
 4. If two executors of the wave changed the same file, name that file to the reviewer as one two executors changed, so that it is judged as a whole there.
@@ -123,7 +123,7 @@ Skipped tests stay unticked and are listed as skipped in the report.
 
 ### Reviewing the wave
 
-Once every executor of the wave has returned, whatever each returned, and before any tick, review the wave as a whole. The review covers the tasks that passed their own checks, together with any task that appeared already done; those are fixed and ticked after it as below, and then a task that stopped, or still fails after two fix attempts, goes to step 6. At task cadence, where the wave's earlier tasks were ticked at their hand-backs, the review runs once, when the wave's last task has passed its checks and before its tick, and covers the whole wave; a task that stops or will not pass before then goes to step 6 at once, and the review waits for the wave's last task. The file list and the `unsure` items come from this run's summaries and, after a resume, from the reports of the earlier hand-backs: their Files changed and follow-ups.
+Once every executor of the wave has returned, whatever each returned, and before any tick, review the wave as a whole. The review covers the tasks that passed their own checks, together with any task that appeared already done; those are fixed and ticked after it as below, and then a task that stopped, or still fails after two fix attempts, goes to step 6. At task cadence, where the wave's earlier tasks were ticked at their hand-backs, the review runs once, when the wave's last task has passed its checks and before its tick, and covers the whole wave; a task that stops or will not pass before then goes to step 6 at once, and the review waits for the wave's last task. The file list and the `unsure` items come from this run's summaries and, after a resume, from the reports of the earlier hand-backs: the files and the problems each one lists (its Files and Problems sections in the plugin's template).
 
 Launch the reviewer with `subagent_type: freethinking:wave-reviewer`, once, and a prompt that holds:
 
@@ -140,44 +140,32 @@ Collect every `unsure` item from the wave's summaries, and the reviewer's own, b
 - A finding in a file no task of the wave changed, but which the wave's changes made wrong, such as a citing file that now disagrees, gets a new executor with the finding as its whole task, within the same two attempts. This is the one case where a problem in a file outside the task is fixed in the run, because the wave caused it.
 - A finding in `requirements.md`, `design.md` or `tasks.md` goes to step 6 as a proposal.
 - A `nit` is fixed the same way or carried.
-- The reviewer's own `unsure` items follow the same split: those about the changes are handled like findings, those outside the changes go to follow-ups.
-- Anything else is outside the wave. Anything carried, whether a `nit`, an `unsure` item that is not a defect or a problem outside the wave, goes under the report's follow-ups with the reason it was not fixed.
+- The reviewer's own `unsure` items follow the same split: those about the changes are handled like findings, those outside the changes go under the report's problems (its Problems section in the plugin's template), with the reason they were not fixed, and not under its next step (its Next section in the plugin's template).
+- Anything else is outside the wave. Anything carried, whether a `nit`, an `unsure` item that is not a defect or a problem outside the wave, goes under the report's problems, with the reason it was not fixed, and not under its next step.
 
 Tick only after that: every task of the wave whose checks passed, any that appeared already done, or at task cadence the wave's last task.
 
 ### Ending a wave
 
-With the review done and every task in the wave ticked, other than a skipped test or a task the author chose to skip under step 7, run the project's full test suite, the way the project runs it. If it passes, go to step 6 and report, with the suite's result in the report; at task cadence that is the report for the wave's last task. At spec cadence a pass goes to step 6 too, for the wave's report, but does not wait: write the report in full, in the report shape, as a message of its own, then start the next wave at once. A line saying the wave is done is not the report; the report is what the final review reads back. If it fails, go to step 6 with the failing output verbatim and ask the author how to proceed before starting the next wave. Never start a task from a later wave while a task in this wave, other than a skipped test, is unticked.
+With the review done and every task in the wave ticked, other than a skipped test or a task the author chose to skip under step 7, run the project's full test suite, the way the project runs it. If it passes, go to step 6 and report, with the suite's result in the report; at task cadence that is the report for the wave's last task. At spec cadence a pass goes to step 6 too, for the wave's report, but does not wait: write the report in full, as step 6 writes it, as a message of its own, then start the next wave at once. A line saying the wave is done is not the report; the report is what the final review reads back. If it fails, go to step 6 with the failing output verbatim and ask the author how to proceed before starting the next wave. Never start a task from a later wave while a task in this wave, other than a skipped test, is unticked.
 
 ## 6. Hand back and report
 
-Hand back here at the end of a cadence unit (after a task at task cadence, after a wave at wave or spec cadence), after a failed full suite, after a task whose tests still fail after two fix attempts, after a review finding that is still not fixed after two attempts, or when an executor reports that the design cannot be followed or needs a new dependency. For the final wave, when its full suite passes, step 8 takes this step's place; at spec cadence, write that wave's report first, without waiting, as for any other wave, so that every wave's report is in the conversation for step 8. Write the report, in this shape and order, as the last thing in the message with nothing after it, then wait for the author; at spec cadence, after a wave whose full suite passed, do not wait, and start the next wave at once:
+Hand back here at the end of a cadence unit (after a task at task cadence, after a wave at wave or spec cadence), after a failed full suite, after a task whose tests still fail after two fix attempts, after a review finding that is still not fixed after two attempts, or when an executor reports that the design cannot be followed or needs a new dependency. For the final wave, when its full suite passes, step 8 takes this step's place; at spec cadence, write that wave's report first, without waiting, as for any other wave, so that every wave's report is in the conversation for step 8. Write the report as the last thing in the message with nothing after it, then wait for the author; at spec cadence, after a wave whose full suite passed, the report is still a message of its own, written without waiting, and the next wave starts at once.
 
-```
-## Done
-- <task id> <task text> (Requirements <ids>)
-## Tests
-- `<command>`: <result>, per test command and ephemeral check run
-- Full suite `<command>` at end of wave <n>: <result>, when a wave ended
-- Wave review of wave <n>: <verdict>; carried: <each finding or `unsure` item carried, or "nothing">, when a wave was reviewed
-- Final review of the run: <verdict>; carried: <each finding or `unsure` item carried, or "nothing">, in the final report at spec cadence
-## Files changed
-- <paths>
-## Skipped / follow-ups
-- <optional tests skipped at the author's request; problems found outside the task, noted and not fixed>
-## Next
-- <next unticked task and its wave>, or the proposal below
-```
+To write the report, launch the Agent tool with `subagent_type: fork`, in the foreground, with the prompt "Invoke the Skill tool with `skill: freethinking:report` and `args: handback`, and return the Message as your whole result". Paste the result verbatim as the Message to the author, with nothing before or after it.
+
+If the Agent tool offers no fork, the fork fails, or it returns anything other than one Message (one that drops the failing output, the finding or the proposed edit this hand-back is for counts as that), paste nothing from it: invoke the Skill tool inline with the same `skill` and `args`, once, and let the Message end with one line saying the report was written inline. If the Skill tool cannot find `freethinking:report`, say the plugin's `report` skill is missing and write the hand-back by the communication rule, Problems first.
 
 At spec cadence each report covers its own wave, and the reports stack up in the conversation, one per wave, for the final review and the final report of step 8 to read back. A hand-back that waits, for a failure, an unfixed finding or a proposal, covers the wave it stops in, with the earlier waves' reports already above it.
 
-Add to the report, depending on why you handed back:
+The fork inherits this conversation, so the failing output, the finding, the proposed edit and the question are already in its view. Each goes under the report's problems or its next step (the Problems and Next sections in the plugin's template), by the cause of the hand-back:
 
-- **A failing full suite or a task that will not pass**: the failing output verbatim, then which causes are confirmed and which are open. Ask the author how to proceed. Do not start the next wave.
-- **A review finding that is still not fixed**: the finding quoted, then what each of the two attempts did. Ask the author how to proceed.
-- **A design that cannot be followed, or a new dependency the task would need**: the evidence from the code, then a specific edit to `design.md` or `tasks.md`, quoted as it would read. Make no further code change until the author answers.
+- **A failing full suite or a task that will not pass**: the failing output verbatim, then which causes are confirmed and which are open; next, the question of how to proceed. Do not start the next wave.
+- **A review finding that is still not fixed**: the finding quoted, then what each of the two attempts did; next, the question of how to proceed.
+- **A design that cannot be followed, or a new dependency the task would need**: the evidence from the code; next, a specific edit to `design.md` or `tasks.md`, quoted as it would read. Make no further code change until the author answers.
 
-A problem found outside the current task is noted under follow-ups and left alone; do not fix it in this run. The one exception is a file the wave's changes made wrong, which the wave review in step 5 fixes. Never commit or push unless the author asks.
+A problem found outside the current task is noted under the report's problems, with the reason, and left alone; do not fix it in this run. The one exception is a file the wave's changes made wrong, which the wave review in step 5 fixes. Never commit or push unless the author asks.
 
 ## 7. Continue
 
@@ -185,23 +173,23 @@ When the author says to continue, resume at step 5 with the same cadence and the
 
 When the author approves a spec edit, apply it to the named file exactly as approved, and resume where the run handed back: at the task that raised it, or at step 3 if the edit was a graph fix made before any work.
 
-When the author asks to skip a non-optional task or to work out of wave order, say which tasks may depend on it: the graph holds waves, not edges, so that is every task in a later wave. Proceed only after the author confirms. A skipped non-optional task stays unticked and is listed under follow-ups in every later report, and later waves start on the author's say-so despite it.
+When the author asks to skip a non-optional task or to work out of wave order, say which tasks may depend on it: the graph holds waves, not edges, so that is every task in a later wave. Proceed only after the author confirms. A skipped non-optional task stays unticked and is listed under the report's problems in every later report, and later waves start on the author's say-so despite it.
 
 ## 8. Finish
 
 When every leaf task is ticked, apart from skipped tests and any non-optional task the author chose to skip under step 7, and the final wave's full suite passes, finish.
 
-At task or wave cadence, write the report for the final wave with its full suite result in place of step 6, note any skipped tests, and recommend `/freethinking:pr` to open the pull request. Then stop.
+At task or wave cadence, write the report for the final wave with its full suite result, by the same fork as step 6, in place of step 6. The Message's next step (its Next section in the plugin's template) names any skipped tests as left unticked and recommends `/freethinking:pr` to open the pull request, which the fork writes because this step's text is in its view; add nothing after the paste. Then stop.
 
 At spec cadence, finish in three parts:
 
 1. **Optional tests.** When the author chose to be asked and the run skipped optional tests, offer them once, all together, with the AskUserQuestion tool: do them now, or leave them. If the author says do them, work them as one final set as in step 5: an executor each, launched together, their checks run here, their own wave review, their ticks, and the full suite. A failure there goes to step 6 as for any wave. Left, they stay unticked as skipped tests. When the author chose always or never, there is nothing to offer.
 2. **Final review.** Launch the reviewer once more, with `subagent_type: freethinking:wave-reviewer`, over the whole run, and a prompt that holds:
    - the sentence, verbatim, "These changes come from a spec wave", which tells the reviewer that a code task correctly lacks a test;
-   - the full list of files the run changed or created, taken from every wave's Files changed;
-   - the wave reports of the run as written, each wave's Done, Tests, Wave review line and follow-ups;
+   - the full list of files the run changed or created, taken from the files every wave's report lists;
+   - each wave's report as written: its problems, what was done, its checks with the full-suite result and the wave-review verdict, its files and its next step;
    - the requirement and design excerpts the run's tasks cite, quoted;
    - the files that cite the changed ones, found as for a wave review.
 
-   Nothing more, and never the diff, which the reviewer gathers itself. Its job is the whole: consistency across waves, nits and follow-ups carried from wave to wave that have piled up, and anything one wave's review could not see. Handle its Findings and `unsure` items by the rules of "Reviewing the wave" in step 5: a `blocker`, a `should-fix` or an `unsure` item that is a defect is fixed by an executor within two attempts, with the owning task's checks re-run here; a `nit` is fixed or carried; a finding in the spec goes to step 6 as a proposal; and a finding still not fixed after two attempts goes to step 6. If anything was fixed, run the full suite once more; a failure goes to step 6. There is no second final review.
-3. **Final report.** Write the report in the shape of step 6, covering the whole run: every task ticked in it, a Full suite line and a Wave review line for each wave, the Final review line, and the files the run changed. Note any skipped tests and recommend `/freethinking:pr` to open the pull request. Then stop.
+   Nothing more, and never the diff, which the reviewer gathers itself. Its job is the whole: consistency across waves, nits and other items carried from wave to wave that have piled up, and anything one wave's review could not see. Handle its Findings and `unsure` items by the rules of "Reviewing the wave" in step 5: a `blocker`, a `should-fix` or an `unsure` item that is a defect is fixed by an executor within two attempts, with the owning task's checks re-run here; a `nit` is fixed or carried; a finding in the spec goes to step 6 as a proposal; and a finding still not fixed after two attempts goes to step 6. If anything was fixed, run the full suite once more; a failure goes to step 6. There is no second final review.
+3. **Final report.** Write the report by the same fork as step 6, covering the whole run: every task ticked in it, the full suite result and the wave-review verdict of each wave, the final review's verdict and whether anything was carried, and the files the run changed. The plugin's template writes the verdicts as the lines `Wave review of wave <n>: <verdict>` and `Final review of the run: <verdict>`, each followed by `carried: see Problems` or `nothing carried`; with a repository's own template, the final review reads the wave verdicts, and the final report writes the run's verdict, wherever that template puts them. The Message's next step names any skipped tests as left unticked and recommends `/freethinking:pr` to open the pull request, which the fork writes because this step's text is in its view; add nothing after the paste. Then stop.
