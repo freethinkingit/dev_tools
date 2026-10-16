@@ -3,7 +3,8 @@
 Tests the implement-spec work loop end to end: validate the graph, launch the
 executor agent for the wave's task, verify its work by running the checks
 yourself, have the reviewer agent read the wave, run the suite, hand back
-without starting the next wave.
+without starting the next wave. The hand-back is written by the `report`
+skill in its handback shape: Problems first, or `No problems.`, then Done.
 
 ## What the scaffold builds
 
@@ -17,7 +18,12 @@ need an xcrun cache the sandbox forbids; the Makefile's implement-spec target
 puts `bin` on the PATH and grants Bash, Write and Edit.
 
 The prompt gives the start answers up front (wave cadence, no optional tests,
-already on a branch), since nothing can answer mid-run.
+already on a branch), since nothing can answer mid-run. It also says the Agent
+tool has no fork in this run: in the headless eval sandbox the Agent tool
+answers "Agent type 'fork' not found", so implement-spec's step 6 takes its
+inline fallback and invokes the Skill tool with `freethinking:report` and
+`handback` itself. That fallback is the path this case grades; the fork path
+is not exercised.
 
 ## Graders
 
@@ -29,6 +35,10 @@ already on a branch), since nothing can answer mid-run.
   not started.
 - `reviews-the-wave`: the report carries the wave review's verdict, so the
   reviewer agent was launched.
+- `invokes-report`: the Skill tool was called with the `report` skill, so the
+  hand-back came from it.
+- `problems-first`: the output has `## Problems` or `No problems.` before
+  `## Done`, the handback shape's opening.
 
 ## What it cannot check
 

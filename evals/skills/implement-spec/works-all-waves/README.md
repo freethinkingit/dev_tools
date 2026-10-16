@@ -3,7 +3,10 @@
 Tests the implement-spec work loop at spec cadence: work every wave without
 waiting, each with its executor, its own test run, its wave review and its
 full suite, write a short report after each wave, have the reviewer agent read
-the whole run once more in a final review, and hand back once at the end.
+the whole run once more in a final review, and hand back once at the end. Each
+wave report and the final report are written by the `report` skill in its
+handback shape: Problems first, or `No problems.`, then Done; the final report
+also carries the `Final review of the run:` line.
 
 ## What the scaffold builds
 
@@ -18,7 +21,12 @@ xcrun cache the sandbox forbids; the Makefile's implement-spec target puts
 `bin` on the PATH and grants Bash, Write and Edit.
 
 The prompt gives the start answers up front (spec cadence, no optional tests,
-already on a branch), since nothing can answer mid-run.
+already on a branch), since nothing can answer mid-run. It also says the Agent
+tool has no fork in this run, for the reason works-one-wave gives: in the
+headless eval sandbox the Agent tool answers "Agent type 'fork' not found", so
+implement-spec takes its inline fallback and invokes the Skill tool with
+`freethinking:report` and `handback` itself for each report. That fallback is
+the path this case grades; the fork path is not exercised.
 
 ## Graders
 
@@ -34,6 +42,10 @@ already on a branch), since nothing can answer mid-run.
   wave 1, so the report covers each wave and not only the first.
 - `reviews-the-run`: the final report carries the final review's verdict, so
   the reviewer was launched once more over the whole run.
+- `invokes-report`: the Skill tool was called with the `report` skill, so the
+  reports came from it.
+- `problems-first`: the output has `## Problems` or `No problems.` before
+  `## Done`, the handback shape's opening.
 - `reports-wave-0-inline`: reads the whole trace in order and needs the wave 0
   review line to be followed, later in the session, by an executor launch.
   That only happens when the wave 0 report was written before wave 1 began,

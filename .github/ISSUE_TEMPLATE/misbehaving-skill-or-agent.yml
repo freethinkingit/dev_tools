@@ -25,10 +25,12 @@ body:
         - implement-spec (skill)
         - pr (skill)
         - bugfix (skill)
+        - report (skill)
         - task-executor (agent)
         - wave-reviewer (agent)
         - code-changes (rule)
         - collaboration (rule)
+        - communication (rule)
         - comments (rule)
         - workflow (rule)
         - SessionStart hook

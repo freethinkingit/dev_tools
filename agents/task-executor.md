@@ -57,6 +57,6 @@ stopped because:
 <question or evidence; omitted when done>
 ```
 
-`checks run` holds every test command and ephemeral check you ran, each with the result you observed, and any manual check you did instead. When you ran no test and no ephemeral check, the `ephemeral check` field says why none applied. State what you observed; anything inferred rather than seen is marked as inferred and listed under `unsure`, as is anything you noticed outside the task.
+`checks run` holds every test command and ephemeral check you ran, each with the result you observed, and any manual check you did instead. When you ran no test and no ephemeral check, the `ephemeral check` field says why none applied. State what you observed; anything inferred rather than seen is marked as inferred and listed under `unsure`, as is anything you noticed outside the task. Anything you quote, under `stopped because` or anywhere in the Summary, is copied exactly, so the launcher can find it by search.
 
 The team rules are already in your context; if they are not, say so under `unsure`. The ones this procedure leans on: make the smallest change that does the job, add no dependency, framework or tool, and say what you are unsure of.
