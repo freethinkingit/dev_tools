@@ -15,7 +15,7 @@ The bugfix skill fixes a bug from a ticket: it reads the ticket back, reproduces
 - **Approach_Question**: The stop after the ticket is read back and before reproduction, where the Skill asks the Author for a Lead.
 - **Root_Cause_Question**: The stop after the Skill states its diagnosis, where the Author confirms the root cause or gives a different one.
 - **Handoff_Question**: The stop after the Summary, where the Author chooses to open the pull request, comment on the ticket, or stop.
-- **Summary**: The Skill's closing report: root cause, fix with the files involved, prevention, and verification with anything that could not be verified.
+- **Summary**: The Skill's closing report, written by the `report` skill in handback mode: anything unverified under Problems, root cause and fix with the files involved under Done, prevention and verification under Checks, the exits under Next.
 - **Ticket_Comment**: The Summary posted as a comment on a GitHub_Issue, written for the ticket's reader, who has none of the Author's local state.
 - **Question_Tool**: The AskUserQuestion tool, which puts fixed options to the Author and always adds a free-text answer of its own.
 - **Collaboration_Rule**: `rules/collaboration.md`, the defaults for how any skill works with the Author.
@@ -71,7 +71,7 @@ The bugfix skill fixes a bug from a ticket: it reads the ticket back, reproduces
 
 #### Acceptance Criteria
 
-1. WHEN the fix is verified, THE Skill SHALL ask the Handoff_Question with the Question_Tool, header `Pull request`, with the Summary as the question's own text, so the Author reads the four parts in the dialog before choosing, with `Open it now`, marked "(Recommended)", as the first option and `Stop here` as the last; WHEN the answer was given in advance and the question is not asked, THE Skill SHALL write the Summary as a message before acting on the answer.
+1. WHEN the fix is verified, THE Skill SHALL invoke the `report` skill in handback mode to write the Summary, and SHALL ask the Handoff_Question with the Question_Tool, header `Pull request`, with that Message as the question's own text, so the Author reads problems first in the dialog before choosing, with `Open it now`, marked "(Recommended)", as the first option and `Stop here` as the last; WHEN the dialog cannot carry the Message, or the answer was given in advance and the question is not asked, THE Skill SHALL put the Message as prose before the question or before acting on the answer; IF the `report` skill is missing, THEN THE Skill SHALL write the four parts itself as the question's text.
 2. WHERE the Ticket_Reference is a GitHub_Issue and `gh` is signed in, THE Handoff_Question SHALL offer `Stop and comment on the ticket` as the second option.
 3. WHEN the Author picks `Open it now`, THE Skill SHALL invoke the PR_Skill with the Skill tool as `freethinking:pr`, passing the Ticket_Reference as the argument when there is one, and SHALL do nothing else.
 4. WHEN the Author picks `Stop and comment on the ticket`, THE Skill SHALL post the Ticket_Comment with `gh issue comment`, written for a reader of the ticket who has none of the Author's local state: the four Summary parts, with the Fix stated as the change itself, file, line and what changed, so a reader could make it; then end. THE Ticket_Comment SHALL NOT name the Author's branch, uncommitted files or any command to run; the statement of where the fix sits is said in the conversation.
@@ -98,7 +98,7 @@ The bugfix skill fixes a bug from a ticket: it reads the ticket back, reproduces
 
 #### Acceptance Criteria
 
-1. THE repository SHALL carry an Eval_Case that runs the Skill on the calc fixture with the planted defect, with a Ticket_Reference and the Author's answers given up front, and whose graders pass only when the Skill lands the fix, invokes `freethinking:pr` through the Skill tool with that Ticket_Reference as the argument, and runs none of `gh pr create`, `git commit`, `git push` or a branch creation; the Summary is proved by the manual check of Requirement 6.7, since an eval run has no author to report to and the skill was seen to skip the Summary in that setting.
+1. THE repository SHALL carry an Eval_Case that runs the Skill on the calc fixture with the planted defect, with a Ticket_Reference and the Author's answers given up front, and whose graders pass only when the Skill lands the fix, invokes the `report` skill and writes its Message with Done and Checks, invokes `freethinking:pr` through the Skill tool with that Ticket_Reference as the argument, and runs none of `gh pr create`, `git commit`, `git push` or a branch creation.
 2. THE Eval_Case SHALL be reachable through `make eval-skill-bugfix`, with any flags it needs on one Makefile line.
 3. THE existing `reads-ticket-first` Eval_Case SHALL pass unchanged.
 4. THE README's bugfix row SHALL say that the Ticket_Reference may be followed by what the Author already knows.

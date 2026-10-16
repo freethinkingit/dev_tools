@@ -1,7 +1,8 @@
 """The rules fit the SessionStart hook: Claude Code truncates hook output past 10,000 characters.
 
-The output of hooks/load-rules.sh stays under 10,000 characters and
-rules/collaboration.md under 1,600, both counted as decoded UTF-8 characters.
+The output of hooks/load-rules.sh stays under 10,000 characters, and each rule
+named in RULE_LIMITS stays at or under its own limit, all counted as decoded
+UTF-8 characters.
 """
 
 import os
@@ -10,14 +11,17 @@ import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOAD_RULES = os.path.join(ROOT, "hooks", "load-rules.sh")
-COLLABORATION = os.path.join(ROOT, "rules", "collaboration.md")
+RULES = os.path.join(ROOT, "rules")
 
 HOOK_LIMIT = 10000
-COLLABORATION_LIMIT = 1600
+RULE_LIMITS = {
+    "collaboration": 1600,
+    "communication": 1600,
+}
 
 
 class RulesSizeTest(unittest.TestCase):
-    """The hook output and the collaboration rule stay under their character limits."""
+    """The hook output and each limited rule stay within their character limits."""
 
     def test_hook_output_is_under_the_limit(self):
         env = dict(os.environ, CLAUDE_PLUGIN_ROOT=ROOT)
@@ -27,14 +31,14 @@ class RulesSizeTest(unittest.TestCase):
             count, HOOK_LIMIT, "load-rules.sh prints %d characters; the limit is %d" % (count, HOOK_LIMIT)
         )
 
-    def test_collaboration_rule_is_under_the_limit(self):
-        with open(COLLABORATION, encoding="utf-8") as f:
-            count = len(f.read())
-        self.assertLess(
-            count,
-            COLLABORATION_LIMIT,
-            "rules/collaboration.md has %d characters; the limit is %d" % (count, COLLABORATION_LIMIT),
-        )
+    def test_each_rule_is_within_its_limit(self):
+        for name, limit in RULE_LIMITS.items():
+            with self.subTest(rule=name):
+                with open(os.path.join(RULES, name + ".md"), encoding="utf-8") as f:
+                    count = len(f.read())
+                self.assertLessEqual(
+                    count, limit, "rules/%s.md has %d characters; the limit is %d" % (name, count, limit)
+                )
 
 
 if __name__ == "__main__":

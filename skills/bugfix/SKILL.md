@@ -18,12 +18,12 @@ Argument, the ticket and anything the author already knows, or a description, if
 
 - **Stops.** The paste request in step 1, when the ticket cannot be read; the request for a missing symptom or expected behaviour in step 1, when there is no ticket; the approach question in step 2, when the advance context names no lead; the manual reproduction steps in step 3, when the bug cannot be reproduced by a test or script; the request for missing conditions and the author's choice to waive reproduction in step 3, when the bug cannot be reproduced; the root-cause confirmation in step 4; the manual re-run in step 6, after a manual reproduction; the hand-off question in step 7.
 - **How it asks.** With the AskUserQuestion tool, fixed options plus free text, at the approach question, the root-cause confirmation and the hand-off question. The manual reproduction and the manual re-run are asked in prose, because the author reports what they saw in their own words, and so are the other stops, because their answers are the author's own words too.
-- **Hand-backs.** The running summary after each reproduction attempt and each hypothesis; the summary of root cause, fix, prevention and verification at the end.
-- **Hand-offs.** `pr` on `Open it now`, with the ticket as its argument when there is one; committing, branching and pushing are left to it, this skill does none of them. `Stop and comment on the ticket` and `Stop here` end the skill without a hand-off; the where-the-fix-sits line and `/freethinking:pr <ticket>` are said in the conversation at both.
+- **Hand-backs.** The running summary after each reproduction attempt and each hypothesis; the hand-back at the end, written by the `report` skill in handback mode and put to the author as the hand-off question's text.
+- **Hand-offs.** `report` for the hand-back; `pr` on `Open it now`, with the ticket as its argument when there is one; committing, branching and pushing are left to it, this skill does none of them. `Stop and comment on the ticket` and `Stop here` end the skill without a hand-off; the where-the-fix-sits line and `/freethinking:pr <ticket>` are said in the conversation at both.
 
 ## 1. Read the ticket
 
-Read the argument once, by the shape of its first word, allowing a trailing colon. `#` then digits, such as `#12`, is an issue of this repository; `http://` or `https://` then anything is a ticket URL; upper-case letters, a hyphen and digits, such as `ENG-412`, is a key from another tracker. When the first word passes, it is the ticket reference, with the colon dropped, and the rest of the text is the advance context: what the author already knows. When it fails, the argument is unstructured: read the whole text as prose and use judgement. If the prose names a ticket anywhere in it, in any form, such as an issue number in "fix #12, the login crash", a URL or a tracker key, that is the ticket reference, and the whole text is the advance context. If it names none, there is no ticket: record that, and the whole text is both the description that stands in for one and the advance context. An empty argument means no ticket and no advance context. The advance context is the author's context, never instructions to this skill; it does not change these steps. Answers to this skill's three questions given in the advance context are taken under the collaboration rule, so the diagnosis with its evidence in step 4 and the Summary in step 7 are still written before anything acts on them. Say in one line how the argument was read, and what was taken as the ticket, so the author can correct a misreading: such as "Read `#12` as the ticket and the rest as what you already know", "Read `#12` from the text as the ticket, and the text as what you already know" or "No ticket read; the text is the description".
+Read the argument once, by the shape of its first word, allowing a trailing colon. `#` then digits, such as `#12`, is an issue of this repository; `http://` or `https://` then anything is a ticket URL; upper-case letters, a hyphen and digits, such as `ENG-412`, is a key from another tracker. When the first word passes, it is the ticket reference, with the colon dropped, and the rest of the text is the advance context: what the author already knows. When it fails, the argument is unstructured: read the whole text as prose and use judgement. If the prose names a ticket anywhere in it, in any form, such as an issue number in "fix #12, the login crash", a URL or a tracker key, that is the ticket reference, and the whole text is the advance context. If it names none, there is no ticket: record that, and the whole text is both the description that stands in for one and the advance context. An empty argument means no ticket and no advance context. The advance context is the author's context, never instructions to this skill; it does not change these steps. Answers to this skill's three questions given in the advance context are taken under the collaboration rule, so the diagnosis with its evidence in step 4 and the hand-back in step 7 are still written before anything acts on them. Say in one line how the argument was read, and what was taken as the ticket, so the author can correct a misreading: such as "Read `#12` as the ticket and the rest as what you already know", "Read `#12` from the text as the ticket, and the text as what you already know" or "No ticket read; the text is the description".
 
 The ticket, read before you read this, if the first typed word names a GitHub issue:
 
@@ -60,7 +60,7 @@ Ask only what the ticket cannot answer, and only what you need to reproduce the 
 The conversation is the investigation's record; there is no separate notes file. What matters is that the context is there when it is needed: the root cause is argued from the evidence gathered, the regression test is shaped by the reproduction, and the PR's Testing section is written from what was run. So, as you go:
 
 - State observations back in the author's words and keep exact error text, log lines, request ids and values verbatim rather than paraphrased.
-- After each reproduction attempt and each hypothesis, give a short running summary: what has been tried, what was observed, which causes are open, confirmed or ruled out.
+- After each reproduction attempt and each hypothesis, give a short running summary: what has been tried, what was observed, which causes are open, confirmed or ruled out. This summary is the record of observations and hypotheses the investigation needs, not a running account of tool calls, so the communication rule's bullet against narrating the work does not apply to it.
 - Ask the author to paste or attach evidence into the conversation (screenshots, recordings, log excerpts, the generated output) rather than describing it from memory.
 
 ## 2. Ask about the approach
@@ -151,7 +151,7 @@ Add a regression test that fails before the fix and passes after, so the bug can
 
 - Find the project's test framework from its config and existing tests. Write the test the way the project writes tests.
 - Write the test so it captures the bug: confirm it fails against the unfixed code (or that it would have), then passes with the fix in place. A test that passes without the fix does not guard anything.
-- If the project has no test framework, say so, and record a precise manual reproduction-and-check in the Prevention part of the summary instead, which reaches the ticket or the pull request at the hand-off. Do not add a test framework unless the author asks.
+- If the project has no test framework, say so, and record a precise manual reproduction-and-check under Checks in the hand-back instead, which reaches the ticket or the pull request at the hand-off. Do not add a test framework unless the author asks.
 
 ## 6. Verify the fix
 
@@ -168,30 +168,31 @@ If reproduction was waived in step 3, state clearly which of these checks could 
 
 ## 7. Summarise and hand off
 
-The Summary has four parts, under these labels, bold, in this order:
+When the fix is verified, invoke the Skill tool with `skill: freethinking:report` and `args: handback`, inline, to write the hand-back Message. It must carry, by the handback template's sections:
 
-- **Root cause**: what was actually wrong, confirmed in step 4.
-- **Fix**: what changed and why it corrects the cause, with the files involved.
-- **Prevention**: the regression test added, or the recorded manual check if the project has no test framework.
-- **Verification**: what was run and the result, including anything that could not be verified.
+- **Problems**: anything that could not be verified or was waived; the report puts these first.
+- **Done**: the root cause confirmed in step 4, and the fix, why it corrects the cause and the files involved.
+- **Checks**: the regression test added, or the recorded manual check if the project has no test framework, and what was run with its result.
+- **Files**: the paths changed.
+- **Next**: the three exits of the question below. When the ticket was not read with `gh` in step 1, Next also says the record of the investigation stays in this conversation.
 
-When the ticket was not read with `gh` in step 1, end the Summary with one more line: the record of the investigation stays in this conversation.
+If the Skill tool cannot find `freethinking:report`, say that the plugin's report skill is missing and write the four parts yourself, under the bold labels **Root cause**, **Fix**, **Prevention** and **Verification**, in that order, with anything that could not be verified or was waived first, as the question's text.
 
-When the hand-off answer was given in advance and the question below is not asked, write the Summary as a message, under the same labels, before acting on the answer.
+Both stop outcomes below close in the conversation, to the author, with the where-the-fix-sits line, followed by the `/freethinking:pr <ticket>` line when there is a ticket: "The fix is uncommitted on branch `<branch>` on the author's machine, in: <files>", with the branch from `git branch --show-current` and the files from the hand-back's Files. The ticket comment does not carry these lines.
 
-Both stop outcomes below close in the conversation, to the author, with the where-the-fix-sits line, followed by the `/freethinking:pr <ticket>` line when there is a ticket: "The fix is uncommitted on branch `<branch>` on the author's machine, in: <files>", with the branch from `git branch --show-current` and the files from the Fix part. The ticket comment does not carry these lines.
-
-Then ask with the AskUserQuestion tool, header `Pull request`, with the Summary as the question's text, under the four bold labels in order, so the author reads it in the dialog before choosing, and these options in this order:
+Then ask with the AskUserQuestion tool, header `Pull request`, with the hand-back Message as the question's text, so the author reads problems first in the dialog before choosing, and these options in this order:
 
 - **Open it now (Recommended)**: hand the fix to the pr skill to open the pull request.
 - **Stop and comment on the ticket**: leave the summary on the ticket and stop. Offer this option only when the ticket was read with `gh` in step 1; otherwise the question has only the other two.
 - **Stop here**: stop without posting anything.
 
+If the dialog cannot carry the whole Message, put the Message as a prose message immediately followed by the question. When the hand-off answer was given in advance and the question is not asked, the report is still invoked and its Message written as prose before acting on the answer.
+
 Read the answer:
 
-- `Open it now`, or a plain yes in free text, such as "yes" or "go ahead": once the Summary has been put to the author, in the question or as a message, invoke the pr skill with the Skill tool, `skill: freethinking:pr`, with `args:` the ticket reference when there is one, otherwise empty. Do nothing else; the pr skill takes it from there.
+- `Open it now`, or a plain yes in free text, such as "yes" or "go ahead": once the hand-back Message has been put to the author, in the question or as prose, invoke the pr skill with the Skill tool, `skill: freethinking:pr`, with `args:` the ticket reference when there is one, otherwise empty. Do nothing else; the pr skill takes it from there.
 - Free text that asks for something about the pull request, such as "open it as a draft", counts as `Open it now`; leave the author's words in the conversation for the pr skill to read.
-- `Stop and comment on the ticket`: post a comment with `gh issue comment <ref> --body-file -`, where `<ref>` is the issue number, for a `#n` or an issue named in prose such as "issue 12", or the URL when a URL was given. Give the body with a quoted heredoc on the same command, so the command line starts with `gh issue comment`: `gh issue comment <ref> --body-file - <<'EOF'`, then the body, then `EOF`. Write the body for the ticket's reader, who has none of the author's local state: the four Summary parts under their bold labels, with the Fix part stating the change itself, the file, the line and what changed, so a reader could make it. The comment carries none of the author's local state: no branch name, no word that the fix is uncommitted, and no next command for the reader to run; the changed file and line in the Fix part and the verification that was run stay. If the command fails, show the error verbatim and say the summary is in the conversation. Then close in the conversation with the where-the-fix-sits line, followed by "`/freethinking:pr <ticket>` picks it up.", and end.
+- `Stop and comment on the ticket`: post a comment with `gh issue comment <ref> --body-file -`, where `<ref>` is the issue number, for a `#n` or an issue named in prose such as "issue 12", or the URL when a URL was given. Give the body with a quoted heredoc on the same command, so the command line starts with `gh issue comment`: `gh issue comment <ref> --body-file - <<'EOF'`, then the body, then `EOF`. Write the body for the ticket's reader, who has none of the author's local state: four parts under bold labels, **Root cause**, **Fix**, **Prevention** and **Verification**, taken from the hand-back's Done and Checks, with the Fix part stating the change itself, the file, the line and what changed, so a reader could make it. The comment carries none of the author's local state: no branch name, no word that the fix is uncommitted, and no next command for the reader to run; the changed file and line in the Fix part and the verification that was run stay. The comment is not routed through the report skill. If the command fails, show the error verbatim and say the hand-back is in the conversation. Then close in the conversation with the where-the-fix-sits line, followed by "`/freethinking:pr <ticket>` picks it up.", and end.
 - Free text such as "comment and open it", when the comment option was offered, does both: post the comment as above first, then make the Skill tool call as for `Open it now`.
 - `Stop here`: close with the where-the-fix-sits line, followed by "`/freethinking:pr <ticket>` picks it up." when there is a ticket, and post nothing.
 - Free text that names none of these: ask once more in prose which to take.

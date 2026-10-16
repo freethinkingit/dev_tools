@@ -59,21 +59,22 @@ ticket. The [pull request template](pull_request_template.md) is the one place
 that says how the issue is linked and when to write `Closes #<number>`.
 
 A new skill, agent, rule or hook is also added to the `component` dropdown of
-the "Report a misbehaving skill or agent", "Propose a new or changed skill,
-agent or rule" and "Propose an eval case" forms.
+every issue form.
 
 ## Issues
 
-New issues start from one of three forms:
+New issues start from one of four forms:
 
 - **Report a misbehaving skill or agent**, for something the plugin did wrong.
 - **Propose a new or changed skill, agent or rule**, for something it should
   do.
 - **Propose an eval case**, for a behaviour an eval should guard.
+- **Propose a spike**, for a question that has to be answered before work can
+  be designed.
 
 Submitting a form labels the issue `triage` and sets its Issue_Type: `Bug`,
-`Feature` and `Task` respectively. Blank issues are off. The new-issue page
-also links questions to Discussions Q&A, ideas to Discussions Ideas, and
+`Feature`, `Task` and `Spike` respectively. Blank issues are off. The new-issue
+page also links questions to Discussions Q&A, ideas to Discussions Ideas, and
 vulnerabilities to the security policy page.
 
 At least weekly, a maintainer triages:
@@ -94,8 +95,8 @@ really a question is converted to a discussion at triage.
 
 ## Labels and milestones
 
-Every issue has one Issue_Type, `Bug`, `Feature` or `Task`, which says what
-sort of thing it is. Labels are lowercase, and there are nine:
+Every issue has one Issue_Type, `Bug`, `Feature`, `Task` or `Spike`, which
+says what sort of thing it is. Labels are lowercase, and there are nine:
 
 - `priority: high`, `priority: medium` and `priority: low` say how soon the
   issue should be done.
@@ -129,8 +130,10 @@ far:
 2. A skill's steps run on commands anyone has, `git`, `gh`, `make`, and name a
    Claude-only tool only where no command does the job.
 3. The Claude-only pieces are listed so a `compatibility` issue can start from
-   the list: `$ARGUMENTS` and `${CLAUDE_PLUGIN_ROOT}` in skills, the hooks that
-   load the rules, and the agents' frontmatter.
+   the list: `$ARGUMENTS`, `${CLAUDE_PLUGIN_ROOT}`, `${CLAUDE_SKILL_DIR}` and
+   the `arguments:` frontmatter list in skills, the `subagent_type: fork` that
+   `implement-spec` relies on, the hooks that load the rules, and the agents'
+   frontmatter.
 
 The list grows from issues labelled `compatibility`.
 

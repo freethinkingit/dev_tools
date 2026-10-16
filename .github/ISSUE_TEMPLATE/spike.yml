@@ -1,0 +1,75 @@
+name: Propose a spike
+description: Propose a time-boxed investigation that answers a question before a design is committed to.
+labels: ["triage"]
+type: Spike
+body:
+  - type: markdown
+    attributes:
+      value: Before you file, read the [Issues section of the contributing guide](https://github.com/freethinkingit/dev_tools/blob/main/.github/CONTRIBUTING.md#issues).
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before you file
+      options:
+        - label: I searched the existing issues.
+          required: true
+        - label: The question cannot be answered by reading the code or the docs.
+          required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: The component the question is about. Leave it empty when it spans several.
+      options:
+        - start-task (skill)
+        - implement-spec (skill)
+        - pr (skill)
+        - bugfix (skill)
+        - report (skill)
+        - task-executor (agent)
+        - wave-reviewer (agent)
+        - code-changes (rule)
+        - collaboration (rule)
+        - communication (rule)
+        - comments (rule)
+        - workflow (rule)
+        - SessionStart hook
+        - SubagentStart hook
+        - Something else
+    validations:
+      required: false
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: The question the spike answers.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it matters
+      description: What decision waits on the answer, and what it costs to guess.
+    validations:
+      required: true
+  - type: textarea
+    id: known
+    attributes:
+      label: What is known
+      description: The options already on the table, and what rules each in or out so far.
+    validations:
+      required: true
+  - type: input
+    id: timebox
+    attributes:
+      label: Time box
+      description: How long before the spike reports back whatever it found.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: "What the spike produces: a decision recorded on the issue, a proposal issue, a spec, or a decision not to proceed."
+    validations:
+      required: true

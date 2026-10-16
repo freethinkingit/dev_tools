@@ -29,7 +29,7 @@ Every case carries its component's name as a tag, and each target is
 `claude plugin eval . --tag <name>` plus the flags its cases need, which live
 in the Makefile's "Per-target flags" block. Anything extra goes through
 `EVAL_ARGS`, and the per-invocation cost ceiling through `EVAL_MAX_COST_USD`
-(default $2, which the full suite needs raised):
+(default $2, which the full suite and `make eval-skill-implement-spec` need raised):
 
 ```bash
 make eval-skill-pr EVAL_ARGS="--runs 1"                          # one run per case while iterating
@@ -125,8 +125,8 @@ What to look for:
 
 ## What the sandbox allows
 
-Learned by probing; see `skills/pr/opens-pr-with-stub-gh/README.md` for the
-worked example.
+Learned by probing; see `evals/skills/pr/opens-pr-with-stub-gh/README.md` for
+the worked example.
 
 - Only the read-only tools a case lists in `allowed_tools` are available.
   `Bash`, `Write`, `Edit` and the web tools need `--allow-tools`, which a
