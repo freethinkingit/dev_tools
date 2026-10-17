@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: offers-commit-on-dirty-tree
+context:
+  scaffold_script: scaffold.sh

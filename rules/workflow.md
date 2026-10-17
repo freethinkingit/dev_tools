@@ -1,13 +1,12 @@
 # Workflow
 
-These rules say which handbook skill to reach for and when. They apply in every repository this handbook applies to.
+These rules say how a request finds the handbook skill that does it. They apply in every repository this handbook applies to. A skill's description says when it applies and its text says what it does; these rules say to look there first, and what not to do without the skill.
 
-The first bullet that matches the request is the route.
+- **Check the skills before doing it yourself.** The handbook ships a skill for each common kind of work, and every skill's description says when it applies. Match the request against those descriptions first, and run the skill that fits rather than doing its work by hand: no pull request with a bare `gh pr create`, no code before the bugfix skill has reproduced the bug, no spec task skipped or merged, and no judging a change's size yourself, which is start-task's job.
+- **Small changes stay small.** The one exception: a typo, a one-line fix or a rename needs no skill. Say that the change is small enough to skip `start-task`, then make it.
 
-- **Bug named: reproduce before fixing.** When the author calls the request a bug, or hands over a ticket filed as one, run `/freethinking:bugfix`. Reproduce the bug first, confirm the root cause with the author before changing code, and guard the fix with a regression test. "It works now" is not a fix.
-- **Spec exists: follow it.** If `.claude/specs/<task>/tasks.md` exists for the work in hand, run `/freethinking:implement-spec`. It works the tasks in wave order; do not skip ahead or merge tasks.
-- **Pull request: use the skill.** Open and update PRs with `/freethinking:pr`. It walks the changes with the author and drafts the description to the team template. Do not open a PR with a bare `gh pr create`.
-- **Small changes stay small.** A typo, a one-line fix or a rename needs no skill. Say that the change is small enough to skip `start-task`, then make it.
-- **Anything else that changes code: start the task.** Run `/freethinking:start-task`. It reads the code and decides between the executor for one contained change, `bugfix` for a defect, and a spec for the rest, and asks before taking the first two. Do not judge the size yourself.
-- **Never work on the default branch.** Create a branch before the first commit. Do not commit or push unless the author asks.
+The rest hold in every session, skill or no skill.
+
+- **Never work on the default branch.** Create a branch before the first commit. Do not commit or push unless the author asks; a yes to an offer a skill raised counts as asking.
+- **A merged spec is a record.** `.claude/specs/<task>/` holds the task's three spec files and nothing else. Once its tasks are ticked and its branch merged, the spec is closed: it is not work in hand for implement-spec, it is not edited to match later code, and it is not read to learn how the code works today. Current behaviour lives in the code and the repository's own documentation.
 - **Keep the author in the loop.** When the approach changes, or a step turns out to be bigger than expected, say so before carrying on. Ask only what the code and the request cannot answer, and batch the questions.

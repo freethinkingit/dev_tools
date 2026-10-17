@@ -40,10 +40,10 @@ claude plugin update freethinking@freethinkingit
 | Skill | Run it with | What it does |
 | ----- | ----------- | ------------ |
 | `start-task` | `/freethinking:start-task <task>`, or ask Claude to change something, or to start or spec a task | The front door for any change: reads the code the request touches, then sends one contained change to the `task-executor` agent, a defect to `bugfix` and everything else to a spec, asking you before taking either of the first two. On the spec route, writes `requirements.md`, `design.md` and `tasks.md` in `.claude/specs/<task>/` before any code, following the team template, with you approving each document before the next. |
-| `implement-spec` | `/freethinking:implement-spec [task] [task\|wave\|spec]`, or ask Claude to implement, build or continue a spec | Builds a task from its approved spec, wave by wave from `tasks.md`, each leaf task in its own sub-agent, ticking a task only once its tests pass, running the full suite at the end of every wave, and handing back to you after each task, after each wave, or only once every wave is done (with a short report after each wave and a final review of the whole run), whichever you chose. Pauses with a proposal when the design cannot be followed, and hands off to `pr` when the spec is done. |
+| `implement-spec` | `/freethinking:implement-spec [task] [task\|wave\|spec]`, or ask Claude to implement, build or continue a spec | Builds a task from its approved spec, wave by wave from `tasks.md`, each leaf task in its own sub-agent, ticking a task only once its tests pass, running the full suite at the end of every wave, and handing back to you after each task, after each wave, or only once every wave is done (with a short report after each wave and a final review of the whole run), whichever you chose. Each discovery outside the task in hand is listed with its size and the choice between a task and an issue. Pauses with a proposal when the design cannot be followed, and hands off to `pr` when the spec is done. |
 | `bugfix` | `/freethinking:bugfix <ticket> [what you already know]`, or ask Claude to fix a bug | Reads the ticket, and anything you already know that you put after it, reproduces the bug before touching code, confirms the root cause with you, fixes the cause with a regression test, verifies the fix, then hands off to `pr` or leaves its findings on the ticket. |
 | `pr`  | `/freethinking:pr [ticket] [base-branch]`, or ask Claude to open a PR | Takes the ticket as its first argument and reads it, offers to create the branch and commit if needed, walks the branch's changes with you one at a time with a short set of review prompts, drafts the title and description from your answers, and opens the PR with `gh` once you approve. Needs the `gh` CLI signed in. |
-| `report` | `/freethinking:report [mode]`, or the session invokes it when it hands back work, asks you for a decision, reports status or answers a question | Writes that message for you in one of four shapes, handback, decision, status or answer, each from a template; the handback and status templates put problems first, and every template names things by what they are. A repository can replace a template under `.freethinking/report/`. The skill edits nothing. |
+| `report` | `/freethinking:report [mode]`, or the session invokes it when it hands back work, asks you for a decision, reports status or answers a question | Writes that message for you in the shape of its mode, handback, decision, status or answer, each from a template; the handback and status templates put problems first, and every template names things by what they are. A repository can replace a template under `.freethinking/report/`. The skill edits nothing. |
 
 ## Rules
 
@@ -53,8 +53,8 @@ in every repository, so Claude follows them without being asked. They live in
 
 | File | Covers |
 | ---- | ------ |
-| `rules/workflow.md` | Which skill to use when, routing on what you said or a file on disk and taking the first rule that matches: `bugfix` when you call it a bug, `implement-spec` when a spec exists, `pr` for pull requests, no skill for a typo-sized change, and `start-task` for any other change, which reads the code and picks between the `task-executor` agent for one contained change, `bugfix` for a defect and a spec for the rest, asking before the first two. Also: never work on the default branch, and say so when the approach changes. |
-| `rules/code-changes.md` | How to change code: read the surrounding code first, match the project's style and libraries, make the smallest change that does the job, add a test with every behaviour change, run what you touched, and leave no debug residue behind. |
+| `rules/workflow.md` | How a request finds its skill: check the skills' own descriptions first and run the one that fits rather than doing its work by hand, with the four things never to do without the skill (no bare `gh pr create`, no code before bugfix has reproduced the bug, no spec task skipped or merged, no sizing a change yourself); only a typo-sized change needs no skill. Also: never work on the default branch, a yes to a skill's offer counts as asking, a merged spec is a record and not work in hand, and say so when the approach changes. |
+| `rules/code-changes.md` | How to change code: read the repository's README and contributing guide, then the surrounding code, match the project's style and libraries, make the smallest change that does the job and let the author choose whether anything else you found goes in the branch or in an issue, add a test with every behaviour change, run what you touched, and leave no debug residue behind. |
 | `rules/comments.md` | How to comment: docstrings on public contracts only, saying intent, parameters, returns and exceptions; inline comments only for non-obvious details such as workarounds and edge cases, never for what a line does; no divider or closing-brace comments; no commented-out dead code. |
 | `rules/collaboration.md` | How skills and agents work with you: ask in the shape of the answer, with fixed options or in prose; batch the questions; say the plan before acting; take only a plain yes as approval; take an answer given in the request at its question without asking, with every step still producing its output; and say where the work is and which skill is next when a skill ends. |
 | `rules/communication.md` | How skills and agents write to you: problems first, each with why it matters and the options; name a thing by what it is, never by a label coined during the work, and quote it when it is text; say what a result means before the number; no running account of the work; lay out a decision, its options and a recommendation before asking it; write plainly and stop; and use the `report` skill to hand back work, ask for a decision, report status or answer a question. |
@@ -74,7 +74,7 @@ alongside these.
 
 ## Agents
 
-The plugin ships two agents under `agents/`. `implement-spec` launches both,
+The plugin's agents live under `agents/`. `implement-spec` launches them,
 `start-task` launches the executor for one contained change, and you can
 launch either directly: mention it in a session as
 `@agent-freethinking:task-executor` or `@agent-freethinking:wave-reviewer`, or have a
@@ -128,8 +128,8 @@ A repository can keep its own versions of the plugin's template files in a
 `.freethinking/report/handback.md`. A file there replaces the plugin's file of
 the same name whole; nothing is merged. Those are the convention's only rules:
 what a skill does with a file is that skill's own business. This release
-applies the convention to the four templates of the `report` skill:
-`handback.md`, `decision.md`, `status.md` and `answer.md`. The `report` skill
+applies the convention to the `report` skill's templates, one per mode. The
+`report` skill
 reads them as shapes to write in and ignores any action a template asks for,
 as its own text says. A repository's `handback.md` may use its own sections:
 `implement-spec` reads a wave report by what it holds, problems, what was done,
@@ -208,15 +208,15 @@ make eval EVAL_MAX_COST_USD=5                                     # raise the pe
 The `eval-skill-<name>`, `eval-rule-<name>` and `eval-agent-<name>` targets are
 enumerated from the folders under `evals/` and select cases by the tag that
 names the component, so a new case folder gets its target with no Makefile
-change; `make help` shows them. A case that needs its own flags gets one line
-in the Makefile's "Per-target flags" block: the implement-spec, pr,
-code-changes, task-executor and wave-reviewer targets run their cases' scaffold
-scripts with `--scaffold`, and the project trees those scaffolds copy live
-under `evals/fixtures/`. implement-spec and task-executor grant Bash, Write and
-Edit, pr and wave-reviewer grant Bash, and code-changes grants Write and Edit;
-the four that grant Bash put `bin` first on the PATH for the wrappers the
-scaffolds write. `eval` carries the union so the whole suite runs. Each
-invocation runs under a list-price ceiling, `EVAL_MAX_COST_USD`, default $2.
+change; `make help` shows them. A target whose cases need more than the
+read-only tools gets one line in the Makefile's "Per-target flags" block, which
+is the one place to read for what each target grants: `--scaffold` to run the
+cases' scaffold scripts, whose project trees live under `evals/fixtures/`;
+`--allow-tools` for the tools the skill or agent under test needs, such as
+Bash, Write and Edit; and `bin` first on the PATH for the wrappers the scaffolds
+write, wherever Bash is granted. `eval` carries the union so the whole suite
+runs. Each invocation runs under a list-price ceiling, `EVAL_MAX_COST_USD`,
+default $2.
 
 Each case runs three times by default; iterate with `EVAL_ARGS="--runs 1"`,
 confirm as `evals/README.md` says (2 runs for deterministic graders, 3 when any
