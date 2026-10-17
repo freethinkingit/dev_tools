@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+PLUGIN = ROOT / "plugins" / "freethinking"
 FORMS_DIR = ROOT / ".github" / "ISSUE_TEMPLATE"
 CATCH_ALL = "Something else"
 
@@ -23,10 +24,10 @@ def component_options(path):
 
 def components_on_disk():
     """Return the dropdown entries the repository's components call for, catch-all excluded."""
-    skills = ["{} (skill)".format(p.parent.name) for p in sorted((ROOT / "skills").glob("*/SKILL.md"))]
-    agents = ["{} (agent)".format(p.stem) for p in sorted((ROOT / "agents").glob("*.md"))]
-    rules = ["{} (rule)".format(p.stem) for p in sorted((ROOT / "rules").glob("*.md"))]
-    events = json.loads((ROOT / "hooks" / "hooks.json").read_text(encoding="utf-8"))["hooks"]
+    skills = ["{} (skill)".format(p.parent.name) for p in sorted((PLUGIN / "skills").glob("*/SKILL.md"))]
+    agents = ["{} (agent)".format(p.stem) for p in sorted((PLUGIN / "agents").glob("*.md"))]
+    rules = ["{} (rule)".format(p.stem) for p in sorted((PLUGIN / "rules").glob("*.md"))]
+    events = json.loads((PLUGIN / "hooks" / "hooks.json").read_text(encoding="utf-8"))["hooks"]
     hooks = ["{} hook".format(event) for event in sorted(events)]
     return set(skills + agents + rules + hooks)
 

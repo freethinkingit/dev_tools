@@ -5,8 +5,9 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-AGENTS_DIR = ROOT / "agents"
-SKILLS_DIR = ROOT / "skills"
+PLUGIN = ROOT / "plugins" / "freethinking"
+AGENTS_DIR = PLUGIN / "agents"
+SKILLS_DIR = PLUGIN / "skills"
 
 # The allowlist of tool names the handbook's agents may declare; extend it here when an agent needs another.
 KNOWN_TOOLS = {

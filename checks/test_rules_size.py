@@ -10,8 +10,9 @@ import subprocess
 import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LOAD_RULES = os.path.join(ROOT, "hooks", "load-rules.sh")
-RULES = os.path.join(ROOT, "rules")
+PLUGIN = os.path.join(ROOT, "plugins", "freethinking")
+LOAD_RULES = os.path.join(PLUGIN, "hooks", "load-rules.sh")
+RULES = os.path.join(PLUGIN, "rules")
 
 HOOK_LIMIT = 10000
 RULE_LIMITS = {
@@ -24,7 +25,7 @@ class RulesSizeTest(unittest.TestCase):
     """The hook output and each limited rule stay within their character limits."""
 
     def test_hook_output_is_under_the_limit(self):
-        env = dict(os.environ, CLAUDE_PLUGIN_ROOT=ROOT)
+        env = dict(os.environ, CLAUDE_PLUGIN_ROOT=PLUGIN)
         run = subprocess.run([LOAD_RULES], env=env, capture_output=True, check=True)
         count = len(run.stdout.decode("utf-8"))
         self.assertLess(

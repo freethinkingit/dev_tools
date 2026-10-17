@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "freethinking",
-      "source": "./",
+      "source": "./plugins/freethinking",
       "description": "Shared engineering skills: standard workflows and prompts for day-to-day development."
     }
   ]

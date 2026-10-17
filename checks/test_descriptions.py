@@ -9,8 +9,9 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-AGENTS_DIR = ROOT / "agents"
-SKILLS_DIR = ROOT / "skills"
+PLUGIN = ROOT / "plugins" / "freethinking"
+AGENTS_DIR = PLUGIN / "agents"
+SKILLS_DIR = PLUGIN / "skills"
 
 DESCRIPTION_LIMIT = 1024
 

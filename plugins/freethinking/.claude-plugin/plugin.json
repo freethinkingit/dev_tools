@@ -1,0 +1,25 @@
+{
+  "name": "freethinking",
+  "displayName": "Freethinking",
+  "version": "0.12.0",
+  "description": "Shared engineering skills: standard workflows and prompts for day-to-day development.",
+  "author": {
+    "name": "FreeThinking IT",
+    "email": "hello@freethinking.it",
+    "url": "https://freethinking.it"
+  },
+  "homepage": "https://github.com/freethinkingit/dev_tools",
+  "repository": "https://github.com/freethinkingit/dev_tools",
+  "license": "MIT",
+  "icon": "./.claude-plugin/icon.png",
+  "keywords": [
+    "developer-workflow",
+    "feature-development",
+    "bug-fixing",
+    "pull-requests",
+    "code-review",
+    "spec-driven",
+    "engineering-standards",
+    "accountability"
+  ]
+}

@@ -1,161 +1,48 @@
 # Developer Handbook
 
-Shared Claude Code skills and rules for a software team, packaged as a plugin.
-Install it once and the team's standard workflows and development rules are
-available in every repo you work in.
+This repository holds the `freethinking` Claude Code plugin, its eval suite,
+its free checks and its spec records. To install and use the plugin, read
+[the plugin README](plugins/freethinking/README.md). To change it, read
+[the contributing guide](.github/CONTRIBUTING.md).
 
-## Install
-
-You need [Claude Code](https://claude.com/claude-code) and read access to this
-repo. From any terminal:
-
-```bash
-claude plugin marketplace add freethinkingit/dev_tools
-claude plugin install freethinking@freethinkingit
-```
-
-The plugin loads the next time you start Claude Code. In a session that is
-already open, run `/reload-plugins`.
-
-The clone uses the git credentials already on your machine and never prompts.
-If the first command fails on access, sign in with `gh auth login`, run
-`gh auth setup-git`, and try again.
-
-## Stay up to date
-
-Auto-update is off by default for team marketplaces. Turn it on once:
-
-1. Run `/plugin` in a Claude Code session.
-2. Open the **Marketplaces** tab and select `freethinkingit`.
-3. Select **Enable auto-update**.
-
-To update by hand:
-
-```bash
-claude plugin update freethinking@freethinkingit
-```
-
-## Skills
-
-| Skill | Run it with | What it does |
-| ----- | ----------- | ------------ |
-| `start-task` | `/freethinking:start-task <task>`, or ask Claude to change something, or to start or spec a task | The front door for any change: reads the code the request touches, then sends one contained change to the `task-executor` agent, a defect to `bugfix` and everything else to a spec, asking you before taking either of the first two. On the spec route, writes `requirements.md`, `design.md` and `tasks.md` in `.claude/specs/<task>/` before any code, following the team template, with you approving each document before the next. |
-| `implement-spec` | `/freethinking:implement-spec [task] [task\|wave\|spec]`, or ask Claude to implement, build or continue a spec | Builds a task from its approved spec, wave by wave from `tasks.md`, each leaf task in its own sub-agent, ticking a task only once its tests pass, running the full suite at the end of every wave, and handing back to you after each task, after each wave, or only once every wave is done (with a short report after each wave and a final review of the whole run), whichever you chose. Pauses with a proposal when the design cannot be followed, and hands off to `pr` when the spec is done. |
-| `bugfix` | `/freethinking:bugfix <ticket> [what you already know]`, or ask Claude to fix a bug | Reads the ticket, and anything you already know that you put after it, reproduces the bug before touching code, confirms the root cause with you, fixes the cause with a regression test, verifies the fix, then hands off to `pr` or leaves its findings on the ticket. |
-| `pr`  | `/freethinking:pr [ticket] [base-branch]`, or ask Claude to open a PR | Takes the ticket as its first argument and reads it, offers to create the branch and commit if needed, walks the branch's changes with you one at a time with a short set of review prompts, drafts the title and description from your answers, and opens the PR with `gh` once you approve. Needs the `gh` CLI signed in. |
-| `report` | `/freethinking:report [mode]`, or the session invokes it when it hands back work, asks you for a decision, reports status or answers a question | Writes that message for you in one of four shapes, handback, decision, status or answer, each from a template; the handback and status templates put problems first, and every template names things by what they are. A repository can replace a template under `.freethinking/report/`. The skill edits nothing. |
-
-## Rules
-
-The plugin also loads a short set of team rules into every Claude Code session,
-in every repository, so Claude follows them without being asked. They live in
-`rules/`:
-
-| File | Covers |
-| ---- | ------ |
-| `rules/workflow.md` | Which skill to use when, routing on what you said or a file on disk and taking the first rule that matches: `bugfix` when you call it a bug, `implement-spec` when a spec exists, `pr` for pull requests, no skill for a typo-sized change, and `start-task` for any other change, which reads the code and picks between the `task-executor` agent for one contained change, `bugfix` for a defect and a spec for the rest, asking before the first two. Also: never work on the default branch, and say so when the approach changes. |
-| `rules/code-changes.md` | How to change code: read the surrounding code first, match the project's style and libraries, make the smallest change that does the job, add a test with every behaviour change, run what you touched, and leave no debug residue behind. |
-| `rules/comments.md` | How to comment: docstrings on public contracts only, saying intent, parameters, returns and exceptions; inline comments only for non-obvious details such as workarounds and edge cases, never for what a line does; no divider or closing-brace comments; no commented-out dead code. |
-| `rules/collaboration.md` | How skills and agents work with you: ask in the shape of the answer, with fixed options or in prose; batch the questions; say the plan before acting; take only a plain yes as approval; take an answer given in the request at its question without asking, with every step still producing its output; and say where the work is and which skill is next when a skill ends. |
-| `rules/communication.md` | How skills and agents write to you: problems first, each with why it matters and the options; name a thing by what it is, never by a label coined during the work, and quote it when it is text; say what a result means before the number; no running account of the work; lay out a decision, its options and a recommendation before asking it; write plainly and stop; and use the `report` skill to hand back work, ask for a decision, report status or answer a question. |
-
-Claude Code does not load a `CLAUDE.md` or a `rules/` folder from a plugin by
-itself, so `hooks/hooks.json` registers two hooks. The `SessionStart` hook runs
-`hooks/load-rules.sh`, which prints every `.md` file under `rules/` into the
-session context on every session start, whatever started it (a new session,
-a resume, a clear, a compact or a fork). The `SubagentStart` hook runs
-`hooks/load-rules-subagent.sh`, which puts the same rules into every sub-agent,
-which is how both agents below get them. Keep the
-combined rules under 10,000 characters; Claude Code truncates hook output past
-that, and `make validate` fails when they go over, or when `collaboration` or
-`communication` goes over its own limit of 1,600 characters. A rule a repository needs
-to override belongs in that repository's own `CLAUDE.md`, which Claude reads
-alongside these.
-
-## Agents
-
-The plugin ships two agents under `agents/`. `implement-spec` launches both,
-`start-task` launches the executor for one contained change, and you can
-launch either directly: mention it in a session as
-`@agent-freethinking:task-executor` or `@agent-freethinking:wave-reviewer`, or have a
-skill or session launch it with the Agent tool as
-`subagent_type: freethinking:task-executor` or `freethinking:wave-reviewer`.
-
-What the prompt carries:
-
-- **`task-executor`**: the change, in your own words. When the task comes from
-  a spec, say so in the prompt; that sentence switches it to spec mode, where
-  it writes no test unless the task asks for one.
-- **`wave-reviewer`**: the files that changed, or a git range; the requirement
-  or design text they implement, if there is any; the files that cite them;
-  and, when they come from a spec, the sentence "These changes come from a
-  spec wave", which is the only thing that waives a missing test.
-
-| Agent | What it does | What it returns |
-| ----- | ------------ | --------------- |
-| `task-executor` | Builds one well-specified change as the smallest change in the project's style, proves it, and deletes its scratch work. Stops and asks instead of guessing when the task is unclear, the design does not fit the code, or the task would need a new dependency, framework or tool. `start-task` launches it for one contained change, and `implement-spec` for every leaf task. | A Summary: `status` (`done` or `stopped`), `files changed`, `checks run` with their results, the ephemeral check it ran, or why none applied, what it is `unsure` of, and, when stopped, the question or evidence under `stopped because`. |
-| `wave-reviewer` | Reviews one set of changes against the requirements and design they implement and the files that cite them, gathering the diff itself and changing nothing. `implement-spec` launches it at the end of every wave, and once more over the whole run when you chose to hand back only at the end. | Findings: a `verdict` (`holds` or `findings`), the `base` commit the diffs were measured against, then each problem with its `file`, an exact `quote`, the `problem` and a `severity` (`blocker`, `should-fix` or `nit`), and what it is `unsure` of. |
-
-Both agents follow one protocol for their reports, and a new agent must too:
-its report opens with its status on the first line, `status: done` or `stopped`
-for the executor and `verdict: holds` or `findings` for the reviewer, has one
-field for each thing the launcher must act on, always has an `unsure` field,
-quotes exactly whatever it quotes, and has nothing after the shape.
-
-The executor works in one of two modes, set by the launch prompt alone:
-
-- **Spec mode**, when the prompt says the task comes from a spec, in any words;
-  `implement-spec` says "This task is a leaf task from a spec; tests are tasks
-  of their own." Tests are tasks of their own there, so it writes a test only
-  when the task asks for one, and proves a code task with an ephemeral check
-  that it deletes and reports in its Summary.
-- **Standalone mode**, otherwise. The change comes with its test, written the
-  way the project writes tests.
-
-The reviewer treats a missing test as a finding unless the launch says the
-changes come from a spec wave.
+- `plugins/freethinking/`: the plugin itself, with its manifest, skills,
+  agents, rules, hooks and its README.
+- `evals/`: the eval cases, kept outside the plugin folder because Anthropic's
+  plugin directory scans every file in that folder when the plugin is
+  submitted.
+- `checks/`: the free unit tests.
+- `.claude/specs/`: the design records of past tasks.
+- `.claude-plugin/marketplace.json`: the marketplace entry that points at the
+  plugin folder.
 
 ## Add or change a skill or rule
 
-Each skill is a folder under `skills/` with a `SKILL.md`; each rule is a Markdown
-file under `rules/`. The [contributing guide](.github/CONTRIBUTING.md) says how
-to set up, test and submit a change.
-
-## Tune the plugin for a repository
-
-A repository can keep its own versions of the plugin's template files in a
-`.freethinking/` folder at its root, laid out as `<skill>/<file>.md`, such as
-`.freethinking/report/handback.md`. A file there replaces the plugin's file of
-the same name whole; nothing is merged. Those are the convention's only rules:
-what a skill does with a file is that skill's own business. This release
-applies the convention to the four templates of the `report` skill:
-`handback.md`, `decision.md`, `status.md` and `answer.md`. The `report` skill
-reads them as shapes to write in and ignores any action a template asks for,
-as its own text says. A repository's `handback.md` may use its own sections:
-`implement-spec` reads a wave report by what it holds, problems, what was done,
-checks, files and the next step, and the plugin's own evals grade only the
-plugin's template, so renaming sections costs nothing but the two verdict lines
-being found by content rather than by name. The spec templates of `start-task` and the default
-pull request template of `pr` are candidates to move there later.
+Each skill is a folder under `plugins/freethinking/skills/` with a `SKILL.md`;
+each rule is a Markdown file under `plugins/freethinking/rules/`. The
+[contributing guide](.github/CONTRIBUTING.md) says how to set up, test and
+submit a change. To try a change in one session, load the plugin from your
+clone with `claude --plugin-dir ./plugins/freethinking`.
 
 ## Testing
 
-Using the plugin needs only Claude Code, except the `pr` skill, which needs
-the `gh` CLI signed in. Developing it needs make, python3 and Claude Code, and
-CI adds Node only to install Claude Code.
+Using the plugin needs only Claude Code, except the `pr` and `bugfix` skills,
+which need the `gh` CLI signed in. Developing it needs make, python3 and Claude
+Code, and CI adds Node only to install Claude Code.
 
-`make validate` runs the unit tests and then the validator, with no model call,
-and CI runs `make validate` on every PR. Run it after every change to a skill,
-rule, agent, the hook, the manifest or `checks/`. It needs make, python3 and
-Claude Code; make and python3 ship with git in the macOS Command Line Tools,
-and there is no venv, pip or requirements file.
+`make validate` runs the unit tests and then the validators, with no model
+call, and CI runs `make validate` on every PR. Run it after every change to a
+skill, rule, agent, the hooks, the manifest or `checks/`. It needs make,
+python3 and Claude Code; make and python3 ship with git in the macOS Command
+Line Tools, and there is no venv, pip or requirements file.
 
 ### Validator
 
-`claude plugin validate . --strict` and `claude plugin validate ./skills --strict`
-are built into Claude Code and make no model call. They check the manifests and
-skill frontmatter; for an agent file they check only that a frontmatter block
-with a description exists.
+`claude plugin validate . --strict` checks the marketplace at the repository
+root, `claude plugin validate ./plugins/freethinking --strict` checks the
+plugin, and `claude plugin validate ./plugins/freethinking/skills --strict`
+checks the skills. They are built into Claude Code and make no model call. They
+check the manifests and skill frontmatter; for an agent file they check only
+that a frontmatter block with a description exists.
 
 ### Unit tests
 
@@ -184,10 +71,17 @@ test, so you can run only the ones for what you changed:
 ```text
 evals/
   hook/<case>/              # the SessionStart and SubagentStart hooks that load the rules
-  rules/<rule>/<case>/      # one folder per rules/<rule>.md
-  skills/<skill>/<case>/    # one folder per skills/<skill>/
-  agents/<agent>/<case>/    # one folder per agents/<agent>.md
+  rules/<rule>/<case>/      # one folder per plugins/freethinking/rules/<rule>.md
+  skills/<skill>/<case>/    # one folder per plugins/freethinking/skills/<skill>/
+  agents/<agent>/<case>/    # one folder per plugins/freethinking/agents/<agent>.md
 ```
+
+`evals/` sits outside the plugin, but `claude plugin eval` reads cases only
+from inside the plugin root. So every eval target builds a temporary tree: a
+copy of `plugins/freethinking/` with a copy of `evals/`, minus its results,
+inside it, and `git init` at its top. It runs `claude plugin eval` against that
+tree, writes the results to `evals/results/<timestamp>/` at the repository
+root, and deletes the tree afterwards whether the run passed or failed.
 
 Each case runs Claude in a sandbox with only this plugin loaded. Every case is
 a real model call on your own Claude seat, so evals run by hand, not in CI. The
@@ -208,21 +102,21 @@ make eval EVAL_MAX_COST_USD=5                                     # raise the pe
 The `eval-skill-<name>`, `eval-rule-<name>` and `eval-agent-<name>` targets are
 enumerated from the folders under `evals/` and select cases by the tag that
 names the component, so a new case folder gets its target with no Makefile
-change; `make help` shows them. A case that needs its own flags gets one line
-in the Makefile's "Per-target flags" block: the implement-spec, pr,
-code-changes, task-executor and wave-reviewer targets run their cases' scaffold
-scripts with `--scaffold`, and the project trees those scaffolds copy live
-under `evals/fixtures/`. implement-spec and task-executor grant Bash, Write and
-Edit, pr and wave-reviewer grant Bash, and code-changes grants Write and Edit;
-the four that grant Bash put `bin` first on the PATH for the wrappers the
+change; `make help` shows them. A target whose cases need flags gets one line
+in the Makefile's "Per-target flags" block, which is the list of the targets
+that run their cases' scaffold scripts with `--scaffold` and the tools each
+grants; the project trees those scaffolds copy live under `evals/fixtures/`.
+The targets that grant Bash put `bin` first on the PATH for the wrappers the
 scaffolds write. `eval` carries the union so the whole suite runs. Each
 invocation runs under a list-price ceiling, `EVAL_MAX_COST_USD`, default $2.
 
 Each case runs three times by default; iterate with `EVAL_ARGS="--runs 1"`,
-confirm as `evals/README.md` says (2 runs for deterministic graders, 3 when any
-is llm), and run the table you paste for a rule or skill-description change with
-`EVAL_ARGS="--ablation with-without"` so the Δ column shows what the plugin
-added. Results land in `evals/results/<timestamp>/` (gitignored).
+confirm as [`evals/README.md`](evals/README.md) says (2 runs for deterministic
+graders, 3 when any is llm), and run the table you paste for a rule or
+skill-description change with `EVAL_ARGS="--ablation with-without"` so the Δ
+column shows what the plugin added. Results land in
+`evals/results/<timestamp>/` (gitignored).
 
-`evals/README.md` covers writing a case, reading results, keeping a run's
-transcript to debug a failure, and what the eval sandbox allows.
+[`evals/README.md`](evals/README.md) covers writing a case, reading results,
+keeping a run's transcript to debug a failure, and what the eval sandbox
+allows.
