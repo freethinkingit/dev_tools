@@ -69,7 +69,7 @@ every issue form.
 
 ## Issues
 
-New issues start from one of four forms:
+New issues start from one of the issue forms:
 
 - **Report a misbehaving skill or agent**, for something the plugin did wrong.
 - **Propose a new or changed skill, agent or rule**, for something it should
@@ -102,7 +102,7 @@ really a question is converted to a discussion at triage.
 ## Labels and milestones
 
 Every issue has one Issue_Type, `Bug`, `Feature`, `Task` or `Spike`, which
-says what sort of thing it is. Labels are lowercase, and there are nine:
+says what sort of thing it is. Labels are lowercase:
 
 - `priority: high`, `priority: medium` and `priority: low` say how soon the
   issue should be done.

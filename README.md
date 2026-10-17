@@ -102,13 +102,15 @@ make eval EVAL_MAX_COST_USD=5                                     # raise the pe
 The `eval-skill-<name>`, `eval-rule-<name>` and `eval-agent-<name>` targets are
 enumerated from the folders under `evals/` and select cases by the tag that
 names the component, so a new case folder gets its target with no Makefile
-change; `make help` shows them. A target whose cases need flags gets one line
-in the Makefile's "Per-target flags" block, which is the list of the targets
-that run their cases' scaffold scripts with `--scaffold` and the tools each
-grants; the project trees those scaffolds copy live under `evals/fixtures/`.
-The targets that grant Bash put `bin` first on the PATH for the wrappers the
-scaffolds write. `eval` carries the union so the whole suite runs. Each
-invocation runs under a list-price ceiling, `EVAL_MAX_COST_USD`, default $2.
+change; `make help` shows them. A target whose cases need more than the
+read-only tools gets one line in the Makefile's "Per-target flags" block, which
+is the one place to read for what each target grants: `--scaffold` to run the
+cases' scaffold scripts, whose project trees live under `evals/fixtures/`;
+`--allow-tools` for the tools the skill or agent under test needs, such as
+Bash, Write and Edit; and `bin` first on the PATH for the wrappers the scaffolds
+write, wherever Bash is granted. `eval` carries the union so the whole suite
+runs. Each invocation runs under a list-price ceiling, `EVAL_MAX_COST_USD`,
+default $2.
 
 Each case runs three times by default; iterate with `EVAL_ARGS="--runs 1"`,
 confirm as [`evals/README.md`](evals/README.md) says (2 runs for deterministic

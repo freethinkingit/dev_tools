@@ -11,7 +11,7 @@ The move comes first, because every other task writes paths under `plugins/freet
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
 - [x] 2. Fill the manifest's listing fields
-  - In `plugins/freethinking/.claude-plugin/plugin.json`, set `displayName`, `version` 0.12.0, `author`, `homepage`, `repository`, `license`, `icon` and `keywords` to the values of Requirement 2, in the field order the design gives; `claude plugin validate ./plugins/freethinking --strict` passes with no warning
+  - In `plugins/freethinking/.claude-plugin/plugin.json`, set `displayName`, `version` 0.13.0, `author`, `homepage`, `repository`, `license`, `icon` and `keywords` to the values of Requirement 2, in the field order the design gives; `claude plugin validate ./plugins/freethinking --strict` passes with no warning
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
 - [x] 3. Rewrite the hook scripts to the validator's shape

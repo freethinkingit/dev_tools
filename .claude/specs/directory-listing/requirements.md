@@ -46,7 +46,7 @@ The plugin is submitted to Anthropic's plugin directory, which scans every file 
 1. THE Manifest SHALL set `displayName` to `Freethinking`, `homepage` and `repository` to `https://github.com/freethinkingit/dev_tools`, `icon` to `./.claude-plugin/icon.png`, and `license` to `MIT`.
 2. THE Manifest SHALL set `author` to name `FreeThinking IT`, email `hello@freethinking.it` and url `https://freethinking.it`.
 3. THE Manifest SHALL set `keywords` to `developer-workflow`, `feature-development`, `bug-fixing`, `pull-requests`, `code-review`, `spec-driven`, `engineering-standards` and `accountability`.
-4. THE Manifest SHALL set `version` to `0.12.0`.
+4. THE Manifest SHALL set `version` to `0.13.0`.
 5. THE Icon SHALL be a PNG of 1024 by 1024 pixels at the path the Manifest names.
 6. IF a Listing_Field is absent, misspelt or not of the type the manifest reference gives, THEN `claude plugin validate ./plugins/freethinking --strict` SHALL fail, and THE System SHALL not be submitted.
 

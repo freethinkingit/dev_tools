@@ -151,7 +151,7 @@ Manifest, the fields the Directory reads:
 |-------|------|-------|-------------|
 | `name` | string | `freethinking`, unchanged | 1.4 |
 | `displayName` | string | `Freethinking` | 2.1 |
-| `version` | string | `0.12.0` | 2.4 |
+| `version` | string | `0.13.0` | 2.4 |
 | `author` | object | `name`, `email`, `url` as Requirement 2.2 | 2.2 |
 | `homepage`, `repository` | string (URL) | the GitHub repository | 2.1 |
 | `license` | string | `MIT` | 2.1 |

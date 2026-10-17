@@ -93,6 +93,7 @@ eval-skill-bugfix: export PATH := bin:$(PATH)
 eval-rule-code-changes: CASE_ARGS += --allow-tools Write Edit --scaffold
 eval-rule-communication: CASE_ARGS += --allow-tools Bash Write Edit --scaffold
 eval-rule-communication: export PATH := bin:$(PATH)
+eval-rule-workflow: CASE_ARGS += --scaffold
 eval-skill-report: CASE_ARGS += --allow-tools Bash Write Edit --scaffold
 eval-skill-report: export PATH := bin:$(PATH)
 

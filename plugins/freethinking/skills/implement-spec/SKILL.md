@@ -163,13 +163,15 @@ The failing output, the finding, the proposed edit and the question are already 
 - **A review finding that is still not fixed**: the finding quoted, then what each of the two attempts did; next, the question of how to proceed.
 - **A design that cannot be followed, or a new dependency the task would need**: the evidence from the code; next, a specific edit to `design.md` or `tasks.md`, quoted as it would read. Make no further code change until the author answers.
 
-A problem found outside the current task is noted under the report's problems, with the reason, and left alone; do not fix it in this run. The one exception is a file the wave's changes made wrong, which the wave review in step 5 fixes. Never commit or push unless the author asks.
+A problem found outside the current task is a discovery: it goes under the report's problems with where it is, roughly how much work it would add to the branch, and its two options, a task in `tasks.md` or an issue, and is left alone; do not fix it in this run. The one exception is a file the wave's changes made wrong, which the wave review in step 5 fixes. At spec cadence, where a wave's report does not wait, each discovery reappears in the final report of step 8 for the author to answer. Never commit or push unless the author asks.
 
 ## 7. Continue
 
 When the author says to continue, resume at step 5 with the same cadence and the same optional-tests choice: the next unticked task in the current wave, or the next wave if this one is done, whose optional tests are asked about at its start only when the author chose to be asked and the cadence is not spec. At spec cadence, when the hand-back came from the final review or the end-of-run optional tests of step 8, resume there.
 
 When the author approves a spec edit, apply it to the named file exactly as approved, and resume where the run handed back: at the task that raised it, or at step 3 if the edit was a graph fix made before any work.
+
+When the author answers a discovery from the report's problems: for a task, write a proposal for `tasks.md`, the task and its wave quoted as they would read, and apply it as a spec edit on the author's approval; for an issue, draft its title and body in the next message and leave filing it to the author. A discovery the author has answered is not listed in later reports.
 
 When the author asks to skip a non-optional task or to work out of wave order, say which tasks may depend on it: the graph holds waves, not edges, so that is every task in a later wave. Proceed only after the author confirms. A skipped non-optional task stays unticked and is listed under the report's problems in every later report, and later waves start on the author's say-so despite it.
 
