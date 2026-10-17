@@ -2,9 +2,10 @@
 
 Tests the pr skill's happy path end to end: starting checks, walkthrough, draft,
 push, `gh pr create`. Real GitHub cannot be part of an eval, so the case fakes it.
-`opens-pr-with-ticket` and `offers-branch-on-default` copy this scaffold, one
-adding the pull request template on `main` and one ending on `main` with the
-commits, so the fake lives in three files.
+Every pr case whose run needs `gh` carries its own copy of the fake and the git
+wrapper in its scaffold, because the fake has to be reached through a relative
+`bin` built inside the workspace; `grep -l 'fake gh' evals/skills/pr/*/scaffold.sh`
+lists them, and a change to the fake is made in each.
 
 ## What the scaffold builds
 

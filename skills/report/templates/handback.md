@@ -2,7 +2,7 @@
 
 Sections are `## <Name>` headings, in this order. With a Problem the Message opens with `## Problems`; with none, its first line is `No problems.` and `## Done` follows.
 
-1. **Problems.** One bullet each: what it is, why it matters, the options. Never a name coined in the work.
+1. **Problems.** One bullet each: what it is, why it matters, the options; for something found outside the work, roughly how much it would add to the branch. Never a name coined in the work.
 2. **Done.** Each item with the check that proved it and the result seen; for a spec, `<task id> <text> (Requirements <ids>)`.
 3. **Checks.** The full-suite result; `Wave review of wave <n>: <verdict>` and, at spec cadence, `Final review of the run: <verdict>`, each followed by `carried: see Problems` or `nothing carried`. No carried item restated.
 4. **Files.** The paths changed or created, undescribed.

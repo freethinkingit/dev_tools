@@ -176,7 +176,8 @@ are the exception to the fixture rule: each carries a full copy of the fake
 reachable through a relative `bin` entry built in the workspace, so a change
 to the fake is made in every pr scaffold. Extra files a case needs live in its own `files/` folder; the harness copies nothing from
 it, the case's scaffold does. Copied before `setup.sh` runs, they land in its
-one commit, on main and on the branch, as works-one-wave does; copied after,
+one commit, on main and on the branch, as works-one-wave does, and a file at
+a fixture path replaces the fixture's copy; copied after,
 they are left uncommitted. Give a case one grader on the result and one on the
 steps where both make sense. Prefer graders that read the transcript or a file
 (`regex`, `tool_used`, `file_exists`, `target: { source: file }`); an `llm`

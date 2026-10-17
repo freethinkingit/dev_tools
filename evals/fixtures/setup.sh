@@ -3,7 +3,8 @@
 #
 #   setup.sh <tree> <branch> [wrappers]
 #
-# Copies evals/fixtures/<tree>/ in, commits it on main as Example in one
+# Copies evals/fixtures/<tree>/ in, skipping any path the workspace already
+# has so a case's files/ overlay wins, commits it on main as Example in one
 # commit, and checks out <branch> (main stays checked out when <branch> is
 # main). With `wrappers`, also writes bin/git and bin/python3, excluded from
 # git, for cases that grant Bash and put bin on the PATH: the /usr/bin shims on
@@ -29,7 +30,11 @@ GIT=/Library/Developer/CommandLineTools/usr/bin/git; [ -x "$GIT" ] || GIT=$(comm
 export GIT_AUTHOR_NAME=Example GIT_AUTHOR_EMAIL=example@example.com
 export GIT_COMMITTER_NAME=Example GIT_COMMITTER_EMAIL=example@example.com
 
-cp -R "$FIXTURES/$TREE/." .
+(cd "$FIXTURES/$TREE" && find . -type f) | while IFS= read -r f; do
+  [ -e "$f" ] && continue
+  mkdir -p "$(dirname "$f")"
+  cp -p "$FIXTURES/$TREE/$f" "$f"
+done
 
 if [ "$WRAPPERS" = wrappers ]; then
   GIT_CORE=$($GIT --exec-path)
