@@ -1,6 +1,6 @@
 # Checks for the handbook plugin.
 #
-#   make validate              free: check, manifests and skill frontmatter (CI runs this)
+#   make validate              free: check, marketplace, plugin manifest and skill frontmatter (CI runs this)
 #   make check                 free: the Python checks under checks/, such as the hook's JSON encoder
 #   make help                  list the eval targets that exist
 #   make eval                  every eval case
@@ -19,18 +19,42 @@
 # The eval-skill-*, eval-rule-* and eval-agent-* targets are enumerated from
 # the evals/ directories and select their cases with --tag, so every case
 # carries its component's name as a tag and a new case needs no Makefile
-# change. A case that needs its own flags gets one line in the "Per-target
-# flags" block below; those flags are kept in CASE_ARGS so EVAL_ARGS on the
-# command line still adds to them. The cost ceiling is per invocation, so raise
-# it for the whole suite: make eval EVAL_MAX_COST_USD=5. Results go to
-# evals/results/<timestamp>/ (gitignored). Paste the table the command prints
-# into the PR's Testing section.
+# change. The runner reads cases only from inside the plugin root, and the
+# plugin lives in $(PLUGIN) with evals/ beside it at the repository root, so
+# each eval target runs claude plugin eval against a temporary copy of the
+# plugin with evals/ copied inside it and a git repository initialised at its
+# top, for the scaffolds that find evals/fixtures/ through git rev-parse. The
+# pr scaffold also reads .github/pull_request_template.md from that top, so
+# that one file is copied in too. The copy is deleted when the run ends, pass or fail. A case that needs its own
+# flags gets one line in the "Per-target flags" block below; those flags are
+# kept in CASE_ARGS so EVAL_ARGS on the command line still adds to them. The
+# cost ceiling is per invocation, so raise it for the whole suite: make eval
+# EVAL_MAX_COST_USD=5. Results go to evals/results/<timestamp>/ at the
+# repository root (gitignored). Paste the table the command prints into the
+# PR's Testing section.
 
+PLUGIN := plugins/freethinking
 EVAL_MAX_COST_USD ?= 2
 EVAL_ARGS ?=
 CASE_ARGS :=
-EVAL = claude plugin eval . --trust-plugin --ablation none --no-publish \
-        --max-cost-usd $(EVAL_MAX_COST_USD) $(EVAL_ARGS) $(CASE_ARGS)
+
+define RUN_EVAL
+set -eu; \
+results=$$(pwd)/evals/results/$$(date +%Y-%m-%dT%H-%M-%S); \
+run=$$(mktemp -d "$${TMPDIR:-/tmp}/freethinking-eval.XXXXXX"); \
+trap 'rm -rf "$$run"' EXIT; trap 'exit 130' HUP INT TERM; \
+cp -R $(PLUGIN)/. "$$run"/; \
+tar -C . --exclude=evals/results -cf "$$run/evals.tar" evals; \
+tar -C "$$run" -xf "$$run/evals.tar"; \
+rm "$$run/evals.tar"; \
+mkdir -p "$$run/.github"; \
+cp .github/pull_request_template.md "$$run/.github/"; \
+git -C "$$run" init -q; \
+mkdir -p "$$results"; \
+claude plugin eval "$$run" --trust-plugin --ablation none --no-publish \
+	--max-cost-usd $(EVAL_MAX_COST_USD) --output-dir "$$results" \
+	$(EVAL_ARGS) $(CASE_ARGS) $(1)
+endef
 
 SKILLS := $(notdir $(patsubst %/,%,$(wildcard evals/skills/*/)))
 RULES  := $(notdir $(patsubst %/,%,$(wildcard evals/rules/*/)))
@@ -43,7 +67,8 @@ AGENT_TARGETS := $(addprefix eval-agent-,$(AGENTS))
 
 validate: check
 	claude plugin validate . --strict
-	claude plugin validate ./skills --strict
+	claude plugin validate ./$(PLUGIN) --strict
+	claude plugin validate ./$(PLUGIN)/skills --strict
 
 check:
 	python3 -m unittest discover -s checks
@@ -78,16 +103,16 @@ eval: CASE_ARGS += --allow-tools Bash Write Edit
 eval: export PATH := bin:$(PATH)
 
 eval:
-	$(EVAL)
+	$(call RUN_EVAL)
 
 eval-hook:
-	$(EVAL) --tag hook
+	$(call RUN_EVAL,--tag hook)
 
 $(SKILL_TARGETS): eval-skill-%:
-	$(EVAL) --tag $*
+	$(call RUN_EVAL,--tag $*)
 
 $(RULE_TARGETS): eval-rule-%:
-	$(EVAL) --tag $*
+	$(call RUN_EVAL,--tag $*)
 
 $(AGENT_TARGETS): eval-agent-%:
-	$(EVAL) --tag $*
+	$(call RUN_EVAL,--tag $*)

@@ -1,7 +1,8 @@
 # Contributing
 
-This repository is a Claude Code plugin: shared skills, agents and rules for a
-software team; its hooks put the rules in every session's context. This guide
+This repository holds a Claude Code plugin, in `plugins/freethinking/`: shared
+skills, agents and rules for a software team, whose hooks put the rules in every
+session's context. This guide
 says how to set up, test and submit a change, and how the repository uses
 issues, labels, milestones and discussions.
 
@@ -14,19 +15,24 @@ the [Code of Conduct](CODE_OF_CONDUCT.md). Report a vulnerability as the
 Clone the repository and work from its root:
 
 ```bash
-claude --plugin-dir .      # load your working copy for one session
-make validate              # the unit tests and the validators; CI runs this on every PR
+claude --plugin-dir ./plugins/freethinking   # load your working copy for one session
+make validate                                # the unit tests and the validators; CI runs this on every PR
 ```
 
 ## Test
 
-The free checks are `make validate`: the unit tests under `checks/`, then the
-two validators. They make no model call.
+The free checks are `make validate`: the unit tests under `checks/`, then
+three `claude plugin validate` runs, on `.`, `./plugins/freethinking` and
+`./plugins/freethinking/skills`. They make no model call.
 
 Evals run by component with `make eval-<kind>-<name>`, such as
 `make eval-skill-pr`, and `make eval-hook` for the hooks. Every case is a model
 call on your own Claude seat, so evals run by hand, never in CI. Paste the
 table the command prints into the Testing section of your pull request.
+`evals/` sits outside the plugin folder, so Anthropic's plugin directory, which
+scans every file in the plugin folder when the plugin is submitted, sees only
+the plugin, and each `make eval-*` target copies the plugin and `evals/` into a
+temporary tree to run them.
 
 A change to a skill, agent, rule or hook comes with an eval case or a change to
 one. A new skill comes with at least one case under `evals/skills/<name>/`. A

@@ -8,9 +8,9 @@ list-price estimates, usually ten to thirty cents a case.
 ```text
 evals/
   hook/<case>/                  # the SessionStart and SubagentStart hooks that load the rules
-  rules/<rule>/<case>/          # one folder per rules/<rule>.md
-  skills/<skill>/<case>/        # one folder per skills/<skill>/
-  agents/<agent>/<case>/        # one folder per agents/<agent>.md
+  rules/<rule>/<case>/          # one folder per plugins/freethinking/rules/<rule>.md
+  skills/<skill>/<case>/        # one folder per plugins/freethinking/skills/<skill>/
+  agents/<agent>/<case>/        # one folder per plugins/freethinking/agents/<agent>.md
   fixtures/<tree>/              # a project the scaffolds build, copied in by fixtures/setup.sh
   results/                      # one folder per run, gitignored
 ```
@@ -25,10 +25,14 @@ make eval-hook
 make eval                        # the whole suite
 ```
 
-Every case carries its component's name as a tag, and each target is
-`claude plugin eval . --tag <name>` plus the flags its cases need, which live
-in the Makefile's "Per-target flags" block. Anything extra goes through
-`EVAL_ARGS`, and the per-invocation cost ceiling through `EVAL_MAX_COST_USD`
+Every case carries its component's name as a tag. `evals/` sits outside the
+plugin folder (`plugins/freethinking/`); because `claude plugin eval` reads
+cases only from inside the plugin, each target runs it against a temporary copy
+of `plugins/freethinking/` with `evals/` inside, with `--tag <name>` plus the
+flags its cases need, which live in the Makefile's "Per-target flags" block.
+Results come back to `evals/results/`, and the copy is deleted after the run,
+pass or fail. Anything extra goes through `EVAL_ARGS`, and the
+per-invocation cost ceiling through `EVAL_MAX_COST_USD`
 (default $2, which the full suite and `make eval-skill-implement-spec` need raised):
 
 ```bash
@@ -38,13 +42,13 @@ make eval EVAL_MAX_COST_USD=5
 ```
 
 Run only the target of the component your change touched, never the whole
-suite, unless the change is to `hooks/` or the Makefile. A single run is noisy,
-so iterate with `EVAL_ARGS="--runs 1"`, then confirm before trusting a change:
-pass `--runs 2` when every grader of the case is `regex`, `tool_used` or
-`file_exists`, and `--runs 3` when any grader is `llm`. A target whose cases
-mix the two confirms at 3, or run it at 2 and then each `llm` case at 3 with
-one `--case` each. Without `--runs`, a plain `make eval-…` still runs each case
-three times and the table shows the mean.
+suite, unless the change is to `plugins/freethinking/hooks/` or the Makefile.
+A single run is noisy, so iterate with `EVAL_ARGS="--runs 1"`, then confirm
+before trusting a change: pass `--runs 2` when every grader of the case is
+`regex`, `tool_used` or `file_exists`, and `--runs 3` when any grader is `llm`.
+A target whose cases mix the two confirms at 3, or run it at 2 and then each
+`llm` case at 3 with one `--case` each. Without `--runs`, a plain
+`make eval-…` still runs each case three times and the table shows the mean.
 
 `--case` takes one glob, and when you pass it more than once the last flag
 wins, so run several named cases with one invocation each.
@@ -170,15 +174,19 @@ workspace, commits it and checks out the branch; `wrappers` adds the `bin/`
 wrappers for cases that grant Bash and put `bin` on the PATH. Each case's
 `scaffold.sh` is its own regular file, never a symlink: it finds the setup
 script from the repository root, `git -C "$(dirname "$0")" rev-parse
---show-toplevel`, calls it and adds only what the case needs. The pr cases
-are the exception to the fixture rule: each carries a full copy of the fake
-`gh` and the git wrapper in its own scaffold, because the fake must be
-reachable through a relative `bin` entry built in the workspace, so a change
-to the fake is made in every pr scaffold. Extra files a case needs live in its own `files/` folder; the harness copies nothing from
-it, the case's scaffold does. Copied before `setup.sh` runs, they land in its
-one commit, on main and on the branch, as works-one-wave does, and a file at
-a fixture path replaces the fixture's copy; copied after,
-they are left uncommitted. Give a case one grader on the result and one on the
+--show-toplevel`, calls it and adds only what the case needs. Inside a run the
+scaffold runs from the temporary copy, where that command resolves to the
+copy's top. That top holds `evals/fixtures/` and
+`.github/pull_request_template.md`, the two things scaffolds read from the
+repository, so nothing in a scaffold changes. The pr cases are the exception
+to the fixture rule: each carries a full copy of the fake `gh` and the git
+wrapper in its own scaffold, because the fake must be reachable through a
+relative `bin` entry built in the workspace, so a change to the fake is made in
+every pr scaffold. Extra files a case needs
+live in its own `files/` folder; the harness copies nothing from it, the case's
+scaffold does. Copied before `setup.sh` runs, they land in its one commit, on
+main and on the branch, as works-one-wave does, and a file at a fixture path
+replaces the fixture's copy; copied after, they are left uncommitted. Give a case one grader on the result and one on the
 steps where both make sense. Prefer graders that read the transcript or a file
 (`regex`, `tool_used`, `file_exists`, `target: { source: file }`); an `llm`
 grader adds three judge calls per run. `file_exists` counts only files created
