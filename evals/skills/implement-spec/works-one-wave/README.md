@@ -40,11 +40,12 @@ writes the hand-back by invoking the Skill tool with `freethinking:report` and
 
 ## What it cannot check
 
-The tick. Its tick of task 1 should now land in
+The tick. Its tick of task 1 lands in
 `.freethinking/specs/calc-subtract/tasks.md`, since the eval sandbox allows
-writes under `.freethinking/`, but the case has not been rerun since the move
-and no grader reads that file yet. The follow-up is to rerun the case and add a
-grader on that file for `[x] 1.`.
+writes under `.freethinking/`: in a run on 2026-10-19 the sandbox's `tasks.md`
+was modified with `[x] 1.` and `[ ] 2.`. No grader reads that file yet, so the
+tick is seen but not scored. The follow-up is a grader on that file for
+`[x] 1.`.
 
 ## Running it
 

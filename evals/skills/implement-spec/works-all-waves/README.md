@@ -53,11 +53,11 @@ each wave report and the final report by invoking the Skill tool with
 
 ## What it cannot check
 
-The ticks, as in works-one-wave: they should now land in
+The ticks, as in works-one-wave: they land in
 `.freethinking/specs/calc-subtract/tasks.md`, since the eval sandbox allows
-writes under `.freethinking/`, but the case has not been rerun since the move
-and no grader reads that file yet. The follow-up is to rerun the case and add a
-grader on that file for the ticks. At spec cadence a tick must not end
+writes under `.freethinking/`, and the case passes at three runs since the
+move, but no grader reads that file yet. The follow-up is a grader on that
+file for the ticks. At spec cadence a tick must not end
 the run early; if it does, `works-wave-1` and `reviews-the-run` fail, and the
 transcript shows the hand-back after wave 0.
 
