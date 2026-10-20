@@ -1,13 +1,13 @@
 ---
 name: implement-spec
-description: Build a task whose spec already exists, wave by wave from its tasks.md, with the task-executor agent building each task and the wave-reviewer agent reading each wave. Use when asked to implement, build, work, continue or resume a spec, a task list, or the tasks in .claude/specs/<task>/. Reads the spec and validates its dependency graph, then asks once how often to hand back (after each task, each wave, or only at the end) and how to treat optional tests (ask, always, never). Runs one sub-agent per leaf task, ticks a checkbox only when its tests pass or a stated manual check is done, and runs the full suite at the end of every wave. Never edits the spec beyond checkboxes without the author's approval, and pauses with a proposal when the design cannot be followed.
+description: Build a task whose spec already exists, wave by wave from its tasks.md, with the task-executor agent building each task and the wave-reviewer agent reading each wave. Use when asked to implement, build, work, continue or resume a spec, a task list, or the tasks in .freethinking/specs/<task>/. Reads the spec and validates its dependency graph, then asks once how often to hand back (after each task, each wave, or only at the end) and how to treat optional tests (ask, always, never). Runs one sub-agent per leaf task, ticks a checkbox only when its tests pass or a stated manual check is done, and runs the full suite at the end of every wave. Never edits the spec beyond checkboxes without the author's approval, and pauses with a proposal when the design cannot be followed.
 argument-hint: "[task-name] [task|wave|spec]"
-allowed-tools: Bash(git status *) Bash(git branch *) Bash(git rev-parse *) Bash(git log *) Bash(git diff *) Bash(ls .claude/specs*) Bash(cat .claude/specs/*)
+allowed-tools: Bash(git status *) Bash(git branch *) Bash(git rev-parse *) Bash(git log *) Bash(git diff *) Bash(ls .freethinking/specs*) Bash(cat .freethinking/specs/*)
 ---
 
 # Implement a spec
 
-Build a task from its approved spec: read `.claude/specs/<task-name>/`, check that its task list can be executed, and then work the waves in order, each leaf task built by its own executor and each wave read by the reviewer before the wave ends, ticking each checkbox only when its tests have passed or, for a task with nothing to test, after a stated manual check. Hand back to the author as often as they chose, after every task, after every wave, or only once every wave is done, with a report of what was built and tested.
+Build a task from its approved spec: read `.freethinking/specs/<task-name>/`, check that its task list can be executed, and then work the waves in order, each leaf task built by its own executor and each wave read by the reviewer before the wave ends, ticking each checkbox only when its tests have passed or, for a task with nothing to test, after a stated manual check. Hand back to the author as often as they chose, after every task, after every wave, or only once every wave is done, with a report of what was built and tested.
 
 The author is accountable for the code and owns the spec. The spec is the source of truth: `requirements.md` says what, `design.md` says how, and `tasks.md` says in what order. Do not change any of them, beyond ticking checkboxes, without the author's approval, and do not guess your way past a design that cannot be followed; pause and propose the change instead.
 
@@ -40,10 +40,10 @@ Terms used below:
 
 Take the task name from the arguments: the first word that is not `task`, `wave` or `spec`. The cadence is a second argument of `task`, `wave` or `spec`, or an explicit phrase in the author's message such as "one task at a time", "a wave at a time" or "run all the waves". The word "task" or "spec" on its own in a sentence is not a cadence. The optional-tests choice is settled here only by an explicit phrase in the author's message, such as "skip the optional tests".
 
-- With a task name, the spec is `.claude/specs/<task-name>/`.
-- With no task name, run `ls .claude/specs/*/tasks.md` and look at each list for an unticked non-optional leaf task. Exactly one such spec: name it and proceed. Several: list them and ask which to work. None: say there is nothing to implement, name any spec whose only unticked tasks are optional tests, recommend `/freethinking:start-task` otherwise, and stop.
+- With a task name, the spec is `.freethinking/specs/<task-name>/`.
+- With no task name, run `ls .freethinking/specs/*/tasks.md` and look at each list for an unticked non-optional leaf task. Exactly one such spec: name it and proceed. Several: list them and ask which to work. None: say there is nothing to implement, name any spec whose only unticked tasks are optional tests, recommend `/freethinking:start-task` otherwise, and stop.
 
-If the spec has no `tasks.md`, say so, recommend `/freethinking:start-task`, and stop without changing anything. One look at `.claude/specs/<task-name>/tasks.md` settles it; do not search elsewhere for the spec.
+If the spec has no `tasks.md`, say so, recommend `/freethinking:start-task`, and stop without changing anything. One look at `.freethinking/specs/<task-name>/tasks.md` settles it; do not search elsewhere for the spec.
 
 Read `tasks.md`, `requirements.md` and `design.md` in full before anything else. The requirements and design are read again task by task later, but the whole has to be in view first.
 

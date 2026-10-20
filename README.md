@@ -11,7 +11,7 @@ its free checks and its spec records. To install and use the plugin, read
   plugin directory scans every file in that folder when the plugin is
   submitted.
 - `checks/`: the free unit tests.
-- `.claude/specs/`: the design records of past tasks.
+- `.freethinking/specs/`: the design records of past tasks.
 - `.claude-plugin/marketplace.json`: the marketplace entry that points at the
   plugin folder.
 

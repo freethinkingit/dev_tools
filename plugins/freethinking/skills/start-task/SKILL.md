@@ -1,6 +1,6 @@
 ---
 name: start-task
-description: Front door for any request to change code. Reads the code the request touches, then decides whether it goes to the task executor, to the bugfix skill or to a spec, and asks the author when the answer is not a spec. Start a new feature or task by writing its spec before any code. Use for any request to change code that no other skill takes (not a bug the author named, which is bugfix's; not an existing spec, which is implement-spec's; not a pull request, which is pr's; and not a typo-sized change, which needs no skill), and when asked to start, plan, spec, scope or design a task, feature or piece of work, or when a request is big enough that coding straight away would be guessing. Produces requirements.md, design.md and tasks.md in .claude/specs/<task-name>/, following the team's spec template, with the author approving each document before the next is written. Does not write code.
+description: Front door for any request to change code. Reads the code the request touches, then decides whether it goes to the task executor, to the bugfix skill or to a spec, and asks the author when the answer is not a spec. Start a new feature or task by writing its spec before any code. Use for any request to change code that no other skill takes (not a bug the author named, which is bugfix's; not an existing spec, which is implement-spec's; not a pull request, which is pr's; and not a typo-sized change, which needs no skill), and when asked to start, plan, spec, scope or design a task, feature or piece of work, or when a request is big enough that coding straight away would be guessing. Produces requirements.md, design.md and tasks.md in .freethinking/specs/<task-name>/, following the team's spec template, with the author approving each document before the next is written. Does not write code.
 argument-hint: "[task name or short description]"
 ---
 
@@ -22,14 +22,20 @@ Task, as the author gave it: $ARGUMENTS
 
 - **Stops.** The route question at triage, when the route is Bug_Route or Executor_Route; the fit question at triage, when the request extends nothing in the codebase; the approval of each of the three documents on Spec_Route; the relaunch question after a `stopped` Summary on Executor_Route.
 - **How it asks.** With the AskUserQuestion tool, fixed options plus free text, at every stop. The spec questions at the head of the requirements step are the exception: ask them in prose, because the answers are the author's own words.
-- **Hand-backs.** On Executor_Route, the executor's Summary verbatim and the diff, failures first, then the closing Message written with `report`. On Spec_Route, each document in full.
+- **Hand-backs.** On Executor_Route, the executor's Summary verbatim and the diff, failures first, then the closing Message written with `report`. On Spec_Route, each document as its path and a summary, and each revision as its path and what changed, as the Showing a document section says.
 - **Hand-offs.** `bugfix` on Bug_Route; `pr` after a `done` Summary; `implement-spec` after `tasks.md` is approved. The branch name proposed in step 1 is created by the author before the first commit, or by `implement-spec` at its set-up when the author gives it that name, or by `pr` at its branch offer, under the name `pr` proposes from the ticket, which is the same shape when the author passes the ticket to it; never by this skill.
+
+## Showing a document
+
+A document is shown for approval as its path and a summary, never as its whole text: the author opens the file to read it. The summary and the approval question go in one message, the summary first. The summary opens with the document's path from the repository root on its own line, says once that the author can open the file before answering, then gives the document's content in the shape the step that wrote it sets, quoting from the document only what that shape names and summarising the rest in plain words.
+
+After `Changes needed`, revise the file, then show it again as its path and one line per section that changed, saying what changed in it and quoting a user story or key decision that changed; a section that did not change is not listed. If part of the request was not applied, say which part and why. The revision and the step's approval question go in one message, the revision first.
 
 ## 1. Name the task and find its spec
 
-Derive a kebab-case task name from the request, for example `link-shortener`. Beside it, propose a branch name: the issue number and the task name, such as `12-link-shortener`, when the request names or links an issue, and the task name alone otherwise. Do not create the branch. Say both in the route statement of step 3, so the author can correct them in the same breath. The spec lives in `.claude/specs/<task-name>/` in the current repository.
+Derive a kebab-case task name from the request, for example `link-shortener`. Beside it, propose a branch name: the issue number and the task name, such as `12-link-shortener`, when the request names or links an issue, and the task name alone otherwise. Do not create the branch. Say both in the route statement of step 3, so the author can correct them in the same breath. The spec lives in `.freethinking/specs/<task-name>/` in the current repository.
 
-If that directory already exists, the request takes Spec_Route without triage, since its size was already decided. Read what is there and resume at the first document that is missing or that the author says is not approved. Do not overwrite an existing document without asking.
+If that directory already exists, the request takes Spec_Route without triage, since its size was already decided. Read what is there and resume at the first document that is missing or that the author says is not approved; if that document exists, it is shown as the Showing a document section says, then its step's approval question is put. Do not overwrite an existing document without asking.
 
 ## 2. Read the code
 
@@ -43,7 +49,7 @@ Before asking any spec question or writing any document, decide which route the 
 - **Executor_Route** when the request is a contained change: one change, describable in a sentence or two, touching a place in the code you can name after reading it, needing no design decision and no new dependency, framework or tool.
 - **Spec_Route** for every other request.
 
-State the route you chose and the reason for it in two or three sentences that name the code you read; on Spec_Route, one sentence that names the route is enough.
+State the route you chose, by its name as written here, Bug_Route, Executor_Route or Spec_Route, and the reason for it in two or three sentences that name the code you read; on Spec_Route, one sentence that names the route is enough.
 
 If step 2 found nothing the request would extend, no module, pattern or test it builds on, say so in the route statement, which still names the task and branch from step 1; then, before any other question and in the same message as that statement, put one question with the AskUserQuestion tool, header `Fit`, with two options in this order: `Spec it here`, to write the spec in this repository anyway, and `Wrong repository`, to stop, each with a one-sentence description. Act only on the author's answer. On `Wrong repository`, say where the work belongs if the request or the code says, then stop and write nothing. On `Spec it here`, go on with the route, asking the route question after this one when the route has one, since there is no point sizing work that does not belong here.
 
@@ -90,13 +96,13 @@ Ask the author only what you still need, in one round, in prose:
 - Constraints: deadlines, compatibility, performance, security, systems it must work with.
 - Anything the author already knows they want or do not want in the solution.
 
-Then read `${CLAUDE_SKILL_DIR}/spec-template/requirements.md` and write `.claude/specs/<task-name>/requirements.md` with:
+Then read `${CLAUDE_SKILL_DIR}/spec-template/requirements.md` and write `.freethinking/specs/<task-name>/requirements.md` with:
 
 - **Introduction**: what the feature is, who uses it, what value it delivers. A short paragraph. No implementation detail.
 - **Glossary**: every domain noun the requirements use, each defined in one sentence, in `Term_Name` form. Use the terms verbatim in the criteria.
 - **Requirements**: numbered, each with a user story ("As a ROLE, I want CAPABILITY, so that BENEFIT") and acceptance criteria in EARS form: ubiquitous (`THE System SHALL`), event-driven (`WHEN ..., THE System SHALL`), state-driven (`WHILE ..., THE System SHALL`), optional-feature (`WHERE ..., THE System SHALL`) and unwanted-behaviour (`IF ..., THEN THE System SHALL`). One behaviour per criterion. Quantify what can be quantified. Every requirement covers its unhappy path.
 
-Then show the author the document and ask with the AskUserQuestion tool, header `Approve`, options `Approved` and `Changes needed`, whether these requirements say what they want built, with anything missing or wrong in the free text. Iterate until approved.
+Then show the document as the Showing a document section says. Its summary is one entry per requirement, in order: the requirement's number and title, then its user story, the requirement's first sentence, quoted; no criterion is quoted and the glossary is not listed. After the entries, name any question the requirements leave open that the author did not answer. Ask with the AskUserQuestion tool, header `Approve`, options `Approved` and `Changes needed`, whether these requirements say what they want built, with anything missing or wrong in the free text. Iterate until approved.
 
 ## 5. Write the design
 
@@ -110,7 +116,7 @@ Read `${CLAUDE_SKILL_DIR}/spec-template/design.md`. Read the parts of the codeba
 - **Error Handling**: a table of condition, category, behaviour and requirement.
 - **Testing Strategy**: property-based tests for the properties, example and edge-case tests for the error rows, integration tests for the wiring.
 
-Check traceability both ways before showing it: every requirement is satisfied somewhere in the design, and every decision traces to a requirement. Name anything that does not trace. Then show the author the document and ask with the AskUserQuestion tool, header `Approve`, options `Approved` and `Changes needed`, whether this design is how they want the requirements met, with anything missing or wrong in the free text. Iterate until approved.
+Check traceability both ways before showing it: every requirement is satisfied somewhere in the design, and every decision traces to a requirement. Then show the document as the Showing a document section says. Its summary opens with each key decision quoted, its paragraph, in the document's order, as the things to review, then summarises the rest for discussion: the main flows and design concepts, the parts, what each is for and how the work moves through them, in a few lines, then anything that does not trace. It leaves out the data fields and types, the operations table, the correctness properties, the error-handling rows and the testing strategy. Ask with the AskUserQuestion tool, header `Approve`, options `Approved` and `Changes needed`, whether this design is how they want the requirements met, with anything missing or wrong in the free text. Iterate until approved.
 
 ## 6. Write the task list
 
@@ -121,7 +127,7 @@ Read `${CLAUDE_SKILL_DIR}/spec-template/tasks.md`, then write `tasks.md` with:
 - **Notes**: conventions the executor should follow.
 - **Task Dependency Graph**: the JSON `waves` block, where each wave depends only on earlier waves. Every leaf task appears exactly once, optional test tasks included. Task numbers only identify tasks; the waves decide the order of execution.
 
-Then show the author the document and ask with the AskUserQuestion tool, header `Approve`, options `Approved` and `Changes needed`, whether these tasks build the design in an order they accept, with anything missing or wrong in the free text. Iterate until approved.
+Then show the document as the Showing a document section says. Its summary is a table with one row per leaf task in wave order, with columns for the wave, the task's number, what it builds in a line, whether it is an optional test, the requirements it cites and the design property it names if any; none of a task's detail bullets. Ask with the AskUserQuestion tool, header `Approve`, options `Approved` and `Changes needed`, whether these tasks build the design in an order they accept, with anything missing or wrong in the free text. Iterate until approved.
 
 ## 7. Hand off
 

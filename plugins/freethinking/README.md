@@ -30,11 +30,16 @@ To update by hand:
 claude plugin update freethinking@freethinkingit
 ```
 
+Specs moved from `.claude/specs/` to `.freethinking/specs/` in 0.14.0. In a
+repository with specs under the old folder, run
+`git mv .claude/specs .freethinking/specs` once: `start-task` and
+`implement-spec` look only in the new folder.
+
 ## Skills
 
 | Skill | Run it with | What it does |
 | ----- | ----------- | ------------ |
-| `start-task` | `/freethinking:start-task <task>`, or ask Claude to change something, or to start or spec a task | The front door for any change: reads the code the request touches, then sends one contained change to the `task-executor` agent, a defect to `bugfix` and everything else to a spec, asking you before taking either of the first two. On the spec route, writes `requirements.md`, `design.md` and `tasks.md` in `.claude/specs/<task>/` before any code, following the team template, with you approving each document before the next. |
+| `start-task` | `/freethinking:start-task <task>`, or ask Claude to change something, or to start or spec a task | The front door for any change: reads the code the request touches, then sends one contained change to the `task-executor` agent, a defect to `bugfix` and everything else to a spec, asking you before taking either of the first two. On the spec route, writes `requirements.md`, `design.md` and `tasks.md` in `.freethinking/specs/<task>/` before any code, following the team template, showing you each document as its path and a short summary and asking you to approve it before the next. |
 | `implement-spec` | `/freethinking:implement-spec [task] [task\|wave\|spec]`, or ask Claude to implement, build or continue a spec | Builds a task from its approved spec, wave by wave from `tasks.md`, each leaf task in its own sub-agent, ticking a task only once its tests pass, running the full suite at the end of every wave, and handing back to you after each task, after each wave, or only once every wave is done (with a short report after each wave and a final review of the whole run), whichever you chose. Each discovery outside the task in hand is listed with its size and the choice between a task and an issue. Pauses with a proposal when the design cannot be followed, and hands off to `pr` when the spec is done. |
 | `bugfix` | `/freethinking:bugfix <ticket> [what you already know]`, or ask Claude to fix a bug | Reads the ticket, and anything you already know that you put after it, reproduces the bug before touching code, confirms the root cause with you, fixes the cause with a regression test, verifies the fix, then hands off to `pr` or leaves its findings on the ticket. |
 | `pr`  | `/freethinking:pr [ticket] [base-branch]`, or ask Claude to open a PR | Takes the ticket as its first argument and reads it, offers to create the branch and commit if needed, walks the branch's changes with you one at a time with a short set of review prompts, drafts the title and description from your answers, and opens the PR with `gh` once you approve. Needs the `gh` CLI signed in. |
@@ -114,18 +119,21 @@ changes come from a spec wave.
 
 A repository can keep its own versions of the plugin's template files in a
 `.freethinking/` folder at its root, laid out as `<skill>/<file>.md`, such as
-`.freethinking/report/handback.md`. A file there replaces the plugin's file of
-the same name whole; nothing is merged. Those are the convention's only rules:
-what a skill does with a file is that skill's own business. This release
-applies the convention to the `report` skill's templates, one per mode. The
-`report` skill
-reads them as shapes to write in and ignores any action a template asks for,
-as its own text says. A repository's `handback.md` may use its own sections:
-`implement-spec` reads a wave report by what it holds, problems, what was done,
-checks, files and the next step, and the plugin's own evals grade only the
-plugin's template, so renaming sections costs nothing but the two verdict lines
-being found by content rather than by name. The spec templates of `start-task` and the default
-pull request template of `pr` are candidates to move there later.
+`.freethinking/report/handback.md`. The same folder holds the specs:
+`start-task` writes each task's three documents to
+`.freethinking/specs/<task>/`, and `implement-spec` reads them there. A file
+under a `<skill>/` folder replaces the plugin's file of the same name whole;
+nothing is merged. Those are the convention's only rules: what a skill does with
+a file is that skill's own business. This release applies the convention to the
+`report` skill's templates, one per mode. The `report` skill reads them as
+shapes to write in and ignores any action a template asks for, as its own text
+says. A repository's `handback.md` may use its own sections: `implement-spec`
+reads a wave report by what it holds, problems, what was done, checks, files and
+the next step, and the plugin's own evals grade only the plugin's template, so
+renaming sections costs nothing but the two verdict lines being found by content
+rather than by name. The spec templates of `start-task` and the default pull
+request template of `pr` are candidates to move under `.freethinking/<skill>/`
+later.
 
 ## What the plugin runs and sends
 
@@ -147,6 +155,6 @@ plugin's `rules/` folder.
 No skill, agent or hook reads a credential, runs a package launcher or sends
 anything anywhere else.
 
-The source repository's `evals/` and `.claude/specs/` folders are its test
+The source repository's `evals/` and `.freethinking/specs/` folders are its test
 suite and its design records. They sit outside the plugin, and an installed
 plugin never runs them.

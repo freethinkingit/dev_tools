@@ -151,10 +151,11 @@ the worked example.
   files and git state only; nothing it writes is loaded as configuration.
 - The harness puts the workspace's git status into the session context at
   start, so a skill can know the branch and dirty state without running git.
-- Edits to files under `.claude/` in the workspace are refused even when Edit
-  is granted, and so is a shell fallback. A skill that writes there (ticking a
-  spec's task list) cannot be graded on that write; grade the rest and expect
-  the skill to report the refusal.
+- Writes and edits under `.claude/` in the workspace are refused even when
+  Write or Edit is granted, and so is a shell fallback; a path-scoped grant such
+  as `Write(.claude/**)` does not lift it, and a committed `CLAUDE.md` is not
+  loaded. Specs live under `.freethinking/specs/`, which the sandbox lets a
+  skill write, so a spec being written or ticked can be graded there.
 - A prompt that starts with `/freethinking:<skill>` is expanded before the model
   runs, so a `tool_used` grader on `Skill` never fires for it; grade the
   behaviour instead. A Skill call the model makes later, to another skill, is

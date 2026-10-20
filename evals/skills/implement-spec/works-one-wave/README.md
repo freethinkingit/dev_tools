@@ -9,7 +9,7 @@ skill in its handback shape: Problems first, or `No problems.`, then Done.
 ## What the scaffold builds
 
 A small Python package on branch `calc-subtract` with a committed spec under
-`.claude/specs/calc-subtract/`: two tasks in two waves (add `subtract`, then
+`.freethinking/specs/calc-subtract/`: two tasks in two waves (add `subtract`, then
 test it). The package is `evals/fixtures/calc/`, built by
 `evals/fixtures/setup.sh`; the spec is this case's `files/` folder, copied in
 before that script's one commit. Tests run with `python3 -m unittest`. `bin/`
@@ -31,6 +31,10 @@ writes the hand-back by invoking the Skill tool with `freethinking:report` and
 - `adds-subtract`: `calc/ops.py` contains the function task 1 describes.
 - `leaves-wave-1`: `tests/test_ops.py` gained no `test_subtract`, so wave 1 was
   not started.
+- `ticks-task-1`: `.freethinking/specs/calc-subtract/tasks.md` has `- [x] 1.`,
+  so the tick landed after the wave review.
+- `leaves-task-2-unticked`: the same file still has `- [ ] 2.`, so wave 1 was
+  not ticked either.
 - `reviews-the-wave`: the report carries the wave review's verdict, so the
   reviewer agent was launched.
 - `invokes-report`: the Skill tool was called with the `report` skill, so the
@@ -40,12 +44,9 @@ writes the hand-back by invoking the Skill tool with `freethinking:report` and
 
 ## What it cannot check
 
-The tick. Inside an eval run, Claude Code refuses edits to files under
-`.claude/` even when Edit is granted, so the skill's attempt to tick task 1 is
-denied, as is a shell fallback. The skill is expected to report that and stop,
-which it does; a grader on the tick would only ever test the sandbox. Observed
-on Claude Code 2.1.x; if that changes, add a grader on
-`.claude/specs/calc-subtract/tasks.md` for `[x] 1.`.
+Whether the tick came after the wave review rather than before it: the
+graders read the file at the end of the run, not when it changed. The
+transcript shows the order.
 
 ## Running it
 

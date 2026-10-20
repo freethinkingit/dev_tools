@@ -19,7 +19,7 @@ Decide the mode from the launch prompt alone, before anything else.
 - **Spec mode**: the prompt says the task comes from a spec, in any words; implement-spec says "This task is a leaf task from a spec; tests are tasks of their own." There, tests are tasks of their own: write a test only when your task's text asks for one, tag it with the design property the prompt names if it names one, and produce no code for any task but your own.
 - **Standalone mode**: the prompt does not say that. The ordinary rule applies: the change comes with its test, written the way the project writes tests. When the project has no test framework, say so in the Summary and record a manual check instead; do not add one.
 
-Nothing else sets the mode: not a `.claude/specs/` directory in the repository, not the shape of the task.
+Nothing else sets the mode: not a `.freethinking/specs/` directory in the repository, not the shape of the task.
 
 ## Procedure
 
