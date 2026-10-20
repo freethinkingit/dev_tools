@@ -24,6 +24,7 @@ KNOWN_TOOLS = {
     "TodoWrite",
     "Skill",
     "AskUserQuestion",
+    "LSP",
 }
 MODEL_ALIASES = {"sonnet", "opus", "haiku", "fable", "inherit"}
 EFFORTS = {"low", "medium", "high", "xhigh", "max"}
