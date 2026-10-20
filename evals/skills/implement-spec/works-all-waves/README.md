@@ -36,6 +36,8 @@ each wave report and the final report by invoking the Skill tool with
 - `adds-subtract`: `calc/ops.py` contains the function task 1 describes.
 - `works-wave-1`: `tests/test_ops.py` gained `test_subtract`, so wave 1 ran
   without a hand-back after wave 0. works-one-wave grades the opposite.
+- `ticks-both-tasks`: `.freethinking/specs/calc-subtract/tasks.md` has
+  `- [x] 1.` and then `- [x] 2.`, so both waves were ticked.
 - `reports-every-wave`: the final report carries the wave review line of
   wave 1, so the report covers each wave and not only the first.
 - `reviews-the-run`: the final report carries the final review's verdict, so
@@ -53,11 +55,8 @@ each wave report and the final report by invoking the Skill tool with
 
 ## What it cannot check
 
-The ticks, as in works-one-wave: they land in
-`.freethinking/specs/calc-subtract/tasks.md`, since the eval sandbox allows
-writes under `.freethinking/`, and the case passes at three runs since the
-move, but no grader reads that file yet. The follow-up is a grader on that
-file for the ticks. At spec cadence a tick must not end
+Whether each tick came after its wave review: the graders read the file at
+the end of the run, not when it changed. At spec cadence a tick must not end
 the run early; if it does, `works-wave-1` and `reviews-the-run` fail, and the
 transcript shows the hand-back after wave 0.
 

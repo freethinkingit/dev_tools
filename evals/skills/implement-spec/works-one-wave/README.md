@@ -31,6 +31,10 @@ writes the hand-back by invoking the Skill tool with `freethinking:report` and
 - `adds-subtract`: `calc/ops.py` contains the function task 1 describes.
 - `leaves-wave-1`: `tests/test_ops.py` gained no `test_subtract`, so wave 1 was
   not started.
+- `ticks-task-1`: `.freethinking/specs/calc-subtract/tasks.md` has `- [x] 1.`,
+  so the tick landed after the wave review.
+- `leaves-task-2-unticked`: the same file still has `- [ ] 2.`, so wave 1 was
+  not ticked either.
 - `reviews-the-wave`: the report carries the wave review's verdict, so the
   reviewer agent was launched.
 - `invokes-report`: the Skill tool was called with the `report` skill, so the
@@ -40,12 +44,9 @@ writes the hand-back by invoking the Skill tool with `freethinking:report` and
 
 ## What it cannot check
 
-The tick. Its tick of task 1 lands in
-`.freethinking/specs/calc-subtract/tasks.md`, since the eval sandbox allows
-writes under `.freethinking/`: in a run on 2026-10-19 the sandbox's `tasks.md`
-was modified with `[x] 1.` and `[ ] 2.`. No grader reads that file yet, so the
-tick is seen but not scored. The follow-up is a grader on that file for
-`[x] 1.`.
+Whether the tick came after the wave review rather than before it: the
+graders read the file at the end of the run, not when it changed. The
+transcript shows the order.
 
 ## Running it
 
