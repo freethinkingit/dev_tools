@@ -1,5 +1,5 @@
 ---
 type: file_exists
-path: '.claude/specs/**'
+path: '.freethinking/specs/**'
 exists: false
 ---

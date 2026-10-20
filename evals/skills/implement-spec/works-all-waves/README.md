@@ -11,7 +11,7 @@ also carries the `Final review of the run:` line.
 ## What the scaffold builds
 
 The same workspace as works-one-wave: a small Python package on branch
-`calc-subtract` with a committed spec under `.claude/specs/calc-subtract/`,
+`calc-subtract` with a committed spec under `.freethinking/specs/calc-subtract/`,
 two tasks in two waves (add `subtract`, then test it). The package is
 `evals/fixtures/calc/`, built by `evals/fixtures/setup.sh`; the spec is this
 case's `files/` folder, a copy of works-one-wave's, copied in before that
@@ -53,11 +53,13 @@ each wave report and the final report by invoking the Skill tool with
 
 ## What it cannot check
 
-The ticks, for the reason works-one-wave gives: inside an eval run, Claude
-Code refuses edits under `.claude/`, so each tick is denied and the skill is
-expected to say so. At spec cadence that refusal must not end the run early;
-if it does, `works-wave-1` and `reviews-the-run` fail, and the transcript
-shows the hand-back after wave 0.
+The ticks, as in works-one-wave: they should now land in
+`.freethinking/specs/calc-subtract/tasks.md`, since the eval sandbox allows
+writes under `.freethinking/`, but the case has not been rerun since the move
+and no grader reads that file yet. The follow-up is to rerun the case and add a
+grader on that file for the ticks. At spec cadence a tick must not end
+the run early; if it does, `works-wave-1` and `reviews-the-run` fail, and the
+transcript shows the hand-back after wave 0.
 
 ## Running it
 
