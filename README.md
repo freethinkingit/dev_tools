@@ -88,13 +88,14 @@ a real model call on your own Claude seat, so evals run by hand, not in CI. The
 dollar figures printed are list-price estimates, not charges.
 
 ```bash
-make help                       # list the eval targets that exist
-make eval-skill-bugfix          # one skill
-make eval-rule-workflow         # one rule
-make eval-hook                  # the hook
-make eval-agent-task-executor   # the task-executor agent
-make eval-agent-wave-reviewer   # the wave-reviewer agent
-make eval                       # everything
+make help                           # list the eval targets that exist
+make eval-skill-bugfix              # one skill
+make eval-rule-workflow             # one rule
+make eval-hook                      # the hook
+make eval-agent-task-executor       # the task-executor agent
+make eval-agent-wave-reviewer       # the wave-reviewer agent
+make eval-agent-document-reviewer   # the document-reviewer agent
+make eval                           # everything
 make eval-skill-pr EVAL_ARGS="--runs 2 --ablation with-without"   # pass extra flags through
 make eval EVAL_MAX_COST_USD=5                                     # raise the per-invocation cost ceiling
 ```

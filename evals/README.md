@@ -198,6 +198,10 @@ gets one line in the Makefile; a new skill or rule folder gets its `make`
 target with no Makefile change.
 
 `checks/test_eval_cases.py`, run by `make validate`, keeps every case's tag,
-graders and scaffold valid.
+graders and scaffold valid, and `checks/test_frontmatter_yaml.py` checks that
+every frontmatter parses. Single-quote a frontmatter value that holds `: ` or
+` #`, doubling any `'` inside it, and put a grader's regex in single quotes: an
+unquoted `: ` makes the harness skip the case with "invalid YAML frontmatter",
+and an unquoted ` #` starts a comment that silently cuts the value short.
 
 Reference: https://code.claude.com/docs/en/plugin-evals

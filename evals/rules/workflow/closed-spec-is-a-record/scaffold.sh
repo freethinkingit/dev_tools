@@ -4,8 +4,9 @@
 # files/.freethinking/specs/ with every task ticked, so the spec reads as merged
 # work. The files are copied in before the setup script runs so that its one
 # commit holds them, and a file at a fixture path, calc/ops.py and
-# tests/test_ops.py here, replaces the fixture's copy. No wrappers: the case
-# grants no Bash.
+# tests/test_ops.py here, replaces the fixture's copy. The Makefile's workflow
+# target grants Bash with bin on the PATH, but this scaffold builds no wrappers:
+# the case needs no git.
 set -euo pipefail
 ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel)
 cp -R "$(dirname "$0")/files/." .
