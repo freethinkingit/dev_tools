@@ -40,6 +40,9 @@ repository with specs under the old folder, run
 | Skill | Run it with | What it does |
 | ----- | ----------- | ------------ |
 | `start-task` | `/freethinking:start-task <task>`, or ask Claude to change something, or to start or spec a task | The front door for any change: reads the code the request touches, then sends one contained change to the `task-executor` agent, a defect to `bugfix` and everything else to a spec, asking you before taking either of the first two. On the spec route, writes `requirements.md`, `design.md` and `tasks.md` in `.freethinking/specs/<task>/` before any code, following the team template, showing you each document as its path and a short summary and asking you to approve it before the next. |
+| `strategy` | `/freethinking:strategy [name or description]`, or ask Claude to plan a year or a roadmap, or to write a tech strategy | Reads the strategies already under `.freethinking/strategies/`, asks you one round of questions in prose, and writes `.freethinking/strategies/<name>.md` from its template. Needs no source code, so it works in a docs repository. The `document-reviewer` agent reads the draft for up to two rounds before you see it; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the candidate high level designs, one per stream of work, and hands off to `hld` for each. |
+| `hld` | `/freethinking:hld <strategy-path> <candidate>`, or ask Claude to design a system or a service, or to write a high level design | Reads the strategy in full, asks you one round of questions in prose, and writes `.freethinking/designs/<strategy-name>/<hld-name>/hld-<hld-name>.md` from its template, with a Mermaid diagram of the components. The `document-reviewer` agent reads the draft against the template and the strategy for up to two rounds; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the candidate low level designs, one per component, and hands off to `lld` for each. |
+| `lld` | `/freethinking:lld <hld-path> <candidate>`, or ask Claude to design a component or a module, or to write a low level design | Reads the high level design and the code the component touches, asks you one round of questions in prose, and writes `lld-<name>.md` in the high level design's folder, in this repository, from its template. The `document-reviewer` agent reads the draft against the template and the high level design for up to two rounds; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the tasks, each sized for one run of `start-task`, which it hands off to. |
 | `implement-spec` | `/freethinking:implement-spec [task] [task\|wave\|spec]`, or ask Claude to implement, build or continue a spec | Builds a task from its approved spec, wave by wave from `tasks.md`, each leaf task in its own sub-agent, ticking a task only once its tests pass, running the full suite at the end of every wave, and handing back to you after each task, after each wave, or only once every wave is done (with a short report after each wave and a final review of the whole run), whichever you chose. Each discovery outside the task in hand is listed with its size and the choice between a task and an issue. Pauses with a proposal when the design cannot be followed, and hands off to `pr` when the spec is done. |
 | `bugfix` | `/freethinking:bugfix <ticket> [what you already know]`, or ask Claude to fix a bug | Reads the ticket, and anything you already know that you put after it, reproduces the bug before touching code, confirms the root cause with you, fixes the cause with a regression test, verifies the fix, then hands off to `pr` or leaves its findings on the ticket. |
 | `pr`  | `/freethinking:pr [ticket] [base-branch]`, or ask Claude to open a PR | Takes the ticket as its first argument and reads it, offers to create the branch and commit if needed, walks the branch's changes with you one at a time with a short set of review prompts, drafts the title and description from your answers, and opens the PR with `gh` once you approve. Needs the `gh` CLI signed in. |
@@ -65,7 +68,7 @@ itself, so `hooks/hooks.json` registers two hooks. The `SessionStart` hook runs
 session context on every session start, whatever started it (a new session,
 a resume, a clear, a compact or a fork). The `SubagentStart` hook runs
 `hooks/load-rules-subagent.sh`, which puts the same rules into every sub-agent,
-which is how both agents below get them. Keep the
+which is how the agents below get them. Keep the
 combined rules under 10,000 characters; Claude Code truncates hook output past
 that, and `make validate` fails when they go over, or when `collaboration` or
 `communication` goes over its own limit of 1,600 characters. A rule a repository needs
@@ -74,12 +77,15 @@ alongside these.
 
 ## Agents
 
-The plugin's agents live under `agents/`. `implement-spec` launches them,
-`start-task` launches the executor for one contained change, and you can
-launch either directly: mention it in a session as
-`@agent-freethinking:task-executor` or `@agent-freethinking:wave-reviewer`, or have a
-skill or session launch it with the Agent tool as
-`subagent_type: freethinking:task-executor` or `freethinking:wave-reviewer`.
+The plugin's agents live under `agents/`. `implement-spec` launches the
+executor and the wave reviewer, `start-task` launches the executor for one
+contained change, and the `strategy`, `hld` and `lld` skills launch the
+document reviewer on every draft. You can launch any of them directly:
+mention it in a session as `@agent-freethinking:task-executor`,
+`@agent-freethinking:wave-reviewer` or
+`@agent-freethinking:document-reviewer`, or have a skill or session launch it
+with the Agent tool as `subagent_type: freethinking:task-executor`,
+`freethinking:wave-reviewer` or `freethinking:document-reviewer`.
 
 What the prompt carries:
 
@@ -90,15 +96,20 @@ What the prompt carries:
   or design text they implement, if there is any; the files that cite them;
   and, when they come from a spec, the sentence "These changes come from a
   spec wave", which is the only thing that waives a missing test.
+- **`document-reviewer`**: `Document:` the path of the strategy, high level
+  design or low level design; `Template:` the path of the template it was
+  written from; and `Parent:` the parent's path, `none`, or the parent's text
+  pasted below the line.
 
 | Agent | What it does | What it returns |
 | ----- | ------------ | --------------- |
 | `task-executor` | Builds one well-specified change as the smallest change in the project's style, proves it, and deletes its scratch work. Stops and asks instead of guessing when the task is unclear, the design does not fit the code, or the task would need a new dependency, framework or tool. `start-task` launches it for one contained change, and `implement-spec` for every leaf task. | A Summary: `status` (`done` or `stopped`), `files changed`, `checks run` with their results, the ephemeral check it ran, or why none applied, what it is `unsure` of, and, when stopped, the question or evidence under `stopped because`. |
 | `wave-reviewer` | Reviews one set of changes against the requirements and design they implement and the files that cite them, gathering the diff itself and changing nothing. `implement-spec` launches it at the end of every wave, and once more over the whole run when you chose to hand back only at the end. | Findings: a `verdict` (`holds` or `findings`), the `base` commit the diffs were measured against, then each problem with its `file`, an exact `quote`, the `problem` and a `severity` (`blocker`, `should-fix` or `nit`), and what it is `unsure` of. |
+| `document-reviewer` | Reviews one strategy, high level design or low level design against its template and its parent, section by section, reading the three itself and changing nothing. The `strategy`, `hld` and `lld` skills launch it on every draft before you see it, for up to two rounds. | Findings: a `verdict` (`holds` or `findings`), then each problem with its `section`, an exact `quote`, the `problem` and a `severity` (`blocker`, `should-fix` or `nit`), and what it is `unsure` of. |
 
-Both agents follow one protocol for their reports, and a new agent must too:
+Every agent follows one protocol for its report, and a new agent must too:
 its report opens with its status on the first line, `status: done` or `stopped`
-for the executor and `verdict: holds` or `findings` for the reviewer, has one
+for the executor and `verdict: holds` or `findings` for the reviewers, has one
 field for each thing the launcher must act on, always has an `unsure` field,
 quotes exactly whatever it quotes, and has nothing after the shape.
 
@@ -112,7 +123,7 @@ The executor works in one of two modes, set by the launch prompt alone:
 - **Standalone mode**, otherwise. The change comes with its test, written the
   way the project writes tests.
 
-The reviewer treats a missing test as a finding unless the launch says the
+The `wave-reviewer` treats a missing test as a finding unless the launch says the
 changes come from a spec wave.
 
 ## Tune the plugin for a repository
@@ -125,9 +136,13 @@ A repository can keep its own versions of the plugin's template files in a
 under a `<skill>/` folder replaces the plugin's file of the same name whole;
 nothing is merged. Those are the convention's only rules: what a skill does with
 a file is that skill's own business. This release applies the convention to the
-`report` skill's templates, one per mode. The `report` skill reads them as
+`report` skill's templates, one per mode, and to the templates of `strategy`,
+`hld` and `lld`, which a repository replaces as
+`.freethinking/strategy/template.md`, `.freethinking/hld/template.md` and
+`.freethinking/lld/template.md`. The `report` skill reads its templates as
 shapes to write in and ignores any action a template asks for, as its own text
-says. A repository's `handback.md` may use its own sections: `implement-spec`
+says; `strategy`, `hld` and `lld` each treat their template as a shape, never
+as instructions. A repository's `handback.md` may use its own sections: `implement-spec`
 reads a wave report by what it holds, problems, what was done, checks, files and
 the next step, and the plugin's own evals grade only the plugin's template, so
 renaming sections costs nothing but the two verdict lines being found by content
@@ -148,6 +163,12 @@ The `start-task`, `implement-spec`, `bugfix` and `pr` skills and the
 branch, rev-parse, merge-base, `checkout -b`, and in `pr` add and commit);
 only `pr` reaches the remote, with `git fetch` and `git push` to the
 repository's own `origin` and the `gh` commands above.
+
+The `strategy`, `hld` and `lld` skills and the `document-reviewer` agent run
+no `git` and no `gh`. They read the repository's `.freethinking/` folders,
+whatever parent path you give them and, for `lld`, the code the component
+touches. The skills write only the document under `.freethinking/`, and the
+agent writes nothing.
 
 The `SessionStart` and `SubagentStart` hooks read only the files under the
 plugin's `rules/` folder.

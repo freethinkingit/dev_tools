@@ -1,9 +1,9 @@
 ---
-description: On a feature branch with commits, a GitHub origin and a signed-in gh (both provided by scaffold stubs), pr is passed the ticket #7 as its argument, reads it with the fake gh, and opens the PR with the ticket in the title and a Closes line in Why. Needs the Makefile's pr target, which grants Bash, runs the scaffold, and puts the stub bin on the PATH.
+description: 'On a feature branch with commits, a GitHub origin and a signed-in gh (both provided by scaffold stubs), pr is passed the ticket #7 as its argument, reads it with the fake gh, and opens the PR with the ticket in the title and a Closes line in Why. Needs the Makefile''s pr target, which grants Bash, runs the scaffold, and puts the stub bin on the PATH.'
 tags: [skill, pr]
 max_turns: 20
 allowed_tools: [Read, Glob, Grep]
-expected_outcome: Claude reads ticket #7 with `gh issue view`, takes the author's advance answers to all five review prompts without waiting, drafts a title starting with [#7] and a description whose Why carries `Closes #7` once and whose Changes bullet carries the author's words, pushes, calls `gh pr create` with that title, and reports the PR URL the stub returns.
+expected_outcome: 'Claude reads ticket #7 with `gh issue view`, takes the author''s advance answers to all five review prompts without waiting, drafts a title starting with [#7] and a description whose Why carries `Closes #7` once and whose Changes bullet carries the author''s words, pushes, calls `gh pr create` with that title, and reports the PR URL the stub returns.'
 ---
 /freethinking:pr #7
 
