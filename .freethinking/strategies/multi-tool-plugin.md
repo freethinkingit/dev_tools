@@ -2,18 +2,25 @@
 
 ## Introduction and horizon
 
-The freethinking plugin gives engineers a disciplined way to work: specs approved before code, bugs reproduced before fixes, tests with each change, and team rules in every session. Today it runs only in Claude Code. This strategy takes it to every coding agent its author and its users work in, starting with Cursor and Codex, from one source rather than a copy per tool. It serves three readers named in the spike, freethinkingit/dev_tools#61:
+The freethinking plugin gives engineers a disciplined way to work: specs approved before code, bugs reproduced before fixes, tests with each change, and team rules in every session. Today it runs only in Claude Code. This strategy takes it to every coding agent its author and the engineers who use it work in, starting with Cursor and Codex, from one source rather than a copy per tool. It serves three people named in the spike, freethinkingit/dev_tools#61:
 - the operator, an engineer who moves between agents;
 - the user, who uses the software the operator builds;
 - the owner, who maintains the plugin.
 
-The plugin formats of these agents change month to month, so the strategy is open-ended rather than dated. The author reviews this strategy every week.
+The horizon is this quarter, from 22 October to 31 December 2026. The plugin formats of these agents change month to month, so the author reviews this strategy every week and sets the next horizon at the quarter's end.
 
 ## Goals
 
 The goals are listed in the order the author ranked them; the first takes the author's time when two compete.
 
-1. **Claude Code, Cursor and Codex at the closest parity each allows.** In Cursor and Codex, an operator installs the plugin with one command, and its rules reach every session and sub-agent. Its skills, agents and hand-offs then behave as they do in Claude Code, as far as the tool allows. Measure: the shared eval cases, run in each tool and scored against Claude Code's results on the same cases. Worth: the author stops switching back to Claude Code for the plugin. Users get the plugin's discipline whichever of the three their engineer works in.
+This quarter the targets are each agent's command-line tool. The IDEs may become targets later. Parity means the plugin's three core parts work in the agent, each through whatever that agent supports for it, in its own format where it has one:
+- its skills;
+- its sub-agents, the plugin's named agents;
+- its rules, in every session and sub-agent.
+
+Other gaps, such as a question tool that does not block, are recorded and do not count against parity.
+
+1. **Claude Code, Cursor and Codex at the closest parity each allows.** In Cursor and Codex, an operator installs the plugin with one command, and its rules reach every session and sub-agent. Its skills, agents and hand-offs then behave as they do in Claude Code, as far as the tool allows. Measure: the shared eval cases for skills, sub-agents and rules pass in each tool, scored against Claude Code's results. Worth: the author stops switching back to Claude Code for the plugin. Users get the plugin's discipline whichever of the three their engineer works in.
 2. **Kiro next, then every agent that gains a format.** Kiro is brought up to the closest parity it allows, measured as for goal 1. Every other agent with a plugin or skills format is installed for the weekly format watch and appears in its report with its gaps, whether or not it is brought up yet. No agent is ruled out, because their support changes quickly. Worth: the author built the plugin partly to stop switching between Kiro and Claude Code, and the next agent should cost less than the last.
 3. **One source, no hand-kept copies.** Each tool's packaging comes from the one source, either read as it is or generated from it at build time. A free check fails when a generated file is out of date. Measure: no file a tool reads is edited by hand outside the source. Worth: the owner keeps one plugin in step instead of several.
 4. **Know within a week when a tool's support changes.** A weekly run reports which plugin parts each tool supports. It catches both a gap that opens, such as a broken hook, and one that closes, such as a tool gaining named agents. Measure: the weekly report runs, and it names any change from the week before. Worth: glue is retired as soon as a tool no longer needs it, and breakage is seen before an operator meets it.
@@ -62,7 +69,7 @@ It keeps hooks and agents Claude-only, leaves Claude-only syntax in its shared s
 
 1. **Core and glue.** Separates the tool-neutral text of skills, rules and agents from what is specific to one tool. It defines the glue each tool needs, such as reading arguments from the request, running prefetch commands as a first step, and naming files relative to the skill. It also adds the build step and its free check for anything generated. Serves goals 1, 2 and 3. First; every other stream builds on it.
 2. **Tool packaging and install.** Brings up one destination at a time, each with its own manifest, its hook format and its install path. Cursor and Codex come first, beside Claude Code, then Kiro, then other agents as they gain a format. Serves goals 1 and 2. Starts once the core and glue stream has its first tool-neutral skill.
-3. **Cross-tool evals.** The shared eval cases, a runner per tool, and each tool's own cases, scored against Claude Code's results. A destination is done when its runner's results meet the parity bar for that tool. Serves goals 1 and 2. Runs alongside the packaging stream, one destination ahead of or with it.
+3. **Cross-tool evals.** The shared eval cases, a runner per tool, and each tool's own cases, scored against Claude Code's results. A destination is done when its runner shows the plugin's skills, sub-agents and rules working in that tool. Serves goals 1 and 2. Runs alongside the packaging stream, one destination ahead of or with it.
 4. **Format watch.** Rebuilds the spike's test plugin in the repository from its description in #61's result comment. Then a weekly automation re-runs its three probe prompts in every installed agent and reports what each supports and what changed since the week before. The automation runs in Superset, the author's agent workspace, which schedules agent tasks. Serves goals 2 and 4. Can start now.
 5. **MCP delivery channel.** Designs an MCP server that serves the plugin's parts MCP can carry: skill text, templates and possibly rules. It decides whether the server runs locally or is hosted on AWS. It settles four questions first:
    - do other agents add MCP server instructions to the session, as Claude Code does;
@@ -75,13 +82,15 @@ It keeps hooks and agents Claude-only, leaves Claude-only syntax in its shared s
 ## Risks
 
 - **A format changes under a shipped destination.** Likely: Cursor's CLI started running plugin hooks in August 2026, according to its changelog. Kiro moved its powers, its package format, to the open Agent Plugins format in August 2026, according to Kiro's blog; a power still carries only skills and MCP servers. Kiro's changelog says its V3 engine becomes the default at the end of October 2026. Costly when an operator meets it first. The weekly format watch is there to see it first.
-- **Glue grows into a fork.** The Claude Code text and a tool's generated text could drift until they are two plugins. Moderate likelihood, costly to unwind. The core and glue stream keeps glue to measured gaps, the spike's for the first three tools and the weekly report's for the rest, and the weekly report retires glue a tool no longer needs.
-- **The plugin's approval gates do not hold in some tools.** Cursor's question tool does not block, so a skill can carry on before the author approves. Kiro has no question tool at all. Certain today. A gate that does not hold is recorded as a gap in that tool's evals, not hidden by glue, because no glue can make a tool wait for an answer it does not wait for.
-- **Eval costs multiply by the number of tools.** Each destination adds its own runs and a paid account for that tool, and the weekly format watch spends tokens in every installed agent each week. Certain. The shared cases start from the spike's three probe prompts. A tool's own cases are added only when a problem in that tool needs one.
+- **Glue grows into a fork.** The Claude Code text and a tool's generated text could drift until they are two plugins. Moderate likelihood, costly to unwind. The core and glue stream keeps glue to measured gaps, the spike's for Codex, Cursor and Kiro, and the weekly report's for the rest, and the weekly report retires glue a tool no longer needs.
+- **The plugin's approval gates do not hold in some tools.** None of the three has a blocking question tool. Cursor's does not block, so a skill can carry on before the author approves. Codex's question tool works only in its plan mode. Kiro has none. Certain today. A gate that does not hold is recorded as a gap in that tool's evals, not hidden by glue, because no glue can make a tool wait for an answer it does not wait for.
+- **Eval costs multiply by the number of tools.** Each destination adds its own runs and a paid account for that tool, and the weekly format watch spends tokens in every installed agent each week. Certain, and a moderate cost. The shared cases start from the spike's three probe prompts; #65 settles which of the existing cases under `evals/` join them. A tool's own cases are added only when a problem in that tool needs one.
 - **The MCP server becomes a service to run.** An AWS-hosted server needs authentication and uptime, and every session depends on the network. A single maintainer then carries that alone. Moderate likelihood if hosting is chosen. The MCP design weighs a local server against a hosted one before anything is built.
 
 ## Out of scope
 
+Anything this strategy does not name is out of scope this quarter. In particular:
+- The IDEs: Codex's IDE extension, the Cursor IDE and the Kiro IDE. They may become targets once the command-line tools reach parity.
 - Hand-kept copies of the plugin per tool, ruled out by goal 3.
 - Running evals in CI, ruled out by the constraints above.
 
