@@ -28,7 +28,7 @@ Other gaps, such as a question tool that does not block, are recorded and do not
 
 ## Current state
 
-The plugin is at version 0.16.0. It holds, in `plugins/ponderly/`:
+The plugin, whose version is the `version` field of `plugins/ponderly/.claude-plugin/plugin.json`, holds, in `plugins/ponderly/`:
 - eight skills;
 - three agents, `task-executor`, `wave-reviewer` and `document-reviewer`;
 - five rule files, loaded into every session and sub-agent by a session-start hook and a sub-agent-start hook;

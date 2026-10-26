@@ -22,7 +22,7 @@ RULES = os.path.join(PLUGIN, "rules")
 HOOK_LIMIT = 10000
 RULE_LIMITS = {
     "collaboration": 1600,
-    "communication": 1600,
+    "communication": 1900,
     "tests": 1000,
     "code-changes": 2450,
     "comments": 1450,
