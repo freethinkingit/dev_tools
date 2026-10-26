@@ -1,0 +1,7 @@
+---
+description: 'Invoked with no ticket and an advance context that names a reproduction command, bugfix states Symptom, Expected and Context back to the author before it runs anything. Taken from a real session in which bugfix 0.15.0 went straight to running the eval case with no read-back. The workspace is empty, so the command cannot run; the graders read the trace for the read-back and for no Bash call before it. Needs the Makefile''s bugfix target, which grants Bash.'
+tags: [skill, bugfix]
+max_turns: 10
+expected_outcome: 'Claude says no ticket was read and the text is the description, states Symptom (the states-symptom grader fails 0 of 3 runs), Expected (the grader passes) and Context (the case, the dates, the commit and the command) back to the author, names the reproduction as the lead from the advance context, and only then tries to reproduce; no diagnosis or fix.'
+---
+/freethinking:bugfix No ticket yet. The eval case evals/rules/workflow/bug-routes-to-bugfix fails its states-symptom grader (regex `symptom`, flags i, target trace) 0 of 3 runs, on this branch on 2026-10-21 and on origin/main at 97ac1ab on 2026-10-19, so it predates branch 50-design-skills. Every other grader of the case passes (score 0.80). Command: make eval-rule-workflow EVAL_ARGS="--case bug-routes-to-bugfix" EVAL_MAX_COST_USD=2. Not yet known whether the grader is wrong, the case gives too few turns, or the bugfix skill no longer states the symptom.

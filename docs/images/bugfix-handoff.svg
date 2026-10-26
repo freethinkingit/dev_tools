@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1212" viewBox="0 0 940 1212" role="img">
+<title>The bugfix skill hands back: Problems first, then Done with the root cause, the fix and the prevention, the checks that pass, the files changed, and Next, which says to open one pull request with /freethinking:pr #50.</title>
+<rect width="940" height="1212" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — bugfix</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● ## Problems</text>
+<text x="20" y="91" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  - **The `bugfix` change has no ticket.** The record of the investigation stays in this </text>
+<text x="38" y="131" fill="#e6e6e6" xml:space="preserve">conversation. The change sits on branch `50-design-skills`, outside issue #50's scope, so the </text>
+<text x="38" y="151" fill="#e6e6e6" xml:space="preserve">pull request should name it as a separate fix.</text>
+<text x="20" y="171" fill="#e6e6e6" xml:space="preserve">  - **The new YAML check also rejects one shape YAML allows.** A plain value followed by a ` # </text>
+<text x="38" y="191" fill="#e6e6e6" xml:space="preserve">comment` fails the check and has to be quoted. That is deliberate, because a stray ` #` silently </text>
+<text x="38" y="211" fill="#e6e6e6" xml:space="preserve">truncated two values in `opens-pr-with-ticket`. No file in the repository uses a trailing comment </text>
+<text x="38" y="231" fill="#e6e6e6" xml:space="preserve">today.</text>
+<text x="20" y="251" fill="#e6e6e6" xml:space="preserve">  - **The guard against invented figures is still open.** The skills can fill a thin answer with a </text>
+<text x="38" y="271" fill="#e6e6e6" xml:space="preserve">confident, made-up number, and nothing checks that each figure has a source. Options: add one </text>
+<text x="38" y="291" fill="#e6e6e6" xml:space="preserve">sentence to the reviewer's procedure so it flags figures with no source, or have the skills label </text>
+<text x="38" y="311" fill="#e6e6e6" xml:space="preserve">such figures as assumptions. You can also leave it with the reviewer tuning you chose to wait on.</text>
+<text x="20" y="331" fill="#e6e6e6" xml:space="preserve">  - **The reviewer's strictness is carried.** You chose to leave it until real use, so it goes in </text>
+<text x="38" y="351" fill="#e6e6e6" xml:space="preserve">the PR as a follow-up.</text>
+<text x="20" y="371" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="391" fill="#e6e6e6" xml:space="preserve">  ## Done</text>
+<text x="20" y="411" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="431" fill="#e6e6e6" xml:space="preserve">  - **Root cause.** The workflow rule's eval target granted no Bash. The `bugfix` skill has run `gh </text>
+<text x="38" y="451" fill="#e6e6e6" xml:space="preserve">issue view` while it loads since commit 1170121 on 2026-10-16. The `pr` skill runs `git` and `gh` </text>
+<text x="38" y="471" fill="#e6e6e6" xml:space="preserve">while it loads. In that sandbox both loads failed with "Shell command permission check failed ... </text>
+<text x="38" y="491" fill="#e6e6e6" xml:space="preserve">Permission to use Bash has been denied". The skill's text never reached the session. The routing </text>
+<text x="38" y="511" fill="#e6e6e6" xml:space="preserve">graders passed on the Skill call alone, and only `states-symptom` noticed. Real users are not </text>
+<text x="38" y="531" fill="#e6e6e6" xml:space="preserve">affected, because each skill's `allowed-tools` pre-approves those commands.</text>
+<text x="20" y="551" fill="#e6e6e6" xml:space="preserve">  - **Fix.** The Makefile's `eval-rule-workflow` line now grants `--allow-tools Bash`, with the </text>
+<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">`bin` wrappers first on the PATH. `bug-routes-to-bugfix` and `pr-routes-to-pr-skill` each have a </text>
+<text x="38" y="591" fill="#e6e6e6" xml:space="preserve">scaffold that builds the calc fixture with those wrappers.</text>
+<text x="20" y="611" fill="#e6e6e6" xml:space="preserve">  - **Prevention.** Both routing cases carry a new `skill-loads` grader. It fails when the trace </text>
+<text x="38" y="631" fill="#e6e6e6" xml:space="preserve">holds "Shell command permission check failed". The two kept traces from before the fix each hold </text>
+<text x="38" y="651" fill="#e6e6e6" xml:space="preserve">that line once, so the grader would have failed them.</text>
+<text x="20" y="671" fill="#e6e6e6" xml:space="preserve">  - **Task 11, the YAML frontmatter check (Requirements 9.3, 9.4).** </text>
+<text x="38" y="691" fill="#e6e6e6" xml:space="preserve">`checks/test_frontmatter_yaml.py` covers every case prompt, grader, skill and agent frontmatter. </text>
+<text x="38" y="711" fill="#e6e6e6" xml:space="preserve">It failed on each of seven planted faults and on both earlier broken files in their old form. A </text>
+<text x="38" y="731" fill="#e6e6e6" xml:space="preserve">Ruby YAML parser accepts all 304 real files. It caught `opens-pr-with-ticket`, whose </text>
+<text x="38" y="751" fill="#e6e6e6" xml:space="preserve">`expected_outcome` a stray ` #7` had cut down to "Claude reads ticket", and both values there are </text>
+<text x="38" y="771" fill="#e6e6e6" xml:space="preserve">now quoted.</text>
+<text x="20" y="791" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="811" fill="#e6e6e6" xml:space="preserve">  ## Checks</text>
+<text x="20" y="831" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="851" fill="#e6e6e6" xml:space="preserve">  - `make validate` passes: 26 tests and the three validators.</text>
+<text x="20" y="871" fill="#e6e6e6" xml:space="preserve">  - `make eval-rule-workflow` scored 1.00 on all six cases at 3 of 3 each, for $3.54 against $2.50 </text>
+<text x="38" y="891" fill="#e6e6e6" xml:space="preserve">before the fix.</text>
+<text x="20" y="911" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="931" fill="#e6e6e6" xml:space="preserve">  ## Files</text>
+<text x="20" y="951" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="971" fill="#e6e6e6" xml:space="preserve">  - `Makefile`</text>
+<text x="20" y="991" fill="#e6e6e6" xml:space="preserve">  - `evals/rules/workflow/bug-routes-to-bugfix/`</text>
+<text x="20" y="1011" fill="#e6e6e6" xml:space="preserve">  - `evals/rules/workflow/pr-routes-to-pr-skill/`</text>
+<text x="20" y="1031" fill="#e6e6e6" xml:space="preserve">  - `evals/skills/pr/opens-pr-with-ticket/prompt.md`</text>
+<text x="20" y="1051" fill="#e6e6e6" xml:space="preserve">  - `checks/test_frontmatter_yaml.py`</text>
+<text x="20" y="1071" fill="#e6e6e6" xml:space="preserve">  - `.freethinking/specs/design-skills/tasks.md`</text>
+<text x="20" y="1091" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1111" fill="#e6e6e6" xml:space="preserve">  ## Next</text>
+<text x="20" y="1131" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1151" fill="#e6e6e6" xml:space="preserve">  Every task in the spec is ticked. Nothing on `50-design-skills` is committed, so this fix and the </text>
+<text x="38" y="1171" fill="#e6e6e6" xml:space="preserve">whole branch go into one pull request with `/freethinking:pr #50`.</text>
+<text x="920" y="1198" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · freethinking 0.15.0</text>
+</g>
+</svg>

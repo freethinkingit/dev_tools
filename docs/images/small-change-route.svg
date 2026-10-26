@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="572" viewBox="0 0 940 572" role="img">
+<title>Claude runs start-task on the request to add an eval case that checks the bugfix skill's read-back, lists and reads the two existing bugfix eval cases, then asks how to build it: Executor_Route (Recommended), where the task-executor adds one case beside reads-ticket-first, or Spec_Route, which writes requirements, design and tasks first. The author picks Executor_Route.</title>
+<rect width="940" height="572" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — start-task</text>
+<text x="20" y="71" fill="#a6e3a1" xml:space="preserve">⏺ Skill(skill: freethinking:start-task, args: Add an eval case that checks the bugfix skill states </text>
+<text x="38" y="91" fill="#a6e3a1" xml:space="preserve">Symptom, Expected and Context back to the author before it reproduces anything (its step 1 </text>
+<text x="38" y="111" fill="#a6e3a1" xml:space="preserve">read-back). In this repository's session 8a0ad5ce on 2026-10-22, bugfix 0.15.0 was invoked with </text>
+<text x="38" y="131" fill="#a6e3a1" xml:space="preserve">no ticket and an advance context that described the eval failure, and it went straight to running </text>
+<text x="38" y="151" fill="#a6e3a1" xml:space="preserve">the eval case without stating the read-back. The author said: "add an eval case".)</text>
+<text x="20" y="171" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="191" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: ls evals/ evals/skills/bugfix/ 2&gt;/dev/null; ls evals/skills/bugfix/* | head -40; ls </text>
+<text x="38" y="211" fill="#a6e3a1" xml:space="preserve">.freethinking/specs/ | grep -i read, description: List the bugfix eval cases)</text>
+<text x="20" y="231" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="251" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: cd </text>
+<text x="38" y="271" fill="#a6e3a1" xml:space="preserve">~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix &amp;&amp; </text>
+<text x="38" y="291" fill="#a6e3a1" xml:space="preserve">for f in reads-ticket-first/prompt.md reads-ticket-first/graders/* hands-off-to-pr/case.yaml </text>
+<text x="38" y="311" fill="#a6e3a1" xml:space="preserve">hands-off-to-pr/prompt.md hands-off-to-pr/scaffold.sh; do echo "=== $f"; cat "$f"; done; ls </text>
+<text x="38" y="331" fill="#a6e3a1" xml:space="preserve">hands-off-to-pr/graders; grep -n 'bugfix' ../../../Makefile | head, description: Read the two </text>
+<text x="38" y="351" fill="#a6e3a1" xml:space="preserve">existing bugfix eval cases)</text>
+<text x="20" y="371" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="391" fill="#a6e3a1" xml:space="preserve">⏺ AskUserQuestion(questions: [{"question": "How should the bugfix read-back eval case be built?", </text>
+<text x="38" y="411" fill="#a6e3a1" xml:space="preserve">"header": "Route", "multiSelect": false, "options": [{"label": "Executor_Route (Recommended)", </text>
+<text x="38" y="431" fill="#a6e3a1" xml:space="preserve">"description": "The task-executor adds one case beside reads-ticket-first, modelled on it, with </text>
+<text x="38" y="451" fill="#a6e3a1" xml:space="preserve">no ticket and the advance context from the session that skipped the read-back."}, {"label": </text>
+<text x="38" y="471" fill="#a6e3a1" xml:space="preserve">"Spec_Route", "description": "Write requirements, design and tasks for the case first."}]}])</text>
+<text x="20" y="491" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="511" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "How should the bugfix read-back eval case be </text>
+<text x="38" y="531" fill="#a6e3a1" xml:space="preserve">built?"="Executor_Route (Recommended)". You can now continue with these answers in mind.</text>
+<text x="920" y="558" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · freethinking 0.15.0</text>
+</g>
+</svg>

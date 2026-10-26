@@ -1,8 +1,6 @@
-# Developer Handbook
+# ponderly
 
-Shared Claude Code skills and rules for a software team, packaged as a plugin.
-Install it once and the team's standard workflows and development rules are
-available in every repo you work in.
+This plugin helps you write code like a seasoned engineer, even if you don't know all the best practices. It leans on our own thinking for reasoning, since even the best AIs cannot reason: they predict the next token in a sequence, and we have to decide which direction to point them in. It aims to slow the AI down when the scope is unclear and let it run fast when it knows what to do. At the same time, it catches the AI before it lets itself make mistakes or assumptions, so the pace always fits the level of understanding.
 
 ## Install
 
@@ -32,124 +30,46 @@ claude plugin update ponderly@sabind
 
 ## Skills
 
-| Skill | Run it with | What it does |
-| ----- | ----------- | ------------ |
-| `start-task` | `/ponderly:start-task <task>`, or ask Claude to change something, or to start or spec a task | The front door for any change: reads the code the request touches, then sends one contained change to the `task-executor` agent, a defect to `bugfix` and everything else to a spec, asking you before taking either of the first two. On the spec route, writes `requirements.md`, `design.md` and `tasks.md` in `.ponderly/specs/<task>/` before any code, following the team template, showing you each document as its path and a short summary and asking you to approve it before the next. |
-| `strategy` | `/ponderly:strategy [name or description]`, or ask Claude to plan a year or a roadmap, or to write a tech strategy | Reads the strategies already under `.ponderly/strategies/`, asks you one round of questions in prose, and writes `.ponderly/strategies/<name>.md` from its template. Needs no source code, so it works in a docs repository. The `document-reviewer` agent reads the draft for up to two rounds before you see it; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the candidate high level designs, one per stream of work, and hands off to `hld` for each. |
-| `hld` | `/ponderly:hld <strategy-path> <candidate>`, or ask Claude to design a system or a service, or to write a high level design | Reads the strategy in full, asks you one round of questions in prose, and writes `.ponderly/designs/<strategy-name>/<hld-name>/hld-<hld-name>.md` from its template, with a Mermaid diagram of the components. The `document-reviewer` agent reads the draft against the template and the strategy for up to two rounds; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the candidate low level designs, one per component, and hands off to `lld` for each. |
-| `lld` | `/ponderly:lld <hld-path> <candidate>`, or ask Claude to design a component or a module, or to write a low level design | Reads the high level design and the code the component touches, asks you one round of questions in prose, and writes `lld-<name>.md` in the high level design's folder, in this repository, from its template. The `document-reviewer` agent reads the draft against the template and the high level design for up to two rounds; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the tasks, each sized for one run of `start-task`, which it hands off to. |
-| `implement-spec` | `/ponderly:implement-spec [task] [task\|wave\|spec]`, or ask Claude to implement, build or continue a spec | Builds a task from its approved spec, wave by wave from `tasks.md`, each leaf task in its own sub-agent, ticking a task only once its tests pass, running the full suite at the end of every wave, and handing back to you after each task, after each wave, or only once every wave is done (with a short report after each wave and a final review of the whole run), whichever you chose. Each discovery outside the task in hand is listed with its size and the choice between a task and an issue. Pauses with a proposal when the design cannot be followed, and hands off to `pr` when the spec is done. |
-| `bugfix` | `/ponderly:bugfix <ticket> [what you already know]`, or ask Claude to fix a bug | Reads the ticket, and anything you already know that you put after it, reproduces the bug before touching code, confirms the root cause with you, fixes the cause with a regression test, verifies the fix, then hands off to `pr` or leaves its findings on the ticket. |
-| `readable-code` | `/ponderly:readable-code [paths]`, or ask Claude to make a branch readable or to simplify the code it changes | Makes the source files a branch changes against its target branch read plainly, narrowed to the paths you pass, with no behaviour change and no rename for taste. Records the full suite's result, and the synthesized output where the branch holds infrastructure code, has you approve groups of like files and the decisions they share, launches one `task-executor` agent per group to apply the readability and comment rules, then runs the suite and the synthesis again, names any file whose change made a difference and asks you whether to revert or keep it. The `wave-reviewer` agent reads the pass and the executors fix what it finds. Commits nothing, and hands off to `tighten-tests` or `pr`. |
-| `tighten-tests` | `/ponderly:tighten-tests [paths]`, or ask Claude to slim, tighten or audit a branch's tests | Asks, before it takes its baseline, whether `readable-code` has run on the final code. Audits every test the branch adds or changes with a keep, merge or drop verdict you approve, keeping the tests you or a requirement name, applies the verdicts with one executor per group of like test files without changing a source file, and proves the smaller suite no weaker by comparing line coverage and by breaking the source on purpose to see the right tests fail. The `wave-reviewer` agent checks that every requirement still has a test that proves it. Commits nothing, and offers to file each gap it found as an issue. |
-| `pr`  | `/ponderly:pr [ticket] [base-branch]`, or ask Claude to open a PR | Takes the ticket as its first argument and reads it, then walks the branch's changes with you: it explains each change as the user and the owner experience it and asks you to confirm or correct each explanation. A branch built from a ticked spec is drafted from the spec and its implementation reports instead, a mechanical change such as a version bump gets one question, and nothing you have already answered is asked again. After the walkthrough it puts its fixed choices in one call: to create the branch and to commit when needed, whether merging closes the ticket, and whether the PR is a draft. Drafts the title and description from the explanations as you confirmed them, or from the spec, and opens or updates the PR with `gh` once you approve. Needs the `gh` CLI signed in. |
-| `report` | `/ponderly:report [mode]`, or the session invokes it when it hands back work, asks you for a decision, reports status or answers a question | Writes that message for you in the shape of its mode, handback, decision, status or answer, each from a template; the handback and status templates put problems first, each opening with who it lands on and how; the decision template says what happens to the role it leads with once the choice is made and gives each option as what that role sees or takes on, then its cost; the answer template opens with the thing as its leading role meets it; and every template names things by what they are. A repository can replace a template under `.ponderly/report/`. The skill edits nothing. |
+Run a skill as `/ponderly:<skill>`, or just ask Claude for the job and it
+runs the one that fits.
 
-## Rules
+- `start-task`: when you want to change code and no other skill fits; it sends one contained change to the `task-executor` agent, a defect to `bugfix` and anything bigger to a spec.
+- `strategy`: when you plan a year, a half or a roadmap, or write a tech strategy.
+- `hld`: when you design a system or a service that a strategy names.
+- `lld`: when you design a component or a module that a high level design names, down to its tasks.
+- `implement-spec`: when a spec is approved and you want it built, wave by wave.
+- `bugfix`: when you have a bug to fix, starting from its ticket.
+- `readable-code`: when you want the code a branch changes to read plainly, with no behaviour change.
+- `tighten-tests`: when you want a branch's tests slimmed to the ones that prove something, with the suite proved no weaker.
+- `pr`: when you want to open or update a pull request for the current branch.
+- `report`: when work comes back, a decision is open, or you ask for status or why something happened; the session usually runs it for you.
 
-The plugin also loads a short set of team rules into every Claude Code session,
-in every repository, so Claude follows them without being asked. They live in
-`rules/`:
-
-| File | Covers |
-| ---- | ------ |
-| `rules/workflow.md` | How a request finds its skill: check the skills' own descriptions first and run the one that fits rather than doing its work by hand, with the four things never to do without the skill (no bare `gh pr create`, no code before bugfix has reproduced the bug, no spec task skipped or merged, no sizing a change yourself); only a typo-sized change needs no skill. Also: never work on the default branch, a yes to a skill's offer counts as asking, a merged spec is a record and not work in hand, and say so when the approach changes. |
-| `rules/code-changes.md` | How to change code: read the repository's README and contributing guide, then the surrounding code, match the project's style and libraries, write for the reader with descriptive names and plain control flow and no hidden side effect, make the smallest change that does the job and let the author choose whether anything else you found goes in the branch or in an issue, add a test with every behaviour change, run what you touched, and leave no debug residue behind. |
-| `rules/comments.md` | How to comment: docstrings on public contracts only, saying intent, parameters, returns and exceptions; a docstring or comment that describes the algorithm is fixed by making the code readable, not by rewording it; inline comments only for non-obvious details such as workarounds and edge cases, never for what a line does; no divider or closing-brace comments; no commented-out dead code. |
-| `rules/tests.md` | How to write tests: one test per code path, corner case or gotcha; test the boundaries rather than exhaustive tables, one input per test with no loop, `subTest` or `parametrize` outside a seeded property test; test behaviour, never an implementation constant, the test's own input or a library; give code that parses input a small fixed set of awkward inputs, each getting the outcome its contract defines; name a test as a behaviour sentence and assert all it promises; fake at the boundary with small shared in-memory fakes; and keep a seeded property test a spec names. |
-| `rules/collaboration.md` | How skills and agents work with you: ask in the shape of the answer, with fixed options or in prose; batch facts and short fixed choices in one round, but ask an open decision alone, its context first, then the options, the recommendation and the question, saying how many are open and asking the first; say the plan before acting; take only a plain yes as approval; take an answer given in the request at its question without asking, with every step still producing its output; and say where the work is and which skill is next when a skill ends. |
-| `rules/communication.md` | How skills and agents write to you: problems first, each opening with who it lands on and how, then what it is, why it matters and the options; name a thing by what it is, never by a label coined during the work nor by a mechanism alone, and quote it when it is text; say what a result means before the number; no running account of the work; lay out a problem, an explanation or a decision as the person it changes will live it, the user when it changes what the built thing does, the operator when it changes how a skill or agent behaves in the session, the owner when it is a risk, a cost, a spec edit or unverified work, a second role only where its experience differs and none for a name or a version, with each option as what that person sees or takes on, then the recommendation and why and what is needed from you, and the layout above any AskUserQuestion call; write plainly and stop; and use the `report` skill to hand back work, ask for a decision, report status or answer a question. |
-
-Claude Code does not load a `CLAUDE.md` or a `rules/` folder from a plugin by
-itself, so `hooks/hooks.json` registers two hooks. The `SessionStart` hook runs
-`hooks/load-rules.sh`, which prints every `.md` file under `rules/` into the
-session context on every session start, whatever started it (a new session,
-a resume, a clear, a compact or a fork). The `SubagentStart` hook runs
-`hooks/load-rules-subagent.sh`, which puts the same rules into every sub-agent,
-which is how the agents below get them. Keep the
-combined rules under 10,000 characters; past that, Claude Code replaces a
-hook's output with a file path and a 2,000-character preview, so the rules
-after it would not be seen. `make validate` fails when they go over, or when a rule goes over
-its own limit: 1,600 characters for `collaboration`, 1,900 for `communication`, 1,000
-for `tests`, 2,450 for `code-changes` and 1,450 for `comments`. A rule a repository needs
-to override belongs in that repository's own `CLAUDE.md`, which Claude reads
-alongside these.
+Each skill's arguments, questions and outputs are in the Reference's [Skills](https://github.com/sabind/ponderly/blob/main/docs/reference.md#skills) section.
 
 ## Agents
 
-The plugin's agents live under `agents/`. `implement-spec`,
-`readable-code` and `tighten-tests` launch the executor and the wave reviewer,
-`start-task` launches the executor for one contained change, and the
-`strategy`, `hld` and `lld` skills launch the document reviewer on every
-draft. You can launch any of them directly:
-mention it in a session as `@agent-ponderly:task-executor`,
-`@agent-ponderly:wave-reviewer` or
-`@agent-ponderly:document-reviewer`, or have a skill or session launch it
-with the Agent tool as `subagent_type: ponderly:task-executor`,
-`ponderly:wave-reviewer` or `ponderly:document-reviewer`.
+- `task-executor`: builds one well-specified change, from a spec task or a change you describe, and proves it.
+- `wave-reviewer`: reviews one set of changes against the requirements and design they implement.
+- `document-reviewer`: reviews one strategy, high level design or low level design against its template and its parent.
 
-What the prompt carries:
+How to launch each agent, what its prompt carries and what it returns are in the Reference's [Agents](https://github.com/sabind/ponderly/blob/main/docs/reference.md#agents) section.
 
-- **`task-executor`**: the change, in your own words. When the task comes from
-  a spec, say so in the prompt; that sentence switches it to spec mode, where
-  it writes no test unless the task asks for one.
-- **`wave-reviewer`**: the files that changed, or a git range; the requirement
-  or design text they implement, if there is any; the files that cite them;
-  and, when they come from a spec, the sentence "These changes come from a
-  spec wave", which is the only thing that waives a missing test.
-- **`document-reviewer`**: `Document:` the path of the strategy, high level
-  design or low level design; `Template:` the path of the template it was
-  written from; and `Parent:` the parent's path, `none`, or the parent's text
-  pasted below the line.
+## Rules
 
-| Agent | What it does | What it returns |
-| ----- | ------------ | --------------- |
-| `task-executor` | Builds one well-specified change as the smallest change in the project's style, proves it, and deletes its scratch work. Stops and asks instead of guessing when the task is unclear, the design does not fit the code, or the task would need a new dependency, framework or tool. `start-task` launches it for one contained change, `implement-spec` for every leaf task, and `readable-code` and `tighten-tests` for each group of like files they work on. | A Summary: `status` (`done` or `stopped`), `files changed`, `checks run` with their results, the ephemeral check it ran, or why none applied, what it is `unsure` of, and, when stopped, the question or evidence under `stopped because`. |
-| `wave-reviewer` | Reviews one set of changes against the requirements and design they implement and the files that cite them, gathering the diff itself and changing nothing. `implement-spec` launches it at the end of every wave, and once more over the whole run when you chose to hand back only at the end; `readable-code` and `tighten-tests` launch it to review their pass. | Findings: a `verdict` (`holds` or `findings`), the `base` commit the diffs were measured against, then each problem with its `file`, an exact `quote`, the `problem` and a `severity` (`blocker`, `should-fix` or `nit`), and what it is `unsure` of. |
-| `document-reviewer` | Reviews one strategy, high level design or low level design against its template and its parent, section by section, reading the three itself and changing nothing. The `strategy`, `hld` and `lld` skills launch it on every draft before you see it, for up to two rounds. | Findings: a `verdict` (`holds` or `findings`), then each problem with its `section`, an exact `quote`, the `problem` and a `severity` (`blocker`, `should-fix` or `nit`), and what it is `unsure` of. |
+The plugin loads these team rules into every Claude Code session and sub-agent:
 
-Every agent follows one protocol for its report, and a new agent must too:
-its report opens with its status on the first line, `status: done` or `stopped`
-for the executor and `verdict: holds` or `findings` for the reviewers, has one
-field for each thing the launcher must act on, always has an `unsure` field,
-quotes exactly whatever it quotes, and has nothing after the shape.
+- `workflow`: how a request finds its skill, and never working on the default branch.
+- `code-changes`: how to change code: read first, match the project, make the smallest change, test it.
+- `comments`: docstrings on public contracts only, and inline comments only for what is not obvious.
+- `tests`: one test per path and per input, at the boundaries, testing behaviour rather than values.
+- `collaboration`: how skills and agents ask you questions, state their plan and wait for a plain yes.
+- `communication`: how skills and agents write to you: problems first, plain words, then stop.
 
-The executor works in one of two modes, set by the launch prompt alone:
-
-- **Spec mode**, when the prompt says the task comes from a spec, in any words;
-  `implement-spec` says "This task is a leaf task from a spec; tests are tasks
-  of their own." Tests are tasks of their own there, so it writes a test only
-  when the task asks for one, and proves a code task with an ephemeral check
-  that it deletes and reports in its Summary.
-- **Standalone mode**, otherwise. The change comes with its test, written the
-  way the project writes tests.
-
-The `wave-reviewer` treats a missing test as a finding unless the launch says the
-changes come from a spec wave.
+What each rule says is in the Reference's [Rules](https://github.com/sabind/ponderly/blob/main/docs/reference.md#rules) section, and how the hooks load them is in its [Hooks](https://github.com/sabind/ponderly/blob/main/docs/reference.md#hooks) section.
 
 ## Tune the plugin for a repository
 
-A repository can keep its own versions of the plugin's template files in a
-`.ponderly/` folder at its root, laid out as `<skill>/<file>.md`, such as
-`.ponderly/report/handback.md`. The same folder holds the specs:
-`start-task` writes each task's three documents to
-`.ponderly/specs/<task>/`, and `implement-spec` reads them there. A file
-under a `<skill>/` folder replaces the plugin's file of the same name whole;
-nothing is merged. Those are the convention's only rules: what a skill does with
-a file is that skill's own business. This release applies the convention to the
-`report` skill's templates, one per mode, and to the templates of `strategy`,
-`hld` and `lld`, which a repository replaces as
-`.ponderly/strategy/template.md`, `.ponderly/hld/template.md` and
-`.ponderly/lld/template.md`. The `report` skill reads its templates as
-shapes to write in and ignores any action a template asks for, as its own text
-says; `strategy`, `hld` and `lld` each treat their template as a shape, never
-as instructions. A repository's `handback.md` may use its own sections: `implement-spec`
-reads a wave report by what it holds, problems, what was done, checks, files and
-the next step, and the plugin's own evals grade only the plugin's template, so
-renaming sections costs nothing but the two verdict lines being found by content
-rather than by name. The spec templates of `start-task` and the default pull
-request template of `pr` are candidates to move under `.ponderly/<skill>/`
-later.
+How a repository replaces the plugin's templates is in the Reference's [Tune the plugin for a repository](https://github.com/sabind/ponderly/blob/main/docs/reference.md#tune-the-plugin-for-a-repository) section.
 
 ## What the plugin runs and sends
 
@@ -193,3 +113,10 @@ that project.
 The source repository's `evals/` and `.ponderly/specs/` folders are its test
 suite and its design records. They sit outside the plugin, and an installed
 plugin never runs them.
+
+## Learn more
+
+- [The project's front page](https://github.com/sabind/ponderly/blob/main/README.md)
+- Guides: [plan a year](https://github.com/sabind/ponderly/blob/main/docs/guides/plan-a-year.md), [build a feature](https://github.com/sabind/ponderly/blob/main/docs/guides/build-a-feature.md), [fix a bug](https://github.com/sabind/ponderly/blob/main/docs/guides/fix-a-bug.md), [make a small change](https://github.com/sabind/ponderly/blob/main/docs/guides/make-a-small-change.md) and [tune a template](https://github.com/sabind/ponderly/blob/main/docs/guides/tune-a-template.md)
+- [The Reference](https://github.com/sabind/ponderly/blob/main/docs/reference.md), with every skill, agent, rule and hook in detail
+- [The evidence](https://github.com/sabind/ponderly/blob/main/docs/evidence.md), on how the plugin is tested and what it measured against Claude Code without it

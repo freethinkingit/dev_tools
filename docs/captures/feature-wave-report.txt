@@ -1,0 +1,69 @@
+title: freethinking — implement-spec
+date: 2026-10-21
+plugin: 0.15.0
+source: freethinkingit/dev_tools, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
+alt: An implement-spec wave 1 report: Problems first, including a clause shortened to fit a length limit and graders not yet run; then Done task by task, the checks, the files changed, and Next asking the author to approve two design edits before the evals run.
+
+● ## Problems
+
+  - The `start-task` description now carries a shorter clause than `design.md` gives. With the design's clause, the description measures 1,025 characters, one over the 1,024 limit the free check enforces. The executor used "not a strategy or a high or low level design, which are `strategy`, `hld` and `lld`'s". The design needs to say the same, which is the first edit under Next.
+  - In wave 0, the `strategy` and `lld` skills were written with `name: hld` in their frontmatter. The task 6 executor found it, and it is fixed. Neither `make validate` nor the wave 0 review caught it, because no free check compares a skill's `name` with its folder. Options: add that check as a task on this branch, about ten lines in `checks/test_descriptions.py`, or file an issue.
+  - The two `document-reviewer` cases copy only the LLD template, while the design's eval table says "plus the three templates copied in". It does not matter at run time, since the reviewer reads only the template the launch names. Options: approve the second edit under Next so the design says one template, or leave the mismatch.
+  - No case has run yet, so these graders are unproven:
+    - Two `strategy` graders read the exact path `.freethinking/strategies/docs-platform-2028.md`. They assume the skill derives that name from "Docs platform 2028".
+    - The new reviewer-launch and parent-read graders assume the harness serialises tool input as JSON with `"subagent_type"` and `"file_path"` keys.
+    - The read graders prove a read happened, not that it came before any question.
+    - `passes-a-clean-document` returns `holds` only if a careful reviewer finds nothing at all. Its executor names the over-count of one batch as the likeliest finding.
+  - In the skill cases, the skill launches the reviewer with `Template:` set to the plugin's temporary path. If the sandboxed reviewer cannot read that path, it returns a blocker that the skill carries, and no grader notices the review was not done. That is inferred, not seen.
+  - The `writes-strategy` scaffold now builds its own one-file repository, so it copies the git binary and author lines from `evals/fixtures/setup.sh`. A later change to those lines would have to be made in both places.
+  - In the root README, the new `make eval-agent-document-reviewer` line has its comment four columns to the right of its neighbours, because the target name is longer. Left as is.
+
+  ## Done
+
+  - **Task 5, the exclusion clause in `start-task`'s description (Requirement 8.5).** Only the description line changed, and it measures 986 characters. `checks/test_descriptions.py` passes.
+  - **Task 6, the README rows and sections, version 0.15.0 (Requirements 8.1 to 8.4).** `document-reviewer` appears 8 times in the plugin README. The Agents paragraph names each agent with the skills that launch it. `plugin.json` reads `"version": "0.15.0"`.
+  - **Task 7.1, two `strategy` cases (Requirements 1.7, 9.1, 9.3).** The `writes-strategy` workspace holds no source code, and its reviewer grader matches `freethinking:document-reviewer`. Both scaffolds exit 0.
+  - **Task 7.2, two `hld` cases (Requirements 3.2, 9.1, 9.3).** A grader checks the reviewer launch and another checks that the strategy file is read. Both scaffolds exit 0.
+  - **Task 7.3, two `lld` cases (Requirements 4.2, 4.4, 9.1, 9.3).** Graders check the reviewer launch, the HLD read, a `calc/` read and that no code is written. The no-LLD glob is `.freethinking/**/lld-*.md`. Both scaffolds exit 0.
+  - **Task 7.4, two `document-reviewer` cases (Requirements 5.3, 5.4, 9.2, 9.3).** The two trees differ by one line in the LLD's Data section. The section and quote patterns were loosened. Both scaffolds exit 0.
+  - **Task 7.5, four Makefile lines (Requirement 9.3).** `make help` lists the four targets. Dry runs show `--allow-tools Write Edit --scaffold` on the three skill targets and `--scaffold` on the agent target.
+  - **Root README, outside any task.** The wave made it stale, so it gained the `make eval-agent-document-reviewer` line.
+
+  ## Checks
+
+  - `make validate` passes: 23 tests and the three validators.
+  - Wave review of wave 1: findings, one blocker, seven should-fix and seven nits, all fixed except two nits; carried: see Problems.
+
+  ## Files
+
+  - `plugins/freethinking/skills/start-task/SKILL.md`
+  - `plugins/freethinking/README.md`
+  - `plugins/freethinking/.claude-plugin/plugin.json`
+  - `plugins/freethinking/skills/strategy/SKILL.md`
+  - `plugins/freethinking/skills/lld/SKILL.md`
+  - `README.md`
+  - `Makefile`
+  - `evals/skills/strategy/`
+  - `evals/skills/hld/`
+  - `evals/skills/lld/`
+  - `evals/agents/document-reviewer/`
+  - `.freethinking/specs/design-skills/tasks.md`
+
+  ## Next
+
+  Two edits to `.freethinking/specs/design-skills/design.md` need your approval:
+
+  1. **The `start-task` section.** The quoted clause becomes "not a strategy or a high or low level design, which are `strategy`, `hld` and `lld`'s". It is followed by: "The longer wording, naming a tech strategy, a system's high level design and a component's low level design, takes the description to 1,025 characters, over the 1,024 limit."
+  2. **The eval table.** In the `finds-the-contradiction` row, "plus the three templates copied in" becomes "plus a copy of the template of the document under review". The sentence after the table becomes "The reviewer cases copy that template from the plugin into `files/` rather than reading it from the plugin path, since the eval's plugin copy sits at a temporary path the prompt cannot name."
+
+  Then wave 2, task 8, runs the evals one target at a time. Each happy-path run also launches the reviewer, which is a second model call. So the default $2 ceiling would cut each target short. None of these targets has been timed yet. The ceilings below are guesses from the `start-task` target's $2.72 for 15 runs:
+
+  ```
+  make eval-skill-strategy EVAL_MAX_COST_USD=8
+  make eval-skill-hld EVAL_MAX_COST_USD=8
+  make eval-skill-lld EVAL_MAX_COST_USD=8
+  make eval-agent-document-reviewer EVAL_MAX_COST_USD=3
+  make eval-rule-workflow EVAL_MAX_COST_USD=5
+  ```
+
+  Approve the two design edits. Then say whether I run these five targets one at a time, or you run them.

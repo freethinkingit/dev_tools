@@ -60,9 +60,15 @@ no-plugin baseline: run the table you paste into the PR with
 `EVAL_ARGS="--ablation with-without" EVAL_MAX_COST_USD=5`. It doubles that run's
 cost, so raise the ceiling or the table comes back partial, and adds the `W/OUT`
 and `Δ` columns; a case that scores the same in both arms proves nothing about
-the plugin. A case whose only positive grader is a Skill check reads Δ 0.00 in
-that table, because Skill graders are not scored without the plugin; give such
-a case a grader on the result too.
+the plugin. A grader that checks for a Skill call, with no `arm` set, does one
+of two things in that table. When it is the case's only grader, it is scored in
+both arms and always fails without the plugin, where the skill does not exist,
+so the case reads `W/OUT` 0.00 and `Δ` +1.00: that measures only that the skill
+exists. When the case has other graders, it is dropped from the score in both
+arms (`aggregate-result.json` marks it `withOnly` and not `scored`), so the
+`WITH` score does not say whether the skill was called either. Either way the
+Skill check shows nothing about the plugin's effect; give such a case a grader
+on the result too.
 
 ## Reading results
 

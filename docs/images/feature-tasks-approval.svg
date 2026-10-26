@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="592" viewBox="0 0 940 592" role="img">
+<title>Claude asks whether the task list builds the design in an acceptable order, with the options Approved and Changes needed; the author picks Approved, and Claude says the spec is in .freethinking/specs/design-skills/ and the next step is /freethinking:implement-spec design-skills.</title>
+<rect width="940" height="592" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — start-task</text>
+<text x="20" y="71" fill="#a6e3a1" xml:space="preserve">⏺ AskUserQuestion(questions: [{"question": "Do these tasks build the design in an order you </text>
+<text x="38" y="91" fill="#a6e3a1" xml:space="preserve">accept?", "header": "Approve", "options": [{"label": "Approved", "description": "The task list </text>
+<text x="38" y="111" fill="#a6e3a1" xml:space="preserve">stands as written; implement-spec builds it from wave 0."}, {"label": "Changes needed", </text>
+<text x="38" y="131" fill="#a6e3a1" xml:space="preserve">"description": "Say what is missing or wrong in the free text and I will revise."}], </text>
+<text x="38" y="151" fill="#a6e3a1" xml:space="preserve">"multiSelect": false}])</text>
+<text x="20" y="171" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="191" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "Do these tasks build the design in an order you </text>
+<text x="38" y="211" fill="#a6e3a1" xml:space="preserve">accept?"="Approved". You can now continue with these answers in mind.</text>
+<text x="20" y="231" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="251" fill="#e6e6e6" xml:space="preserve">● The spec is approved and its three files are in `.freethinking/specs/design-skills/`: </text>
+<text x="38" y="271" fill="#e6e6e6" xml:space="preserve">`requirements.md`, `design.md` and `tasks.md`.</text>
+<text x="20" y="291" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="311" fill="#e6e6e6" xml:space="preserve">  Next step: run `/freethinking:implement-spec design-skills`. It starts at wave 0, the six tasks </text>
+<text x="38" y="331" fill="#e6e6e6" xml:space="preserve">that put the templates, the reviewer agent, the three skills and the issue-form entries on disk </text>
+<text x="38" y="351" fill="#e6e6e6" xml:space="preserve">together, so `make validate` passes at the end of the wave. Wave 1 is the description clause, the </text>
+<text x="38" y="371" fill="#e6e6e6" xml:space="preserve">README and version, the ten eval cases and the Makefile lines. Wave 2 is yours: the eval runs.</text>
+<text x="20" y="391" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="411" fill="#e6e6e6" xml:space="preserve">  Two things before you start it:</text>
+<text x="20" y="431" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="451" fill="#e6e6e6" xml:space="preserve">  - **Branch.** This worktree is detached at origin/main, not on `main` by name, so </text>
+<text x="38" y="471" fill="#e6e6e6" xml:space="preserve">implement-spec's set-up will not offer to create the branch. Create `design-skills` first with </text>
+<text x="38" y="491" fill="#e6e6e6" xml:space="preserve">`git checkout -b design-skills`, or tell me and I will do it outside the skill.</text>
+<text x="20" y="511" fill="#e6e6e6" xml:space="preserve">  - **Ticket.** The `pr` skill wants an issue. If you file one before the PR, the branch becomes </text>
+<text x="38" y="531" fill="#e6e6e6" xml:space="preserve">`&lt;number&gt;-design-skills` and the pull request closes it on merge; I can draft the issue body from </text>
+<text x="38" y="551" fill="#e6e6e6" xml:space="preserve">the requirements whenever you want.</text>
+<text x="920" y="578" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · freethinking 0.14.0</text>
+</g>
+</svg>

@@ -1,0 +1,34 @@
+title: freethinking — implement-spec
+date: 2026-10-20
+plugin: 0.14.0
+source: freethinkingit/inline-email, session 4c0c154a-4af6-4bd3-b6c5-b6dbbc7a15b0
+alt: An implement-spec wave 1 report: Problems first, a wrong statement about data-driven tones with two options, a CLI error position and one failed gallery build; then Done task by task with the requirements each meets, the checks, the files changed, and Next, which says wave 2 starts now.
+
+● ## Problems
+
+  - **The Vanilla Tones section is wrong about data-driven tones, outside this wave.** It says "You can render with only data:" with `tone: 'info'`, but `<panel tone="{{tone}}">` renders in the neutral grey unless `style.tones` is passed at render; only a literal `tone="info"` gets its colours from data alone. The text came from the README and now also sits verbatim in `docs/reference.md`. Options: a one-paragraph correction in this branch, or an issue. Carried to the final report.
+  - **Under `--strict`, the CLI's error position points into the compiled HTML, not the reader's template.** A missing field reports a position like `- 58:135`, after layout expansion and CSS inlining. That is existing behaviour; the CLI guide page in wave 2 will explain it rather than quote the position.
+  - **The gallery build failed once during verification**, while an executor was still finishing, then passed on three later runs. Most likely two processes rebuilt `dist/` at the same moment; not confirmed.
+
+  ## Done
+
+  - 2.1 Quickstart example (Requirements 1.3, 2.2): renders the name, the items block and the raw slot HTML, with no placeholder left.
+  - 2.2 Transactional example with its own test (Requirements 2.1 to 2.3): `welcome.test.ts` passes 3 tests and is collected by vitest; `send.mjs` compiles once with `strict: true` and renders two users.
+  - 2.3 CLI preview example (Requirements 2.1, 2.2, 2.4): the CLI with `--data` and `--strict` renders the three items and "Total: $73.35"; a field removed from the data fails the run.
+  - 2.4 Marketing example (Requirements 2.1 to 2.3): the 145-byte logo embeds as a data URI, the badge helper's HTML stays raw, and with `webResources.strict: true` a missing logo fails the compile naming the file.
+  - 2.5 Digest example and gallery entry (Requirements 2.1 to 2.3, 2.5): twelve rows numbered 1 to 12, coloured panels on done rows, `@last` and `{{#unless}}` in the template, its own CSS, a text part; the gallery shows it under "Guides".
+  - 4.1 `docs/reference.md` (Requirements 3.1 to 3.4): the moved sections are byte-identical to the README's, with a table of contents whose anchors match the headings.
+  - Review fixes applied: the digest's missing `@last` and `{{#unless}}`, zero-based numbering, grey tones, missing CSS and empty text part; the marketing script's missing `strict` on the image fetch; every guide script now calls `render({ data })`; a "1 projects" plural.
+
+  ## Checks
+
+  - Suite: 8 files, 289 tests passing. `npm run examples` exits 0.
+  - Wave review of wave 1: findings, one blocker, four should-fix and three nits, all fixed; carried: see Problems.
+
+  ## Files
+
+  - `examples/guides/quickstart/`, `examples/guides/transactional/`, `examples/guides/cli-preview/`, `examples/guides/marketing/`, `examples/guides/digest/`, `scripts/render-examples.js`, `docs/reference.md`
+
+  ## Next
+
+  Wave 2 starts now: the test that runs every guide example (3.1) and the four guide pages (4.2 to 4.5).

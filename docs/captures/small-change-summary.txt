@@ -1,0 +1,57 @@
+title: freethinking — start-task
+date: 2026-10-22
+plugin: 0.15.0
+source: freethinkingit/dev_tools, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
+alt: The task-executor's Summary returns with status: done. It lists the five new files of the reads-back-without-ticket eval case, explains the prompt and its four regex graders, reports make validate passing and a scratch Node check of the patterns, gives the command to run the case, and lists what it is unsure of, including that the skill's own text in the run record could make the graders pass.
+
+⏺ status: done
+  files changed:
+  - ~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads-back-without-ticket/prompt.md (new)
+  - ~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads-back-without-ticket/graders/states-symptom.md (new)
+  - ~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads-back-without-ticket/graders/states-expected.md (new)
+  - ~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads-back-without-ticket/graders/states-context.md (new)
+  - ~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads-back-without-ticket/graders/reads-back-before-bash.md (new)
+
+  What the case is: the prompt is `/freethinking:bugfix ` followed by the session's advance context, word for word. Its frontmatter is tags [skill, bugfix], max_turns 10 and a single-quoted description and expected_outcome. There is no case.yaml and no scaffold: the workspace is empty, so the make command in the prompt cannot run. The Makefile's bugfix target still grants Bash, and that is what makes the real failure possible: running the command before the read-back. All four graders are regexes that search the whole run record (`target: trace`).
+  - states-symptom: `'\bSymptom\b[*_]*\s*:'`, flags i
+  - states-expected: `'\bExpected\b[*_]*\s*:'`, flags i
+  - states-context: `'\bContext\b[*_]*\s*:'`, flags i
+  - reads-back-before-bash: `'^(?:(?!Symptom[*_]*\s*:)[\s\S])*"name"\s*:\s*"Bash"'`, flags i, match not_contains. It fails when a Bash tool call appears in the run record before any "Symptom:" label.
+
+  Why the patterns need a colon: a bare `symptom` would match the run's own words. The advance context names the "states-symptom grader", and the real session's next message quoted that grader. Requiring the read-back's label form, `**Symptom**:` or `Symptom:`, avoids that.
+
+  checks run:
+  - `make validate`: passed. "Ran 31 tests ... OK" (this includes checks/test_eval_cases.py and test_frontmatter_yaml.py), and every `claude plugin validate --strict` printed "Validation passed".
+  - Scratch check: a Node script ran the four patterns as JavaScript regexes on made-up run records:
+    - Bash call, then read-back: the order grader matched, so it fails as intended.
+    - Read-back, then Bash: no match, so it passes.
+    - Read-back only: no match, so it passes.
+    - Bash only: the order grader matched, so it fails.
+    - In all four, the three label graders matched exactly when the read-back was present.
+  - Same script on the 40 newest kept run records under /private/tmp/e-*/out/trace.jsonl: none matched "Symptom:" or "Context:". One, e-MDubbG, a workflow run, matched "Expected:", which comes from the Skill-tool args that held that case's prompt. Three matched the order grader, all non-bugfix runs with Bash and no read-back, which is correct.
+
+  ephemeral check:
+  ```js
+  const fs=require('fs');
+  const pats={sym:/\bSymptom\b[*_]*\s*:/i,exp:/\bExpected\b[*_]*\s*:/i,ctx:/\bContext\b[*_]*\s*:/i,order:/^(?:(?!Symptom[*_]*\s*:)[\s\S])*"name"\s*:\s*"Bash"/i};
+  const run=(name,t)=>{const r={};for(const k in pats){const m=t.match(pats[k]);r[k]=m?JSON.stringify(m[0].slice(-40)):false}console.log(name,JSON.stringify(r))};
+  for(const f of process.argv.slice(2)) run(f,fs.readFileSync(f,'utf8'));
+  const bash='{"type":"assistant","message":{"content":[{"type":"tool_use","id":"x","name":"Bash","input":{"command":"make eval"}}]}}';
+  const rb='{"type":"assistant","message":{"content":[{"type":"text","text":"No ticket read.\\n\\n- **Symptom**: fails\\n- **Expected**: passes\\n- **Context**: make"}]}}';
+  const init='{"type":"system","subtype":"init","tools":["Bash","Read"]}';
+  run('SYN bash-first',[init,bash,rb].join('\n'));
+  run('SYN readback-first',[init,rb,bash].join('\n'));
+  run('SYN readback-only',[init,rb].join('\n'));
+  run('SYN bash-only',[init,bash].join('\n'));
+  ```
+  Run as `node check.js $(ls -t /private/tmp/e-*/out/trace.jsonl | head -40)`. The script was deleted afterwards.
+
+  Command to run just this case (not run; it costs money):
+  `make eval-skill-bugfix EVAL_ARGS="--case reads-back-without-ticket"`
+
+  unsure:
+  - Whether a `/freethinking:bugfix` prompt and its expanded SKILL.md appear in the run record is inferred, not seen. No kept run record from a slash-command bugfix run was on disk. In the records I did read (e-EZG7P2, e-MDubbG), the user prompt does not appear, and SKILL.md's "what actually happens" line does not appear. If the expanded SKILL.md did appear, its `**Symptom**:` line would make all four graders pass whatever the model did. The first real run should be checked with `--keep-temp` to confirm.
+  - The label graders assume the read-back uses "Symptom", "Expected" and "Context" followed by a colon, as SKILL.md writes them. A read-back in a different form, such as "Symptom —", would fail them.
+  - The order grader treats only a Bash call before the read-back as a failure. A Read, Glob or Grep before it is allowed. I read "before it reproduces anything" as running something.
+  - I left out allowed_tools, as reads-ticket-first does. I have not checked which read-only tools the harness gives by default.
+  - Outside this task: the kept workflow run record /private/tmp/e-MDubbG/out/trace.jsonl contains no "symptom" at all. Its bugfix Skill call returned "Shell command permission check failed for pattern \"!`gh issue view \"ENG-412:\" 2>". That may bear on the bug-routes-to-bugfix states-symptom failure. I did not investigate it.

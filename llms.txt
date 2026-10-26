@@ -1,0 +1,41 @@
+# freethinking
+
+> This plugin helps you write code like a seasoned engineer, even if you don't know all the best practices. It leans on our own thinking for reasoning, since even the best AIs cannot reason: they predict the next token in a sequence, and we have to decide which direction to point them in.
+
+freethinking is a Claude Code plugin of skills, agents and team rules. Install it with `claude plugin marketplace add freethinkingit/dev_tools` and then `claude plugin install freethinking@freethinkingit`. It needs Claude Code, and the `gh` CLI signed in for the `pr` and `bugfix` skills. It is MIT licensed. It runs `git` on the current repository, and only `pr` reaches the remote, with `git fetch` and `git push` to the repository's own `origin`; `pr` and `bugfix` run `gh` to read issues; `bugfix` also comments on issues, and `pr` views, creates and edits pull requests. The `strategy`, `hld` and `lld` skills and the `document-reviewer` agent run no `git` and no `gh`. The hooks read only the plugin's `rules/` folder. No skill, agent or hook reads a credential, runs a package launcher or sends anything anywhere else.
+
+## Skills
+
+- [start-task](https://github.com/freethinkingit/dev_tools/tree/main/plugins/freethinking/skills/start-task): when you want to change code and no other skill fits; it routes one contained change to the task-executor agent, a defect to bugfix, and anything bigger to a spec of requirements, design and tasks written before any code
+- [strategy](https://github.com/freethinkingit/dev_tools/tree/main/plugins/freethinking/skills/strategy): when you plan a year, a half or a roadmap, or write a tech strategy; it needs no source code
+- [hld](https://github.com/freethinkingit/dev_tools/tree/main/plugins/freethinking/skills/hld): when you design a system, a service or a stream of work that a strategy names, as a high level design
+- [lld](https://github.com/freethinkingit/dev_tools/tree/main/plugins/freethinking/skills/lld): when you design a component, module or interface that a high level design names, down to tasks sized for start-task
+- [implement-spec](https://github.com/freethinkingit/dev_tools/tree/main/plugins/freethinking/skills/implement-spec): when you build, continue or resume a task whose spec already exists, wave by wave from its tasks.md
+- [bugfix](https://github.com/freethinkingit/dev_tools/tree/main/plugins/freethinking/skills/bugfix): when you fix, debug or investigate a bug from a ticket; it reproduces the bug before touching code and fixes the cause with a regression test
+- [pr](https://github.com/freethinkingit/dev_tools/tree/main/plugins/freethinking/skills/pr): when you open or update a GitHub pull request; it walks the changes with you and opens the PR with gh once you approve
+- [report](https://github.com/freethinkingit/dev_tools/tree/main/plugins/freethinking/skills/report): when work comes back, a decision is open, or you ask for status or what something is or why; it writes that message, and a hand-back or a status report puts problems first
+
+## Agents
+
+- [task-executor](https://github.com/freethinkingit/dev_tools/blob/main/plugins/freethinking/agents/task-executor.md): when you have one well-specified change to build as the smallest change in the project's style, proved and with its scratch work deleted
+- [wave-reviewer](https://github.com/freethinkingit/dev_tools/blob/main/plugins/freethinking/agents/wave-reviewer.md): when you want a set of changes reviewed against the requirements and design they implement, changing nothing
+- [document-reviewer](https://github.com/freethinkingit/dev_tools/blob/main/plugins/freethinking/agents/document-reviewer.md): when you want a strategy, high level design or low level design reviewed against its template and its parent, changing nothing
+
+## Rules
+
+- [workflow](https://github.com/freethinkingit/dev_tools/blob/main/plugins/freethinking/rules/workflow.md): loaded in every session; how a request finds its skill, never working on the default branch, and a merged spec being a record
+- [code-changes](https://github.com/freethinkingit/dev_tools/blob/main/plugins/freethinking/rules/code-changes.md): loaded in every session; how to change code: read first, match the project, make the smallest change, test it and run what you touched
+- [comments](https://github.com/freethinkingit/dev_tools/blob/main/plugins/freethinking/rules/comments.md): loaded in every session; docstrings on public contracts only, inline comments only for non-obvious details, no dead code
+- [collaboration](https://github.com/freethinkingit/dev_tools/blob/main/plugins/freethinking/rules/collaboration.md): loaded in every session; how skills and agents ask, wait for a plain yes and hand off
+- [communication](https://github.com/freethinkingit/dev_tools/blob/main/plugins/freethinking/rules/communication.md): loaded in every session; how skills and agents write to you: problems first, plain words, then stop
+
+## Docs
+
+- [Front door](https://github.com/freethinkingit/dev_tools/blob/main/README.md): start here to learn what the plugin is, install it and pick a guide
+- [Plan a year](https://github.com/freethinkingit/dev_tools/blob/main/docs/guides/plan-a-year.md): a walk from a tech strategy through high and low level designs to tasks
+- [Build a feature](https://github.com/freethinkingit/dev_tools/blob/main/docs/guides/build-a-feature.md): a walk from a request through a spec and its waves to a pull request
+- [Fix a bug](https://github.com/freethinkingit/dev_tools/blob/main/docs/guides/fix-a-bug.md): a walk from a ticket through reproduction and a regression test to a pull request
+- [Make a small change](https://github.com/freethinkingit/dev_tools/blob/main/docs/guides/make-a-small-change.md): a walk through one contained change built by the task-executor
+- [Tune a template](https://github.com/freethinkingit/dev_tools/blob/main/docs/guides/tune-a-template.md): how a repository replaces a plugin template under .freethinking/
+- [Reference](https://github.com/freethinkingit/dev_tools/blob/main/docs/reference.md): every skill, agent, rule and hook, and what the plugin runs and sends
+- [Evidence](https://github.com/freethinkingit/dev_tools/blob/main/docs/evidence.md): what the plugin's evals measured, with and without the plugin

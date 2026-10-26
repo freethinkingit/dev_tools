@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1492" viewBox="0 0 940 1492" role="img">
+<title>The wave 3 report opens with the stopped README task under Problems, then Done, Checks, Files and Next with two ways to fix the README's first screen; Claude asks which, with the options Reorder (Recommended) and Keep order, relax to 90, and the author picks Reorder (Recommended).</title>
+<rect width="940" height="1492" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — implement-spec</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● ## Problems</text>
+<text x="20" y="91" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  - **The README rewrite, task 4.6, stopped on a contradiction in the spec, and needs your </text>
+<text x="38" y="131" fill="#e6e6e6" xml:space="preserve">decision.** Requirements 1.1 and 1.6 put the pitch, the Quickstart, the "when to use it" list and </text>
+<text x="38" y="151" fill="#e6e6e6" xml:space="preserve">links to all four guides, the reference and `MIGRATION.md` within 60 lines after the badges, in </text>
+<text x="38" y="171" fill="#e6e6e6" xml:space="preserve">that order. The Quickstart must quote its two example files byte for byte, 43 lines on their own. </text>
+<text x="38" y="191" fill="#e6e6e6" xml:space="preserve">With the fences, the install line, the image, the migration callout and headings, the "when to </text>
+<text x="38" y="211" fill="#e6e6e6" xml:space="preserve">use it" list lands near line 77 and the last link near line 85. I set the limit when writing the </text>
+<text x="38" y="231" fill="#e6e6e6" xml:space="preserve">spec without counting the Quickstart. The README is unchanged.</text>
+<text x="20" y="251" fill="#e6e6e6" xml:space="preserve">  - **Kept for your veto:** `llms.txt` has a short key-facts paragraph after its summary. The </text>
+<text x="38" y="271" fill="#e6e6e6" xml:space="preserve">`llms.txt` convention allows it, every claim in it checks out against 4.0.1, and it helps an </text>
+<text x="38" y="291" fill="#e6e6e6" xml:space="preserve">assistant recommend the package. Requirement 5.1 only names a summary.</text>
+<text x="20" y="311" fill="#e6e6e6" xml:space="preserve">  - **Carried:** the examples gallery still renders the digest with the shared CSS and the </text>
+<text x="38" y="331" fill="#e6e6e6" xml:space="preserve">gallery's own tone colours, so it looks slightly different from what the guide's script prints. </text>
+<text x="38" y="351" fill="#e6e6e6" xml:space="preserve">No page claims otherwise.</text>
+<text x="20" y="371" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="391" fill="#e6e6e6" xml:space="preserve">  ## Done</text>
+<text x="20" y="411" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="431" fill="#e6e6e6" xml:space="preserve">  - **Branch moved onto 4.0.1.** The docs branch was fast-forwarded to the merged `master`, with </text>
+<text x="38" y="451" fill="#e6e6e6" xml:space="preserve">the three fixes, and its `package.json` edits re-applied.</text>
+<text x="20" y="471" fill="#e6e6e6" xml:space="preserve">  - **4.3 The CLI preview guide** (Requirements 2.1, 2.2, 2.4, 2.6): the guide's own-project </text>
+<text x="38" y="491" fill="#e6e6e6" xml:space="preserve">command, run from an installed 4.0.1 tarball, rendered the order and "Total: $73.35"; the strict </text>
+<text x="38" y="511" fill="#e6e6e6" xml:space="preserve">failure and the overwrite error appear as the page says.</text>
+<text x="20" y="531" fill="#e6e6e6" xml:space="preserve">  - **5.1 `llms.txt`** (Requirements 5.1 to 5.4): 19 lines; it opens with the pitch in Requirement </text>
+<text x="38" y="551" fill="#e6e6e6" xml:space="preserve">1.2's own words, which the README will reuse verbatim; its seven repository links exist; it is in </text>
+<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">the tarball.</text>
+<text x="20" y="591" fill="#e6e6e6" xml:space="preserve">  - **Corrections after the 4.0.1 fixes:** the digest guide's script renders built-in tone colours </text>
+<text x="38" y="611" fill="#e6e6e6" xml:space="preserve">without `style`, and its page says so, with the right limit on what an override can change. The </text>
+<text x="38" y="631" fill="#e6e6e6" xml:space="preserve">reference says `data-inline-...` attributes survive inlining, with `data-inline-ignore` as the </text>
+<text x="38" y="651" fill="#e6e6e6" xml:space="preserve">exception. The guide test now asserts the digest's colours.</text>
+<text x="20" y="671" fill="#e6e6e6" xml:space="preserve">  - **Review fixes to `llms.txt`:** the pitch wording, the removed `## Optional` section, and </text>
+<text x="38" y="691" fill="#e6e6e6" xml:space="preserve">`&lt;email&gt;` no longer described as table markup.</text>
+<text x="20" y="711" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="731" fill="#e6e6e6" xml:space="preserve">  ## Checks</text>
+<text x="20" y="751" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="771" fill="#e6e6e6" xml:space="preserve">  - Suite: 9 files, 306 tests, passing six runs in a row with nothing else building. The occasional </text>
+<text x="38" y="791" fill="#e6e6e6" xml:space="preserve">"cannot find `dist/index.js`" failures happen only while another executor rebuilds `dist/`.</text>
+<text x="20" y="811" fill="#e6e6e6" xml:space="preserve">  - Wave review of wave 3: findings, four should-fix and two nits, all fixed except the key-facts </text>
+<text x="38" y="831" fill="#e6e6e6" xml:space="preserve">paragraph, kept as above; carried: see Problems.</text>
+<text x="20" y="851" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="871" fill="#e6e6e6" xml:space="preserve">  ## Files</text>
+<text x="20" y="891" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="911" fill="#e6e6e6" xml:space="preserve">  - `llms.txt`, `package.json`, `docs/guides/digest.md`, `examples/guides/digest/send.mjs`, </text>
+<text x="38" y="931" fill="#e6e6e6" xml:space="preserve">`docs/reference.md`, `test/guides.test.ts`, `.freethinking/specs/newcomer-docs/tasks.md`</text>
+<text x="20" y="951" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="971" fill="#e6e6e6" xml:space="preserve">  ## Next</text>
+<text x="20" y="991" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1011" fill="#e6e6e6" xml:space="preserve">  Two ways to fix the README's first screen:</text>
+<text x="20" y="1031" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1051" fill="#e6e6e6" xml:space="preserve">  1. **Reorder (recommended).** Pitch, then a single line of links to the four guides, the </text>
+<text x="38" y="1071" fill="#e6e6e6" xml:space="preserve">reference and the migration guide, then the image, the "when to use it" list, and the Quickstart. </text>
+<text x="38" y="1091" fill="#e6e6e6" xml:space="preserve">Everything a reader needs to decide, and every link, sits in the first 60 lines, and the </text>
+<text x="38" y="1111" fill="#e6e6e6" xml:space="preserve">Quickstart follows as the first thing they try. It needs one spec edit. Requirement 1.1 becomes: </text>
+<text x="38" y="1131" fill="#e6e6e6" xml:space="preserve">"THE README SHALL open, within its first 60 lines after the badges, with the Pitch, links to each </text>
+<text x="38" y="1151" fill="#e6e6e6" xml:space="preserve">Guide, the Reference and `MIGRATION.md`, and a 'when to use it' list, followed by the </text>
+<text x="38" y="1171" fill="#e6e6e6" xml:space="preserve">Quickstart." The design's README table and task 4.6 change their order to match.</text>
+<text x="20" y="1191" fill="#e6e6e6" xml:space="preserve">  2. **Keep the order, relax the limit.** Pitch, Quickstart, "when to use it", "Learn more", as </text>
+<text x="38" y="1211" fill="#e6e6e6" xml:space="preserve">written, with the 60 in Requirements 1.1 and 1.6, the design and task 5.2 raised to 90. Only </text>
+<text x="38" y="1231" fill="#e6e6e6" xml:space="preserve">numbers change, but a reader scrolls past the 43-line Quickstart before learning whether the </text>
+<text x="38" y="1251" fill="#e6e6e6" xml:space="preserve">library suits them.</text>
+<text x="20" y="1271" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1291" fill="#a6e3a1" xml:space="preserve">⏺ AskUserQuestion(questions: [{"question": "How should the README's first screen be fixed?", </text>
+<text x="38" y="1311" fill="#a6e3a1" xml:space="preserve">"header": "README", "multiSelect": false, "options": [{"label": "Reorder (Recommended)", </text>
+<text x="38" y="1331" fill="#a6e3a1" xml:space="preserve">"description": "Pitch, one line of links, image, when to use it, then the Quickstart; all within </text>
+<text x="38" y="1351" fill="#a6e3a1" xml:space="preserve">60 lines. Edits Requirement 1.1, the design's README table and task 4.6."}, {"label": "Keep </text>
+<text x="38" y="1371" fill="#a6e3a1" xml:space="preserve">order, relax to 90", "description": "Pitch, Quickstart, when to use it, Learn more as written; </text>
+<text x="38" y="1391" fill="#a6e3a1" xml:space="preserve">the 60-line limit becomes 90 in 1.1, 1.6, the design and task 5.2."}]}])</text>
+<text x="20" y="1411" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="1431" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "How should the README's first screen be fixed?"="Reorder </text>
+<text x="38" y="1451" fill="#a6e3a1" xml:space="preserve">(Recommended)". You can now continue with these answers in mind.</text>
+<text x="920" y="1478" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · freethinking 0.14.0</text>
+</g>
+</svg>

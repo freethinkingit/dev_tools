@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="2232" viewBox="0 0 940 2232" role="img">
+<title>An implement-spec wave 1 report: Problems first, including a clause shortened to fit a length limit and graders not yet run; then Done task by task, the checks, the files changed, and Next asking the author to approve two design edits before the evals run.</title>
+<rect width="940" height="2232" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — implement-spec</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● ## Problems</text>
+<text x="20" y="91" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  - The `start-task` description now carries a shorter clause than `design.md` gives. With the </text>
+<text x="38" y="131" fill="#e6e6e6" xml:space="preserve">design's clause, the description measures 1,025 characters, one over the 1,024 limit the free </text>
+<text x="38" y="151" fill="#e6e6e6" xml:space="preserve">check enforces. The executor used "not a strategy or a high or low level design, which are </text>
+<text x="38" y="171" fill="#e6e6e6" xml:space="preserve">`strategy`, `hld` and `lld`'s". The design needs to say the same, which is the first edit under </text>
+<text x="38" y="191" fill="#e6e6e6" xml:space="preserve">Next.</text>
+<text x="20" y="211" fill="#e6e6e6" xml:space="preserve">  - In wave 0, the `strategy` and `lld` skills were written with `name: hld` in their frontmatter. </text>
+<text x="38" y="231" fill="#e6e6e6" xml:space="preserve">The task 6 executor found it, and it is fixed. Neither `make validate` nor the wave 0 review </text>
+<text x="38" y="251" fill="#e6e6e6" xml:space="preserve">caught it, because no free check compares a skill's `name` with its folder. Options: add that </text>
+<text x="38" y="271" fill="#e6e6e6" xml:space="preserve">check as a task on this branch, about ten lines in `checks/test_descriptions.py`, or file an </text>
+<text x="38" y="291" fill="#e6e6e6" xml:space="preserve">issue.</text>
+<text x="20" y="311" fill="#e6e6e6" xml:space="preserve">  - The two `document-reviewer` cases copy only the LLD template, while the design's eval table </text>
+<text x="38" y="331" fill="#e6e6e6" xml:space="preserve">says "plus the three templates copied in". It does not matter at run time, since the reviewer </text>
+<text x="38" y="351" fill="#e6e6e6" xml:space="preserve">reads only the template the launch names. Options: approve the second edit under Next so the </text>
+<text x="38" y="371" fill="#e6e6e6" xml:space="preserve">design says one template, or leave the mismatch.</text>
+<text x="20" y="391" fill="#e6e6e6" xml:space="preserve">  - No case has run yet, so these graders are unproven:</text>
+<text x="20" y="411" fill="#e6e6e6" xml:space="preserve">    - Two `strategy` graders read the exact path `.freethinking/strategies/docs-platform-2028.md`. </text>
+<text x="38" y="431" fill="#e6e6e6" xml:space="preserve">They assume the skill derives that name from "Docs platform 2028".</text>
+<text x="20" y="451" fill="#e6e6e6" xml:space="preserve">    - The new reviewer-launch and parent-read graders assume the harness serialises tool input as </text>
+<text x="38" y="471" fill="#e6e6e6" xml:space="preserve">JSON with `"subagent_type"` and `"file_path"` keys.</text>
+<text x="20" y="491" fill="#e6e6e6" xml:space="preserve">    - The read graders prove a read happened, not that it came before any question.</text>
+<text x="20" y="511" fill="#e6e6e6" xml:space="preserve">    - `passes-a-clean-document` returns `holds` only if a careful reviewer finds nothing at all. </text>
+<text x="38" y="531" fill="#e6e6e6" xml:space="preserve">Its executor names the over-count of one batch as the likeliest finding.</text>
+<text x="20" y="551" fill="#e6e6e6" xml:space="preserve">  - In the skill cases, the skill launches the reviewer with `Template:` set to the plugin's </text>
+<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">temporary path. If the sandboxed reviewer cannot read that path, it returns a blocker that the </text>
+<text x="38" y="591" fill="#e6e6e6" xml:space="preserve">skill carries, and no grader notices the review was not done. That is inferred, not seen.</text>
+<text x="20" y="611" fill="#e6e6e6" xml:space="preserve">  - The `writes-strategy` scaffold now builds its own one-file repository, so it copies the git </text>
+<text x="38" y="631" fill="#e6e6e6" xml:space="preserve">binary and author lines from `evals/fixtures/setup.sh`. A later change to those lines would have </text>
+<text x="38" y="651" fill="#e6e6e6" xml:space="preserve">to be made in both places.</text>
+<text x="20" y="671" fill="#e6e6e6" xml:space="preserve">  - In the root README, the new `make eval-agent-document-reviewer` line has its comment four </text>
+<text x="38" y="691" fill="#e6e6e6" xml:space="preserve">columns to the right of its neighbours, because the target name is longer. Left as is.</text>
+<text x="20" y="711" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="731" fill="#e6e6e6" xml:space="preserve">  ## Done</text>
+<text x="20" y="751" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="771" fill="#e6e6e6" xml:space="preserve">  - **Task 5, the exclusion clause in `start-task`'s description (Requirement 8.5).** Only the </text>
+<text x="38" y="791" fill="#e6e6e6" xml:space="preserve">description line changed, and it measures 986 characters. `checks/test_descriptions.py` passes.</text>
+<text x="20" y="811" fill="#e6e6e6" xml:space="preserve">  - **Task 6, the README rows and sections, version 0.15.0 (Requirements 8.1 to 8.4).** </text>
+<text x="38" y="831" fill="#e6e6e6" xml:space="preserve">`document-reviewer` appears 8 times in the plugin README. The Agents paragraph names each agent </text>
+<text x="38" y="851" fill="#e6e6e6" xml:space="preserve">with the skills that launch it. `plugin.json` reads `"version": "0.15.0"`.</text>
+<text x="20" y="871" fill="#e6e6e6" xml:space="preserve">  - **Task 7.1, two `strategy` cases (Requirements 1.7, 9.1, 9.3).** The `writes-strategy` </text>
+<text x="38" y="891" fill="#e6e6e6" xml:space="preserve">workspace holds no source code, and its reviewer grader matches `freethinking:document-reviewer`. </text>
+<text x="38" y="911" fill="#e6e6e6" xml:space="preserve">Both scaffolds exit 0.</text>
+<text x="20" y="931" fill="#e6e6e6" xml:space="preserve">  - **Task 7.2, two `hld` cases (Requirements 3.2, 9.1, 9.3).** A grader checks the reviewer launch </text>
+<text x="38" y="951" fill="#e6e6e6" xml:space="preserve">and another checks that the strategy file is read. Both scaffolds exit 0.</text>
+<text x="20" y="971" fill="#e6e6e6" xml:space="preserve">  - **Task 7.3, two `lld` cases (Requirements 4.2, 4.4, 9.1, 9.3).** Graders check the reviewer </text>
+<text x="38" y="991" fill="#e6e6e6" xml:space="preserve">launch, the HLD read, a `calc/` read and that no code is written. The no-LLD glob is </text>
+<text x="38" y="1011" fill="#e6e6e6" xml:space="preserve">`.freethinking/**/lld-*.md`. Both scaffolds exit 0.</text>
+<text x="20" y="1031" fill="#e6e6e6" xml:space="preserve">  - **Task 7.4, two `document-reviewer` cases (Requirements 5.3, 5.4, 9.2, 9.3).** The two trees </text>
+<text x="38" y="1051" fill="#e6e6e6" xml:space="preserve">differ by one line in the LLD's Data section. The section and quote patterns were loosened. Both </text>
+<text x="38" y="1071" fill="#e6e6e6" xml:space="preserve">scaffolds exit 0.</text>
+<text x="20" y="1091" fill="#e6e6e6" xml:space="preserve">  - **Task 7.5, four Makefile lines (Requirement 9.3).** `make help` lists the four targets. Dry </text>
+<text x="38" y="1111" fill="#e6e6e6" xml:space="preserve">runs show `--allow-tools Write Edit --scaffold` on the three skill targets and `--scaffold` on </text>
+<text x="38" y="1131" fill="#e6e6e6" xml:space="preserve">the agent target.</text>
+<text x="20" y="1151" fill="#e6e6e6" xml:space="preserve">  - **Root README, outside any task.** The wave made it stale, so it gained the `make </text>
+<text x="38" y="1171" fill="#e6e6e6" xml:space="preserve">eval-agent-document-reviewer` line.</text>
+<text x="20" y="1191" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1211" fill="#e6e6e6" xml:space="preserve">  ## Checks</text>
+<text x="20" y="1231" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1251" fill="#e6e6e6" xml:space="preserve">  - `make validate` passes: 23 tests and the three validators.</text>
+<text x="20" y="1271" fill="#e6e6e6" xml:space="preserve">  - Wave review of wave 1: findings, one blocker, seven should-fix and seven nits, all fixed except </text>
+<text x="38" y="1291" fill="#e6e6e6" xml:space="preserve">two nits; carried: see Problems.</text>
+<text x="20" y="1311" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1331" fill="#e6e6e6" xml:space="preserve">  ## Files</text>
+<text x="20" y="1351" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1371" fill="#e6e6e6" xml:space="preserve">  - `plugins/freethinking/skills/start-task/SKILL.md`</text>
+<text x="20" y="1391" fill="#e6e6e6" xml:space="preserve">  - `plugins/freethinking/README.md`</text>
+<text x="20" y="1411" fill="#e6e6e6" xml:space="preserve">  - `plugins/freethinking/.claude-plugin/plugin.json`</text>
+<text x="20" y="1431" fill="#e6e6e6" xml:space="preserve">  - `plugins/freethinking/skills/strategy/SKILL.md`</text>
+<text x="20" y="1451" fill="#e6e6e6" xml:space="preserve">  - `plugins/freethinking/skills/lld/SKILL.md`</text>
+<text x="20" y="1471" fill="#e6e6e6" xml:space="preserve">  - `README.md`</text>
+<text x="20" y="1491" fill="#e6e6e6" xml:space="preserve">  - `Makefile`</text>
+<text x="20" y="1511" fill="#e6e6e6" xml:space="preserve">  - `evals/skills/strategy/`</text>
+<text x="20" y="1531" fill="#e6e6e6" xml:space="preserve">  - `evals/skills/hld/`</text>
+<text x="20" y="1551" fill="#e6e6e6" xml:space="preserve">  - `evals/skills/lld/`</text>
+<text x="20" y="1571" fill="#e6e6e6" xml:space="preserve">  - `evals/agents/document-reviewer/`</text>
+<text x="20" y="1591" fill="#e6e6e6" xml:space="preserve">  - `.freethinking/specs/design-skills/tasks.md`</text>
+<text x="20" y="1611" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1631" fill="#e6e6e6" xml:space="preserve">  ## Next</text>
+<text x="20" y="1651" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1671" fill="#e6e6e6" xml:space="preserve">  Two edits to `.freethinking/specs/design-skills/design.md` need your approval:</text>
+<text x="20" y="1691" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1711" fill="#e6e6e6" xml:space="preserve">  1. **The `start-task` section.** The quoted clause becomes "not a strategy or a high or low level </text>
+<text x="38" y="1731" fill="#e6e6e6" xml:space="preserve">design, which are `strategy`, `hld` and `lld`'s". It is followed by: "The longer wording, naming </text>
+<text x="38" y="1751" fill="#e6e6e6" xml:space="preserve">a tech strategy, a system's high level design and a component's low level design, takes the </text>
+<text x="38" y="1771" fill="#e6e6e6" xml:space="preserve">description to 1,025 characters, over the 1,024 limit."</text>
+<text x="20" y="1791" fill="#e6e6e6" xml:space="preserve">  2. **The eval table.** In the `finds-the-contradiction` row, "plus the three templates copied in" </text>
+<text x="38" y="1811" fill="#e6e6e6" xml:space="preserve">becomes "plus a copy of the template of the document under review". The sentence after the table </text>
+<text x="38" y="1831" fill="#e6e6e6" xml:space="preserve">becomes "The reviewer cases copy that template from the plugin into `files/` rather than reading </text>
+<text x="38" y="1851" fill="#e6e6e6" xml:space="preserve">it from the plugin path, since the eval's plugin copy sits at a temporary path the prompt cannot </text>
+<text x="38" y="1871" fill="#e6e6e6" xml:space="preserve">name."</text>
+<text x="20" y="1891" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1911" fill="#e6e6e6" xml:space="preserve">  Then wave 2, task 8, runs the evals one target at a time. Each happy-path run also launches the </text>
+<text x="38" y="1931" fill="#e6e6e6" xml:space="preserve">reviewer, which is a second model call. So the default $2 ceiling would cut each target short. </text>
+<text x="38" y="1951" fill="#e6e6e6" xml:space="preserve">None of these targets has been timed yet. The ceilings below are guesses from the `start-task` </text>
+<text x="38" y="1971" fill="#e6e6e6" xml:space="preserve">target's $2.72 for 15 runs:</text>
+<text x="20" y="1991" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="2011" fill="#e6e6e6" xml:space="preserve">  ```</text>
+<text x="20" y="2031" fill="#e6e6e6" xml:space="preserve">  make eval-skill-strategy EVAL_MAX_COST_USD=8</text>
+<text x="20" y="2051" fill="#e6e6e6" xml:space="preserve">  make eval-skill-hld EVAL_MAX_COST_USD=8</text>
+<text x="20" y="2071" fill="#e6e6e6" xml:space="preserve">  make eval-skill-lld EVAL_MAX_COST_USD=8</text>
+<text x="20" y="2091" fill="#e6e6e6" xml:space="preserve">  make eval-agent-document-reviewer EVAL_MAX_COST_USD=3</text>
+<text x="20" y="2111" fill="#e6e6e6" xml:space="preserve">  make eval-rule-workflow EVAL_MAX_COST_USD=5</text>
+<text x="20" y="2131" fill="#e6e6e6" xml:space="preserve">  ```</text>
+<text x="20" y="2151" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="2171" fill="#e6e6e6" xml:space="preserve">  Approve the two design edits. Then say whether I run these five targets one at a time, or you run </text>
+<text x="38" y="2191" fill="#e6e6e6" xml:space="preserve">them.</text>
+<text x="920" y="2218" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-21 · freethinking 0.15.0</text>
+</g>
+</svg>

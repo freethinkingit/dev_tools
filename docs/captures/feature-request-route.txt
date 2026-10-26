@@ -1,0 +1,39 @@
+title: freethinking — start-task
+date: 2026-10-20
+plugin: 0.14.0
+source: freethinkingit/dev_tools, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
+alt: The author asks for skills for tech strategy, high level design and low level design; Claude sends the request to start-task, which reads the plugin and states Route: Spec_Route with the task name design-skills, then asks one round of six questions.
+
+> I want to work on skills for tech stratey -> high level design(s) -> low level design(s) each as a skill and similar to implement spec with some reviewres and stuff?
+
+● This is a new feature for the plugin, so it goes through start-task. I'll hand it the request in your words and let it read the plugin, size the work and start the spec questions.
+
+⏺ Skill(skill: freethinking:start-task, args: I want to work on skills for tech strategy -> high level design(s) -> low level design(s) each as a skill and similar to implement spec with some reviewers and stuff?)
+
+⏺ Bash(command: ls .freethinking/specs/ && echo --- && ls plugins/freethinking plugins/freethinking/skills plugins/freethinking/agents plugins/freethinking/rules plugins/freethinking/hooks && echo --- && cat plugins/freethinking/.claude-plugin/plugin.json && echo --- && wc -l plugins/freethinking/skills/*/SKILL.md plugins/freethinking/agents/*.md plugins/freethinking/README.md README.md && ls evals evals/skills evals/agents 2>/dev/null, description: List plugin layout, specs, skills, agents, evals)
+
+⏺ Bash(command: cat plugins/freethinking/README.md && echo ===== && cat plugins/freethinking/agents/wave-reviewer.md && echo ===== && cat plugins/freethinking/rules/workflow.md && echo ===== && head -40 plugins/freethinking/skills/implement-spec/SKILL.md && echo ===== && ls plugins/freethinking/skills/start-task plugins/freethinking/skills/start-task/spec-template plugins/freethinking/skills/report plugins/freethinking/skills/report/templates && echo ===== && head -20 plugins/freethinking/skills/start-task/SKILL.md, description: Read plugin README, reviewer agent, workflow rule, skill heads)
+
+⏺ Bash(command: cat plugins/freethinking/agents/wave-reviewer.md; echo '-----'; cat plugins/freethinking/agents/task-executor.md, description: Read the two agent definitions)
+
+⏺ Bash(command: cat plugins/freethinking/rules/workflow.md; echo '-----'; head -12 plugins/freethinking/skills/start-task/SKILL.md; echo '-----'; head -12 plugins/freethinking/skills/implement-spec/SKILL.md; echo '-----'; ls plugins/freethinking/skills/start-task plugins/freethinking/skills/start-task/spec-template plugins/freethinking/skills/report plugins/freethinking/skills/report/templates plugins/freethinking/skills/pr; echo '-----'; cat plugins/freethinking/hooks/hooks.json, description: Read workflow rule, skill frontmatter, skill folders, hooks)
+
+⏺ Bash(command: sed -n 1,80p evals/README.md; echo '-----'; ls evals/skills/start-task evals/skills/start-task/summarises-requirements evals/agents/wave-reviewer; echo '-----'; cat evals/skills/start-task/summarises-requirements/case.yaml; echo '-----'; ls checks; grep -n 'eval-' Makefile | head -30, description: Read eval README, a case layout, checks and Makefile targets)
+
+⏺ Bash(command: sed -n 1,60p plugins/freethinking/skills/start-task/spec-template/design.md; echo '-----'; cat README.md | sed -n 1,124p, description: Read design template head and root README)
+
+● **Route: Spec_Route.** Task name `design-skills`, branch `design-skills` (no issue named; `pr` wants a ticket later, so if you file one the branch becomes `<number>-design-skills`). The plugin has five skills and two agents, with `start-task` and `implement-spec` as the shape this extends: a self-describing template per document, path-and-summary hand-backs, AskUserQuestion stops, a reviewer agent that gathers the diff itself, and an eval case folder per behaviour.
+
+  Before I write the requirements, one round of questions. Answer in your own words, as much or as little as you like.
+
+  1. **What each skill produces.** What is a tech strategy document to you: for one repository, or for a product or organisation spanning several? What does a high level design cover (a system, a service, a bounded context?) and a low level design (a module, a component, an API?). Can one strategy have many HLDs, and one HLD many LLDs?
+
+  2. **How they chain.** Does an LLD feed into `start-task`, so a spec's `design.md` cites or is derived from it, or does the chain end at the LLD? Does an HLD have to exist before an LLD can be written, and a strategy before an HLD, or can someone start at any level?
+
+  3. **Where the documents live.** Under `.freethinking/` in the repository, like specs, or somewhere else? One file per document, or a folder with sections like a spec?
+
+  4. **"Similar to implement-spec with some reviewers".** Which parts do you mean: a reviewer agent reading each document before you approve it, with findings you see? Sub-agents writing sections in parallel? A cadence choice? And are the reviewers agents, or does the skill also prepare the document for human reviewers?
+
+  5. **Who it is for and the value.** The author writing the strategy or design, a team reading it later, or both? What goes wrong today that these skills fix?
+
+  6. **Out of scope and constraints.** Anything you already know you do not want: no new dependencies is a given, but for example no diagrams beyond Mermaid, no reading of external docs, no ticket integration? Should each skill get evals and a free check like the others, and a self-describing template with a worked example?

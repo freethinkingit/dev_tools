@@ -1,0 +1,18 @@
+title: freethinking — start-task
+date: 2026-10-20
+plugin: 0.14.0
+source: freethinkingit/dev_tools, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
+alt: Claude asks whether the task list builds the design in an acceptable order, with the options Approved and Changes needed; the author picks Approved, and Claude says the spec is in .freethinking/specs/design-skills/ and the next step is /freethinking:implement-spec design-skills.
+
+⏺ AskUserQuestion(questions: [{"question": "Do these tasks build the design in an order you accept?", "header": "Approve", "options": [{"label": "Approved", "description": "The task list stands as written; implement-spec builds it from wave 0."}, {"label": "Changes needed", "description": "Say what is missing or wrong in the free text and I will revise."}], "multiSelect": false}])
+
+  Your questions have been answered: "Do these tasks build the design in an order you accept?"="Approved". You can now continue with these answers in mind.
+
+● The spec is approved and its three files are in `.freethinking/specs/design-skills/`: `requirements.md`, `design.md` and `tasks.md`.
+
+  Next step: run `/freethinking:implement-spec design-skills`. It starts at wave 0, the six tasks that put the templates, the reviewer agent, the three skills and the issue-form entries on disk together, so `make validate` passes at the end of the wave. Wave 1 is the description clause, the README and version, the ten eval cases and the Makefile lines. Wave 2 is yours: the eval runs.
+
+  Two things before you start it:
+
+  - **Branch.** This worktree is detached at origin/main, not on `main` by name, so implement-spec's set-up will not offer to create the branch. Create `design-skills` first with `git checkout -b design-skills`, or tell me and I will do it outside the skill.
+  - **Ticket.** The `pr` skill wants an issue. If you file one before the PR, the branch becomes `<number>-design-skills` and the pull request closes it on merge; I can draft the issue body from the requirements whenever you want.

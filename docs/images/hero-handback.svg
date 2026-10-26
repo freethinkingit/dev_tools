@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1152" viewBox="0 0 940 1152" role="img">
+<title>An implement-spec wave 1 report: Problems first, a wrong statement about data-driven tones with two options, a CLI error position and one failed gallery build; then Done task by task with the requirements each meets, the checks, the files changed, and Next, which says wave 2 starts now.</title>
+<rect width="940" height="1152" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — implement-spec</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● ## Problems</text>
+<text x="20" y="91" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  - **The Vanilla Tones section is wrong about data-driven tones, outside this wave.** It says "You </text>
+<text x="38" y="131" fill="#e6e6e6" xml:space="preserve">can render with only data:" with `tone: 'info'`, but `&lt;panel tone="{{tone}}"&gt;` renders in the </text>
+<text x="38" y="151" fill="#e6e6e6" xml:space="preserve">neutral grey unless `style.tones` is passed at render; only a literal `tone="info"` gets its </text>
+<text x="38" y="171" fill="#e6e6e6" xml:space="preserve">colours from data alone. The text came from the README and now also sits verbatim in </text>
+<text x="38" y="191" fill="#e6e6e6" xml:space="preserve">`docs/reference.md`. Options: a one-paragraph correction in this branch, or an issue. Carried to </text>
+<text x="38" y="211" fill="#e6e6e6" xml:space="preserve">the final report.</text>
+<text x="20" y="231" fill="#e6e6e6" xml:space="preserve">  - **Under `--strict`, the CLI's error position points into the compiled HTML, not the reader's </text>
+<text x="38" y="251" fill="#e6e6e6" xml:space="preserve">template.** A missing field reports a position like `- 58:135`, after layout expansion and CSS </text>
+<text x="38" y="271" fill="#e6e6e6" xml:space="preserve">inlining. That is existing behaviour; the CLI guide page in wave 2 will explain it rather than </text>
+<text x="38" y="291" fill="#e6e6e6" xml:space="preserve">quote the position.</text>
+<text x="20" y="311" fill="#e6e6e6" xml:space="preserve">  - **The gallery build failed once during verification**, while an executor was still finishing, </text>
+<text x="38" y="331" fill="#e6e6e6" xml:space="preserve">then passed on three later runs. Most likely two processes rebuilt `dist/` at the same moment; </text>
+<text x="38" y="351" fill="#e6e6e6" xml:space="preserve">not confirmed.</text>
+<text x="20" y="371" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="391" fill="#e6e6e6" xml:space="preserve">  ## Done</text>
+<text x="20" y="411" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="431" fill="#e6e6e6" xml:space="preserve">  - 2.1 Quickstart example (Requirements 1.3, 2.2): renders the name, the items block and the raw </text>
+<text x="38" y="451" fill="#e6e6e6" xml:space="preserve">slot HTML, with no placeholder left.</text>
+<text x="20" y="471" fill="#e6e6e6" xml:space="preserve">  - 2.2 Transactional example with its own test (Requirements 2.1 to 2.3): `welcome.test.ts` passes </text>
+<text x="38" y="491" fill="#e6e6e6" xml:space="preserve">3 tests and is collected by vitest; `send.mjs` compiles once with `strict: true` and renders two </text>
+<text x="38" y="511" fill="#e6e6e6" xml:space="preserve">users.</text>
+<text x="20" y="531" fill="#e6e6e6" xml:space="preserve">  - 2.3 CLI preview example (Requirements 2.1, 2.2, 2.4): the CLI with `--data` and `--strict` </text>
+<text x="38" y="551" fill="#e6e6e6" xml:space="preserve">renders the three items and "Total: $73.35"; a field removed from the data fails the run.</text>
+<text x="20" y="571" fill="#e6e6e6" xml:space="preserve">  - 2.4 Marketing example (Requirements 2.1 to 2.3): the 145-byte logo embeds as a data URI, the </text>
+<text x="38" y="591" fill="#e6e6e6" xml:space="preserve">badge helper's HTML stays raw, and with `webResources.strict: true` a missing logo fails the </text>
+<text x="38" y="611" fill="#e6e6e6" xml:space="preserve">compile naming the file.</text>
+<text x="20" y="631" fill="#e6e6e6" xml:space="preserve">  - 2.5 Digest example and gallery entry (Requirements 2.1 to 2.3, 2.5): twelve rows numbered 1 to </text>
+<text x="38" y="651" fill="#e6e6e6" xml:space="preserve">12, coloured panels on done rows, `@last` and `{{#unless}}` in the template, its own CSS, a text </text>
+<text x="38" y="671" fill="#e6e6e6" xml:space="preserve">part; the gallery shows it under "Guides".</text>
+<text x="20" y="691" fill="#e6e6e6" xml:space="preserve">  - 4.1 `docs/reference.md` (Requirements 3.1 to 3.4): the moved sections are byte-identical to the </text>
+<text x="38" y="711" fill="#e6e6e6" xml:space="preserve">README's, with a table of contents whose anchors match the headings.</text>
+<text x="20" y="731" fill="#e6e6e6" xml:space="preserve">  - Review fixes applied: the digest's missing `@last` and `{{#unless}}`, zero-based numbering, </text>
+<text x="38" y="751" fill="#e6e6e6" xml:space="preserve">grey tones, missing CSS and empty text part; the marketing script's missing `strict` on the image </text>
+<text x="38" y="771" fill="#e6e6e6" xml:space="preserve">fetch; every guide script now calls `render({ data })`; a "1 projects" plural.</text>
+<text x="20" y="791" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="811" fill="#e6e6e6" xml:space="preserve">  ## Checks</text>
+<text x="20" y="831" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="851" fill="#e6e6e6" xml:space="preserve">  - Suite: 8 files, 289 tests passing. `npm run examples` exits 0.</text>
+<text x="20" y="871" fill="#e6e6e6" xml:space="preserve">  - Wave review of wave 1: findings, one blocker, four should-fix and three nits, all fixed; </text>
+<text x="38" y="891" fill="#e6e6e6" xml:space="preserve">carried: see Problems.</text>
+<text x="20" y="911" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="931" fill="#e6e6e6" xml:space="preserve">  ## Files</text>
+<text x="20" y="951" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="971" fill="#e6e6e6" xml:space="preserve">  - `examples/guides/quickstart/`, `examples/guides/transactional/`, </text>
+<text x="38" y="991" fill="#e6e6e6" xml:space="preserve">`examples/guides/cli-preview/`, `examples/guides/marketing/`, `examples/guides/digest/`, </text>
+<text x="38" y="1011" fill="#e6e6e6" xml:space="preserve">`scripts/render-examples.js`, `docs/reference.md`</text>
+<text x="20" y="1031" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1051" fill="#e6e6e6" xml:space="preserve">  ## Next</text>
+<text x="20" y="1071" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1091" fill="#e6e6e6" xml:space="preserve">  Wave 2 starts now: the test that runs every guide example (3.1) and the four guide pages (4.2 to </text>
+<text x="38" y="1111" fill="#e6e6e6" xml:space="preserve">4.5).</text>
+<text x="920" y="1138" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · freethinking 0.14.0</text>
+</g>
+</svg>

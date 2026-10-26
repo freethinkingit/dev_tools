@@ -1,0 +1,40 @@
+title: freethinking — bugfix
+date: 2026-10-22
+plugin: 0.15.0
+source: freethinkingit/dev_tools, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
+alt: The bugfix skill shows the pr skill's permission error in the workflow eval target, a running summary that rules out three causes and confirms a fourth, then states the root cause and asks the author to confirm it, with the options Confirmed and Different cause; the author picks Confirmed.
+
+● The `pr` skill fails to load in the workflow target too:
+
+  ```
+  Shell command permission check failed for pattern "!`git fetch origin >/dev/null 2>&1; git rev-parse --verify -
+  ```
+
+  Its case still passes, because its only grader checks that the Skill tool was called. A call that failed to load counts as called.
+
+  **Running summary**
+
+  | Candidate cause | Status | Evidence |
+  |---|---|---|
+  | The grader is wrong | Ruled out | It looks for the `bugfix` skill's own "Symptom" read-back, which is the right check. It fails because the skill never loaded. |
+  | Too few turns | Ruled out | The run ended on its own after 3 tool calls and $0.11, well inside `max_turns: 10`. |
+  | The skill no longer states the symptom | Ruled out | The skill's text still has the **Symptom** read-back, and in a normal session it loads and runs. |
+  | The workflow target grants no Bash | Confirmed | Reproduced 1 of 1 with the permission error quoted above. The same failure appears for `pr`. |
+
+  **Root cause.** The workflow rule's eval target grants no Bash: its Makefile line is only `--scaffold`. Since commit 1170121 on 2026-10-16, `bugfix` runs `gh issue view` while it loads, and `pr` has always run `git` and `gh` while it loads. In that sandbox each Skill call fails with "Permission to use Bash has been denied". The skill's text never reaches the session, and Claude improvises an answer.
+
+  The routing graders still pass, because they see the Skill call itself. Only `states-symptom` looks for something the loaded skill would have said, so only it fails. Two consequences follow:
+
+  - **The workflow eval proves less than it seems.** `pr-routes-to-pr-skill` passes 3 of 3 while the `pr` skill never loads in it.
+  - **Real users are not affected.** The skills' `allowed-tools` pre-approve those commands outside the eval sandbox. This session's own `bugfix` load is the evidence.
+
+  Inferred, not observed: that `states-symptom` passed before 1170121. No results from before 2026-10-16 remain on disk.
+
+  **The fix I'd make.**
+
+  - **Give the workflow target what the loaded skills need.** That is `--allow-tools Bash` with the `bin` wrappers first on the PATH, as every other target whose skills run git does. The two routing cases also get a scaffold that writes the wrappers.
+  - **Add the regression guard.** It is a grader on `pr-routes-to-pr-skill` that fails when the trace holds "Shell command permission check failed". `bug-routes-to-bugfix` gets the same grader, so a skill that cannot load fails loudly instead of passing on the call alone.
+
+⏺ AskUserQuestion(questions: [{"question": "Is that the root cause: the workflow eval target grants no Bash, so the bugfix and pr skills fail to load there and only states-symptom notices?", "header": "Root cause", "options": [{"label": "Confirmed", "description": "The diagnosis is right; go on to the fix: Bash and the wrappers for the workflow target, and a can't-load grader on the two routing cases."}, {"label": "Different cause", "description": "Say what you think the cause is in the free text."}], "multiSelect": false}])
+
+  Your questions have been answered: "Is that the root cause: the workflow eval target grants no Bash, so the bugfix and pr skills fail to load there and only states-symptom notices?"="Confirmed". You can now continue with these answers in mind.

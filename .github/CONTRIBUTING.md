@@ -21,29 +21,133 @@ make validate                                # the unit tests and the validators
 
 ## Test
 
+Using the plugin needs only Claude Code, except the `pr` and `bugfix` skills,
+which need the `gh` CLI signed in, and `tighten-tests`, which needs it only to
+file the gaps it found as issues. Developing it needs make, python3 and Claude
+Code, and CI adds Node only to install Claude Code.
+
 The free checks are `make validate`: the unit tests under `checks/`, then
 three `claude plugin validate` runs, on `.`, `./plugins/ponderly` and
-`./plugins/ponderly/skills`. They make no model call.
-
-Evals run by component with `make eval-<kind>-<name>`, such as
-`make eval-skill-pr`, and `make eval-hook` for the hooks. Every case is a model
-call on your own Claude seat, so evals run by hand, never in CI. Paste the
-table the command prints into the Testing section of your pull request.
-`evals/` sits outside the plugin folder, so Anthropic's plugin directory, which
-scans every file in the plugin folder when the plugin is submitted, sees only
-the plugin, and each `make eval-*` target copies the plugin and `evals/` into a
-temporary tree to run them.
+`./plugins/ponderly/skills`. They make no model call. Run `make validate`
+after every change to a skill, rule, agent, the hooks, the manifest or
+`checks/`. The make and python3 it needs ship with git in the macOS Command
+Line Tools, and there is no venv, pip or requirements file.
 
 A change to a skill, agent, rule or hook comes with an eval case or a change to
 one. A new skill comes with at least one case under `evals/skills/<name>/`. A
 change that touches no skill, agent, rule or hook needs no eval, and
 `make validate` is the whole check.
 
-For how the checks and evals work, see the README's
-[Testing](../README.md#testing) section and
-[`evals/README.md`](../evals/README.md).
+### Validator
+
+`claude plugin validate . --strict` checks the marketplace at the repository
+root, `claude plugin validate ./plugins/ponderly --strict` checks the
+plugin, and `claude plugin validate ./plugins/ponderly/skills --strict`
+checks the skills. They are built into Claude Code and make no model call. They
+check the manifests and skill frontmatter; for an agent file they check only
+that a frontmatter block with a description exists.
+
+### Unit tests
+
+`checks/` holds standard-library `unittest` files, written for the tooling the
+plugin's development and evals depend on. `make check` discovers every one of
+them, and each file covers one concern, named by its module docstring.
+
+```bash
+make check                                                 # all of them
+python3 -m unittest discover -s checks                     # the same, without make
+python3 -m unittest discover -s checks -v                  # list each test
+python3 -m unittest discover -s checks -p test_agents.py   # one file
+python3 -m unittest discover -s checks -k test_real_run    # one test, by name
+```
+
+To add one, write a `test_*.py` under `checks/` in plain `unittest`: standard
+library only, Python 3.9 syntax, no model call, and paths resolved from the
+file's own location so it passes from any directory. Discovery picks it up with
+no Makefile change, and CI runs it through `make validate`.
+
+### Evals
+
+Evals run by component with `make eval-<kind>-<name>`, such as
+`make eval-skill-pr`, and `make eval-hook` for the hooks. Every case is a model
+call on your own Claude seat, so evals run by hand, never in CI. Paste the
+table the command prints into the Testing section of your pull request.
+
+`evals/` holds cases for `claude plugin eval`, organised by the component they
+test, so you can run only the ones for what you changed:
+
+```text
+evals/
+  hook/<case>/              # the SessionStart and SubagentStart hooks that load the rules
+  rules/<rule>/<case>/      # one folder per plugins/ponderly/rules/<rule>.md
+  skills/<skill>/<case>/    # one folder per plugins/ponderly/skills/<skill>/
+  agents/<agent>/<case>/    # one folder per plugins/ponderly/agents/<agent>.md
+```
+
+`evals/` sits outside the plugin folder, so Anthropic's plugin directory, which
+scans every file in the plugin folder when the plugin is submitted, sees only
+the plugin. But `claude plugin eval` reads cases only from inside the plugin
+root, so every eval target builds a temporary tree: a copy of
+`plugins/ponderly/` with a copy of `evals/`, minus its results, inside it,
+and `git init` at its top. It runs `claude plugin eval` against that tree,
+writes the results to `evals/results/<timestamp>/` at the repository root, and
+deletes the tree afterwards whether the run passed or failed.
+
+Each case runs Claude in a sandbox with only this plugin loaded. The dollar
+figures printed are list-price estimates, not charges.
+
+```bash
+make help                           # list the eval targets that exist
+make eval-skill-bugfix              # one skill
+make eval-rule-workflow             # one rule
+make eval-hook                      # the hook
+make eval-agent-task-executor       # the task-executor agent
+make eval-agent-wave-reviewer       # the wave-reviewer agent
+make eval-agent-document-reviewer   # the document-reviewer agent
+make eval                           # everything
+make eval-skill-pr EVAL_ARGS="--runs 2 --ablation with-without"   # pass extra flags through
+make eval EVAL_MAX_COST_USD=5                                     # raise the per-invocation cost ceiling
+```
+
+The `eval-skill-<name>`, `eval-rule-<name>` and `eval-agent-<name>` targets are
+enumerated from the folders under `evals/` and select cases by the tag that
+names the component, so a new case folder gets its target with no Makefile
+change; `make help` shows them. A target whose cases need more than the
+read-only tools gets one line in the Makefile's "Per-target flags" block, which
+is the one place to read for what each target grants: `--scaffold` to run the
+cases' scaffold scripts, whose project trees live under `evals/fixtures/`;
+`--allow-tools` for the tools the skill or agent under test needs, such as
+Bash, Write and Edit; and `bin` first on the PATH for the wrappers the scaffolds
+write, wherever Bash is granted. `eval` carries the union so the whole suite
+runs. Each invocation runs under a list-price ceiling, `EVAL_MAX_COST_USD`,
+default $2.
+
+Each case runs three times by default; iterate with `EVAL_ARGS="--runs 1"`,
+confirm as [`evals/README.md`](../evals/README.md) says (2 runs for
+deterministic graders, 3 when any is llm), and run the table you paste for a
+rule or skill-description change with `EVAL_ARGS="--ablation with-without"` so
+the Δ column shows what the plugin added. Results land in
+`evals/results/<timestamp>/` (gitignored).
+
+[`evals/README.md`](../evals/README.md) covers writing a case, reading results,
+keeping a run's transcript to debug a failure, and what the eval sandbox
+allows.
 
 ## Make a change
+
+The repository is laid out as:
+
+- `plugins/ponderly/`: the plugin itself, with its manifest, skills,
+  agents, rules, hooks and its README.
+- `evals/`: the eval cases, kept outside the plugin folder for the reason
+  [Evals](#evals) gives.
+- `checks/`: the free unit tests.
+- `.ponderly/specs/`: the design records of past tasks.
+- `.claude-plugin/marketplace.json`: the marketplace entry that points at the
+  plugin folder.
+
+Each skill is a folder under `plugins/ponderly/skills/` with a `SKILL.md`;
+each rule is a Markdown file under `plugins/ponderly/rules/`.
 
 A small change, such as a typo, a one-line fix or a rename: make it. A bug:
 run `/ponderly:bugfix`. Anything else: run `/ponderly:start-task`. It

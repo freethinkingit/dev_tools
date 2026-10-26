@@ -1,6 +1,6 @@
 {
   "name": "sabind",
-  "description": "Engineering plugins",
+  "description": "This plugin helps you write code like a seasoned engineer, even if you don't know all the best practices.",
   "owner": {
     "name": "Dan Sabin"
   },
@@ -8,7 +8,7 @@
     {
       "name": "ponderly",
       "source": "./plugins/ponderly",
-      "description": "Shared engineering skills: standard workflows and prompts for day-to-day development."
+      "description": "This plugin helps you write code like a seasoned engineer, even if you don't know all the best practices."
     }
   ]
 }

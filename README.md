@@ -1,126 +1,93 @@
-# Developer Handbook
+# ponderly
 
-This repository holds the `ponderly` Claude Code plugin, its eval suite,
-its free checks and its spec records. To install and use the plugin, read
-[the plugin README](plugins/ponderly/README.md). To change it, read
-[the contributing guide](.github/CONTRIBUTING.md).
+This plugin helps you write code like a seasoned engineer, even if you don't know all the best practices. It leans on our own thinking for reasoning, since even the best AIs cannot reason: they predict the next token in a sequence, and we have to decide which direction to point them in. It aims to slow the AI down when the scope is unclear and let it run fast when it knows what to do. At the same time, it catches the AI before it lets itself make mistakes or assumptions, so the pace always fits the level of understanding.
 
-- `plugins/ponderly/`: the plugin itself, with its manifest, skills,
-  agents, rules, hooks and its README.
-- `evals/`: the eval cases, kept outside the plugin folder because Anthropic's
-  plugin directory scans every file in that folder when the plugin is
-  submitted.
-- `checks/`: the free unit tests.
-- `.ponderly/specs/`: the design records of past tasks.
-- `.claude-plugin/marketplace.json`: the marketplace entry that points at the
-  plugin folder.
+Docs: guides to [plan a year](docs/guides/plan-a-year.md), [build a feature](docs/guides/build-a-feature.md), [fix a bug](docs/guides/fix-a-bug.md), [make a small change](docs/guides/make-a-small-change.md) and [tune a template](docs/guides/tune-a-template.md); [the Reference](docs/reference.md); [the evidence](docs/evidence.md); [contributing](.github/CONTRIBUTING.md).
 
-## Add or change a skill or rule
+## Install
 
-Each skill is a folder under `plugins/ponderly/skills/` with a `SKILL.md`;
-each rule is a Markdown file under `plugins/ponderly/rules/`. The
-[contributing guide](.github/CONTRIBUTING.md) says how to set up, test and
-submit a change. To try a change in one session, load the plugin from your
-clone with `claude --plugin-dir ./plugins/ponderly`.
-
-## Testing
-
-Using the plugin needs only Claude Code, except the `pr` and `bugfix` skills,
-which need the `gh` CLI signed in, and `tighten-tests`, which needs it only to
-file the gaps it found as issues. Developing it needs make, python3 and Claude
-Code, and CI adds Node only to install Claude Code.
-
-`make validate` runs the unit tests and then the validators, with no model
-call, and CI runs `make validate` on every PR. Run it after every change to a
-skill, rule, agent, the hooks, the manifest or `checks/`. It needs make,
-python3 and Claude Code; make and python3 ship with git in the macOS Command
-Line Tools, and there is no venv, pip or requirements file.
-
-### Validator
-
-`claude plugin validate . --strict` checks the marketplace at the repository
-root, `claude plugin validate ./plugins/ponderly --strict` checks the
-plugin, and `claude plugin validate ./plugins/ponderly/skills --strict`
-checks the skills. They are built into Claude Code and make no model call. They
-check the manifests and skill frontmatter; for an agent file they check only
-that a frontmatter block with a description exists.
-
-### Unit tests
-
-`checks/` holds standard-library `unittest` files, written for the tooling the
-plugin's development and evals depend on. `make check` discovers every one of
-them, and each file covers one concern, named by its module docstring.
+`ponderly` is a plugin for [Claude Code](https://claude.com/claude-code).
+It adds skills, agents and team rules that every session loads. This
+repository is its marketplace, `sabind`, and the marketplace holds one
+plugin, `ponderly`. From any terminal:
 
 ```bash
-make check                                                 # all of them
-python3 -m unittest discover -s checks                     # the same, without make
-python3 -m unittest discover -s checks -v                  # list each test
-python3 -m unittest discover -s checks -p test_agents.py   # one file
-python3 -m unittest discover -s checks -k test_real_run    # one test, by name
+claude plugin marketplace add sabind/ponderly
+claude plugin install ponderly@sabind
 ```
 
-To add one, write a `test_*.py` under `checks/` in plain `unittest`: standard
-library only, Python 3.9 syntax, no model call, and paths resolved from the
-file's own location so it passes from any directory. Discovery picks it up with
-no Makefile change, and CI runs it through `make validate`.
+The plugin loads the next time you start Claude Code. In a session that is
+already open, run `/reload-plugins`.
 
-### Evals
+![An implement-spec wave 1 report: Problems first, a wrong statement about data-driven tones with two options, a CLI error position and one failed gallery build; then Done task by task with the requirements each meets, the checks, the files changed, and Next, which says wave 2 starts now.](docs/images/hero-handback.svg)
 
-`evals/` holds cases for `claude plugin eval`, organised by the component they
-test, so you can run only the ones for what you changed:
+## What it does
 
-```text
-evals/
-  hook/<case>/              # the SessionStart and SubagentStart hooks that load the rules
-  rules/<rule>/<case>/      # one folder per plugins/ponderly/rules/<rule>.md
-  skills/<skill>/<case>/    # one folder per plugins/ponderly/skills/<skill>/
-  agents/<agent>/<case>/    # one folder per plugins/ponderly/agents/<agent>.md
+You ask Claude for a job, and the plugin runs the skill that fits it. A small,
+contained change goes to one agent that builds it and proves it. A bug goes to
+`bugfix`, which reproduces it before any code changes. Anything bigger becomes
+a spec of requirements, design and tasks, each of which you approve before the
+next, and `implement-spec` builds it wave by wave.
+
+```mermaid
+flowchart LR
+    strategy --> hld --> lld --> start-task
+    start-task -->|"one contained change"| task-executor
+    start-task -->|"a defect"| bugfix
+    start-task -->|"anything bigger"| spec["spec: requirements, design, tasks"]
+    spec --> implement-spec
+    implement-spec -->|"each task"| task-executor
+    implement-spec -->|"each wave"| wave-reviewer
+    start-task -->|"after a done change"| pr
+    implement-spec -->|"every task ticked"| pr
+    bugfix --> pr
 ```
 
-`evals/` sits outside the plugin, but `claude plugin eval` reads cases only
-from inside the plugin root. So every eval target builds a temporary tree: a
-copy of `plugins/ponderly/` with a copy of `evals/`, minus its results,
-inside it, and `git init` at its top. It runs `claude plugin eval` against that
-tree, writes the results to `evals/results/<timestamp>/` at the repository
-root, and deletes the tree afterwards whether the run passed or failed.
+[The Reference](docs/reference.md) describes each skill and agent, including
+`report`, which writes hand-backs like the one above.
 
-Each case runs Claude in a sandbox with only this plugin loaded. Every case is
-a real model call on your own Claude seat, so evals run by hand, not in CI. The
-dollar figures printed are list-price estimates, not charges.
+## When to use it
 
-```bash
-make help                           # list the eval targets that exist
-make eval-skill-bugfix              # one skill
-make eval-rule-workflow             # one rule
-make eval-hook                      # the hook
-make eval-agent-task-executor       # the task-executor agent
-make eval-agent-wave-reviewer       # the wave-reviewer agent
-make eval-agent-document-reviewer   # the document-reviewer agent
-make eval                           # everything
-make eval-skill-pr EVAL_ARGS="--runs 2 --ablation with-without"   # pass extra flags through
-make eval EVAL_MAX_COST_USD=5                                     # raise the per-invocation cost ceiling
-```
+- **Claude Code without the plugin.** Claude Code is an agentic coding tool
+  that reads your codebase, edits files and runs commands, in the terminal,
+  an IDE, a desktop app or the browser. Use the plugin on top of it when you
+  want each request routed to a skill, specs you approve before code, and the
+  same team rules in every session.
+- **Kiro.** Kiro is an agentic IDE built around spec-driven development: it
+  breaks complex features into detailed implementation plans with tracking,
+  and its steering files hold a project's rules. In ten months of my own use
+  it was good for thinking a feature through, but it often reported a fix or
+  a task as done before checking it, and I had to restate rules in each
+  workspace. The plugin brings the same spec way of working into Claude Code,
+  ticks a task only after its checks have run, and loads the same rules in
+  every repository.
 
-The `eval-skill-<name>`, `eval-rule-<name>` and `eval-agent-<name>` targets are
-enumerated from the folders under `evals/` and select cases by the tag that
-names the component, so a new case folder gets its target with no Makefile
-change; `make help` shows them. A target whose cases need more than the
-read-only tools gets one line in the Makefile's "Per-target flags" block, which
-is the one place to read for what each target grants: `--scaffold` to run the
-cases' scaffold scripts, whose project trees live under `evals/fixtures/`;
-`--allow-tools` for the tools the skill or agent under test needs, such as
-Bash, Write and Edit; and `bin` first on the PATH for the wrappers the scaffolds
-write, wherever Bash is granted. `eval` carries the union so the whole suite
-runs. Each invocation runs under a list-price ceiling, `EVAL_MAX_COST_USD`,
-default $2.
+## How it is tested
 
-Each case runs three times by default; iterate with `EVAL_ARGS="--runs 1"`,
-confirm as [`evals/README.md`](evals/README.md) says (2 runs for deterministic
-graders, 3 when any is llm), and run the table you paste for a rule or
-skill-description change with `EVAL_ARGS="--ablation with-without"` so the Δ
-column shows what the plugin added. Results land in
-`evals/results/<timestamp>/` (gitignored).
+`make validate` runs the free checks under `checks/` and `claude plugin
+validate`, with no model call, and CI runs it on every pull request. The
+`make eval-*` targets run `claude plugin eval` cases for the skills, agents,
+hooks and most rules; each case is a real model call, so they run by hand and
+never in CI, and [the evidence](docs/evidence.md) shows what they found.
 
-[`evals/README.md`](evals/README.md) covers writing a case, reading results,
-keeping a run's transcript to debug a failure, and what the eval sandbox
-allows.
+## What this does not do
+
+- It does not commit, push or open a pull request unless you ask, and `pr`
+  opens one only after you approve its draft.
+- It does not commit on the default branch. When you are on it, `pr` and
+  `implement-spec` offer to create a branch first.
+- It does not decide what to build. You own each spec document and approve it
+  before the next, and `implement-spec` never edits the spec beyond its
+  checkboxes without your approval.
+- It does not read a credential or send anything anywhere except through
+  `git` and `gh` to your repository's own remote. What each part runs is in
+  the Reference's
+  [What the plugin runs and sends](docs/reference.md#what-the-plugin-runs-and-sends).
+
+## Develop the plugin
+
+To set up, test and submit a change, read [the contributing guide](.github/CONTRIBUTING.md).
+
+## License
+
+MIT. See [LICENSE](LICENSE).
