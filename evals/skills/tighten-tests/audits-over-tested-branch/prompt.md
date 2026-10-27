@@ -1,0 +1,10 @@
+---
+description: 'On branch clamp-tests, which adds fourteen tests for clamp to the one main had (a table of nineteen values in test_many_values, near-duplicate inside-range tests, test_default_high_is_100 restating an implementation constant, and test_clamp_gives_the_same_answer_twice, which passes with clamp''s body removed), tighten-tests takes the advance answers, runs the Baseline and the Audit, and stops at the approval with the table and the constant test marked drop or merge and the vacuous test flagged, having changed no file and launched no executor. The sandbox has no AskUserQuestion, so the Audit and the approval question end the run as text. Needs the Makefile''s tighten-tests target, which grants Bash, Write and Edit, runs the scaffold and puts bin on the PATH.'
+tags: [skill, tighten-tests]
+max_turns: 30
+allowed_tools: [Read, Glob, Grep, Agent, Skill]
+expected_outcome: 'Claude states the Scope (target main, one test file and no source file), takes `It has run` for readability without asking, runs the suite once as the Baseline, takes `Mutation_Checks alone` if there is no coverage tool, takes the Keep_List answer, and writes the Audit: test_many_values and test_default_high_is_100 marked `drop` or `merge` with every field of their records, test_clamp_gives_the_same_answer_twice flagged as proving nothing, the near-duplicate inside-range tests merged or dropped, the keeps counted, the test counts before and after, and any Gap. It then asks for approval and stops, with no Agent launched, no file edited or written in the workspace, and nothing committed.'
+---
+/freethinking:tighten-tests
+
+I am the author. I cannot answer questions during this run, so here are my answers in advance; take them and do not ask. Readability: `It has run`. Baseline: if the suite fails, `Go on`. Coverage: if the project has no coverage tool, `Mutation_Checks alone`. Keep_List: there is no spec or ticket, and no other test must stay. I will answer the approval of the Audit after the run, so ask for it and stop there.

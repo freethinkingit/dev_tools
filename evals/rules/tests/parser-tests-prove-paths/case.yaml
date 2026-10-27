@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: parser-tests-prove-paths
+context:
+  scaffold_script: scaffold.sh
