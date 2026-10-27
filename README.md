@@ -26,7 +26,8 @@ clone with `claude --plugin-dir ./plugins/freethinking`.
 ## Testing
 
 Using the plugin needs only Claude Code, except the `pr` and `bugfix` skills,
-which need the `gh` CLI signed in. Developing it needs make, python3 and Claude
+which need the `gh` CLI signed in, and `tighten-tests`, which needs it only to
+file the gaps it found as issues. Developing it needs make, python3 and Claude
 Code, and CI adds Node only to install Claude Code.
 
 `make validate` runs the unit tests and then the validators, with no model

@@ -15,6 +15,14 @@ KNOWN_TYPES = {
     "llm": [],
 }
 
+COMMON_KEYS = {"type", "weight", "arm"}
+OPTION_KEYS = {
+    "regex": {"pattern", "flags", "match", "target"},
+    "tool_used": {"tool", "input_match", "min", "max"},
+    "file_exists": {"path", "exists"},
+    "llm": {"criteria", "focus"},
+}
+
 FENCE = "---"
 SCAFFOLD_SCRIPT = re.compile(r"^\s*scaffold_script:\s*(?P<name>[^\s#]+)\s*(?:#.*)?$", re.MULTILINE)
 TAGS = re.compile(r"^tags:(?P<value>.*)$")
@@ -161,6 +169,24 @@ class EvalCasesTest(unittest.TestCase):
                             problems.append("{}: {} grader has no {}".format(relative(grader), kind, field))
                     if kind == "llm" and not body.strip():
                         problems.append("{}: llm grader has an empty body".format(relative(grader)))
+        self.assertNoProblems(problems)
+
+    def test_every_grader_has_only_the_keys_its_type_accepts(self):
+        problems = []
+        for grader in sorted(EVALS_DIR.glob("**/graders/*.md")):
+            try:
+                fields, _ = frontmatter(grader)
+            except ValueError:
+                continue
+            kind = unquote(fields.get("type", ""))
+            if kind not in OPTION_KEYS:
+                continue
+            for key in sorted(set(fields) - COMMON_KEYS - OPTION_KEYS[kind]):
+                problems.append(
+                    "{}: {} grader does not accept {}; it takes {}".format(
+                        relative(grader), kind, key, ", ".join(sorted(COMMON_KEYS | OPTION_KEYS[kind]))
+                    )
+                )
         self.assertNoProblems(problems)
 
     def test_scaffolds_are_wired_and_executable(self):
