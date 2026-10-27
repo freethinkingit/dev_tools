@@ -22,7 +22,7 @@ Two `--case` flags ran only the last one, so that rerun covered `stops-at-starti
 - The rerun covered only `stops-at-starting-checks`, so the other case named has no rerun result. Two cases were named with `--case`, and when `--case` is given twice only the last one runs. Options: rerun the other case on its own, or leave it at its first result.
 
 ## Running
-- The eval case `opens-pr-with-ticket`, on its own under `make eval-pr`. It is running the pr skill against a sample ticket and grading the result.
+- The eval case `opens-pr-with-ticket`, on its own under `make eval-skill-pr`. It is running the pr skill against a sample ticket and grading the result.
 
 ## Finished
 - The rerun of `stops-at-starting-checks`, three runs: one stalled, see Problems; every grader passed on the other two runs, a score of 1.00, the top score.

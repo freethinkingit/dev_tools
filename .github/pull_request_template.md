@@ -8,7 +8,7 @@
 
 ## Changes
 
-<!-- How it was done. One bullet per logical change: what changed, then why in your own words, e.g. "Move the default template under skills/pr/. The skill is repository-agnostic and this repository's own template carries the Closes convention." Every source change is covered. Export-only index files and generated files are left out. -->
+<!-- How it was done. One bullet per logical change: what changed, then why, e.g. "Move the default template under skills/pr/. The skill is repository-agnostic and this repository's own template carries the Closes convention." Every source change is covered. Export-only index files and generated files are left out. -->
 
 ## Testing
 
