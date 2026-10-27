@@ -29,6 +29,8 @@ body:
         - strategy (skill)
         - hld (skill)
         - lld (skill)
+        - readable-code (skill)
+        - tighten-tests (skill)
         - document-reviewer (agent)
         - task-executor (agent)
         - wave-reviewer (agent)
@@ -37,6 +39,7 @@ body:
         - communication (rule)
         - comments (rule)
         - workflow (rule)
+        - tests (rule)
         - SessionStart hook
         - SubagentStart hook
         - Something else
