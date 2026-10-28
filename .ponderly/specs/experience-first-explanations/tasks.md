@@ -37,7 +37,7 @@ The first wave rewrites the two rules, which everything else describes or proves
     - _Requirements: 6.3, 6.7_
 
 - [x] 5. Update the README rows and the version
-  - In `plugins/ponderly/README.md`, rewrite the rows for `rules/communication.md`, `rules/collaboration.md` and the `report` skill so each says what it now requires, in the rows' existing shape; change the sentence about the rules' own limits so it says collaboration 1,600 and communication 1,900. In `plugins/ponderly/.claude-plugin/plugin.json`, `"version": "0.17.0"`. Ephemeral check: `grep -c 'operator' plugins/ponderly/README.md` is at least 1; `make validate` passes, which runs `checks/test_listing.py` on the README
+  - In `plugins/ponderly/README.md`, rewrite the rows for `rules/communication.md`, `rules/collaboration.md` and the `report` skill so each says what it now requires, in the rows' existing shape; change the sentence about the rules' own limits so it says collaboration 1,600 and communication 1,900. In `plugins/ponderly/.claude-plugin/plugin.json`, `"version": "1.1.0"`. Ephemeral check: `grep -c 'operator' plugins/ponderly/README.md` is at least 1; `make validate` passes, which runs `checks/test_listing.py` on the README
   - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
 - [x] 7. Bring the status template into line and check the rest

@@ -61,7 +61,7 @@ flowchart LR
 | `evals/rules/collaboration/one-open-decision-at-a-time/` | Proves 5.1–5.3 | New case, graders | 6.3, 6.7 |
 | `checks/test_rules_size.py` | Rule sizes | `communication` limit 1900 | 4.3, 4.4 |
 | `plugins/ponderly/README.md` | What the plugin does | Rows for the two rules and the report skill; the limit sentence says 1,900 | 7.1, 4.4 |
-| `plugins/ponderly/.claude-plugin/plugin.json` | Version | 0.16.0 to 0.17.0 | 7.2 |
+| `plugins/ponderly/.claude-plugin/plugin.json` | Version | 1.0.0 to 1.1.0 | 7.2 |
 
 ## Data Models
 
