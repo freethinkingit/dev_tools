@@ -1,0 +1,47 @@
+title: ponderly — start-task
+date: 2026-10-22
+plugin: ponderly v1.1.0
+source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
+alt: Claude's hand-back for the new eval case, problems first: the case may pass whether or not the skill reads back, it will probably fail on today's skill, and a label in a different shape would fail. Then what was done, the checks, the five files, and the next step: the case goes out with the newcomer-docs pull request, with the command to run just this case.
+
+● ## Problems
+
+  - **The new case may pass whether or not the skill reads back.** Three of its graders look for "Symptom:", "Expected:" and "Context:" anywhere in the run record. If the record includes the text of the bugfix skill itself, those labels are already there before the model writes a word. The skill's own step 1 lists them in that form, so all three graders would pass whatever the model did.
+    - **What I could and couldn't check.** I looked in the 29 run records kept on this machine. None holds an expanded skill. The only one with a skill call was a `pr` load that failed for lack of permission, so this is not settled.
+    - **What I recommend.** On the first run, add `--keep-temp` and search the kept record for "## 1. Read the ticket". If that heading is there, the graders need to read only Claude's messages.
+  - **The case will probably fail on today's skill.** That is its purpose: it reproduces the session where bugfix 0.15.0 skipped its read-back. A failure on its first run is a bugfix for the skill, which you'd start with `/ponderly:bugfix` and this case as the evidence. A pass means the miss doesn't show up under eval conditions.
+  - **A label in a different shape would fail.** A read-back that writes "Symptom —" instead of "Symptom:" would fail the label graders, even though it is a read-back. The skill's own step 1 writes the labels with a colon, so I'd accept that risk.
+
+  ## Done
+
+  - **Added `evals/skills/bugfix/reads-back-without-ticket/`.**
+    - **The prompt:** `/ponderly:bugfix` followed by the real session's advance context, word for word, with no ticket and no scaffold.
+    - **The graders:** "Symptom:", "Expected:" and "Context:" must each appear, and no Bash call may come before the read-back.
+    - **Checked by running the regexes on four made-up run records:**
+      - Bash first, then the read-back: fails, as intended.
+      - The read-back first, then Bash: passes.
+      - The read-back alone: passes.
+      - Bash alone: fails.
+
+  ## Checks
+
+  - **`make validate`:** passes. 31 tests ran, including the eval-case and frontmatter checks, and all three plugin validations passed.
+  - **The eval itself has not been run.** It costs money and is your call.
+
+  ## Files
+
+  - `evals/skills/bugfix/reads-back-without-ticket/prompt.md`
+  - `evals/skills/bugfix/reads-back-without-ticket/graders/states-symptom.md`
+  - `evals/skills/bugfix/reads-back-without-ticket/graders/states-expected.md`
+  - `evals/skills/bugfix/reads-back-without-ticket/graders/states-context.md`
+  - `evals/skills/bugfix/reads-back-without-ticket/graders/reads-back-before-bash.md`
+
+  ## Next
+
+  The case sits uncommitted on branch `newcomer-docs`, alongside the docs work, and goes out in that pull request through `/ponderly:pr` once the spec is done. To run just this case:
+
+  ```
+  make eval-skill-bugfix EVAL_ARGS="--case reads-back-without-ticket --keep-temp"
+  ```
+
+  Wave 2's review of the captures is still running. I'll bring you its findings, along with the decision on the 633-line stop capture.

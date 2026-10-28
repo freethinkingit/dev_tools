@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="2772" viewBox="0 0 940 2772" role="img">
+<title>The pr skill shows its full draft of a pull request, with title, Why, What, Changes, Testing with an eval table, Risk and Notes for reviewers, and a commit message; it asks for approval and the author picks Approved.</title>
+<rect width="940" height="2772" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — pr</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● Here is the full draft.</text>
+<text x="20" y="91" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  **Repository:** `sabind/ponderly`, base `main`, branch `50-design-skills`. **Opened by:** </text>
+<text x="38" y="131" fill="#e6e6e6" xml:space="preserve">`sabind`, the active `gh` account. **Ready for review**, not a draft.</text>
+<text x="20" y="151" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="171" fill="#e6e6e6" xml:space="preserve">  **Title:** `[#50] Add strategy, hld and lld skills with a document reviewer`</text>
+<text x="20" y="191" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="211" fill="#e6e6e6" xml:space="preserve">  **Description:**</text>
+<text x="20" y="231" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="251" fill="#e6e6e6" xml:space="preserve">  ```markdown</text>
+<text x="20" y="271" fill="#e6e6e6" xml:space="preserve">  ## Why</text>
+<text x="20" y="291" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="311" fill="#e6e6e6" xml:space="preserve">  The plugin starts at `start-task`, which sizes one change. There is nothing above it: a year's </text>
+<text x="38" y="331" fill="#e6e6e6" xml:space="preserve">direction, the systems it needs and the components inside them are planned in whatever document </text>
+<text x="38" y="351" fill="#e6e6e6" xml:space="preserve">someone opens, with no fixed shape, no fixed place and no review of whether the sections make </text>
+<text x="38" y="371" fill="#e6e6e6" xml:space="preserve">sense against each other or against the plan above. One tech strategy leads to one or more high </text>
+<text x="38" y="391" fill="#e6e6e6" xml:space="preserve">level designs, each to one or more low level designs, and each of those to around a dozen </text>
+<text x="38" y="411" fill="#e6e6e6" xml:space="preserve">`start-task` tasks.</text>
+<text x="20" y="431" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="451" fill="#e6e6e6" xml:space="preserve">  Closes #50</text>
+<text x="20" y="471" fill="#e6e6e6" xml:space="preserve">  Closes #52</text>
+<text x="20" y="491" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="511" fill="#e6e6e6" xml:space="preserve">  ## What</text>
+<text x="20" y="531" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="551" fill="#e6e6e6" xml:space="preserve">  Three new skills write a tech strategy, a high level design (HLD) and a low level design (LLD), </text>
+<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">each from the document above it, into a tree under `.ponderly/strategies/` and </text>
+<text x="38" y="591" fill="#e6e6e6" xml:space="preserve">`.ponderly/designs/&lt;strategy&gt;/&lt;hld&gt;/`. A new `document-reviewer` agent reads every draft against </text>
+<text x="38" y="611" fill="#e6e6e6" xml:space="preserve">its template and its parent before the author sees it. The workflow rule's eval target now lets </text>
+<text x="38" y="631" fill="#e6e6e6" xml:space="preserve">the `bugfix` and `pr` skills load, which they silently could not.</text>
+<text x="20" y="651" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="671" fill="#e6e6e6" xml:space="preserve">  ## Changes</text>
+<text x="20" y="691" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="711" fill="#e6e6e6" xml:space="preserve">  - `strategy`, `hld` and `lld` skills: each reads its parent first (earlier strategies, the </text>
+<text x="38" y="731" fill="#e6e6e6" xml:space="preserve">strategy, or the HLD and the code), asks one round in prose, writes from its template, has the </text>
+<text x="38" y="751" fill="#e6e6e6" xml:space="preserve">reviewer read the draft for at most two rounds, shows the path with open findings first and asks </text>
+<text x="38" y="771" fill="#e6e6e6" xml:space="preserve">Approved or Changes needed, then hands off to the next level down. A figure is attributed to its </text>
+<text x="38" y="791" fill="#e6e6e6" xml:space="preserve">source or carried to the author as a question. Each document needs its sections to make sense </text>
+<text x="38" y="811" fill="#e6e6e6" xml:space="preserve">against each other and against the plan above.</text>
+<text x="20" y="831" fill="#e6e6e6" xml:space="preserve">  - Three self-describing templates under each skill's folder, telling one worked example as a </text>
+<text x="38" y="851" fill="#e6e6e6" xml:space="preserve">tree: a links-product strategy, its shortener-service HLD and that service's visit-counter LLD. A </text>
+<text x="38" y="871" fill="#e6e6e6" xml:space="preserve">repository can replace one under `.ponderly/&lt;skill&gt;/template.md`.</text>
+<text x="20" y="891" fill="#e6e6e6" xml:space="preserve">  - `document-reviewer` agent (Read, Glob, Grep only): judges every section against its template, </text>
+<text x="38" y="911" fill="#e6e6e6" xml:space="preserve">its parent and the document's other sections, flags figures stated with no source, and returns </text>
+<text x="38" y="931" fill="#e6e6e6" xml:space="preserve">Findings in the wave reviewer's shape.</text>
+<text x="20" y="951" fill="#e6e6e6" xml:space="preserve">  - `start-task`'s description gains one clause sending a strategy or a design to the new skills.</text>
+<text x="20" y="971" fill="#e6e6e6" xml:space="preserve">  - Plugin README rows and sections for the three skills and the agent; root README gains the new </text>
+<text x="38" y="991" fill="#e6e6e6" xml:space="preserve">eval target; version 0.15.0.</text>
+<text x="20" y="1011" fill="#e6e6e6" xml:space="preserve">  - Issue forms list the three skills and the agent in their component dropdown.</text>
+<text x="20" y="1031" fill="#e6e6e6" xml:space="preserve">  - Ten eval cases and four Makefile targets: per skill a happy path and an unreadable-parent or </text>
+<text x="38" y="1051" fill="#e6e6e6" xml:space="preserve">existing-file case; for the agent a contradiction, a clean document that draws no blocker, and an </text>
+<text x="38" y="1071" fill="#e6e6e6" xml:space="preserve">unsourced figure.</text>
+<text x="20" y="1091" fill="#e6e6e6" xml:space="preserve">  - Two free checks: each skill's `name` matches its folder (two skills shipped as `name: hld` </text>
+<text x="38" y="1111" fill="#e6e6e6" xml:space="preserve">mid-branch and nothing caught it), and every frontmatter block parses as YAML (an unquoted `: ` </text>
+<text x="38" y="1131" fill="#e6e6e6" xml:space="preserve">made the harness skip two cases, and an unquoted ` #7` silently truncated </text>
+<text x="38" y="1151" fill="#e6e6e6" xml:space="preserve">`opens-pr-with-ticket`'s expected outcome). `evals/README.md` tells case authors to quote such </text>
+<text x="38" y="1171" fill="#e6e6e6" xml:space="preserve">values.</text>
+<text x="20" y="1191" fill="#e6e6e6" xml:space="preserve">  - Workflow eval target grants Bash with the `bin` wrappers, and `bug-routes-to-bugfix` and </text>
+<text x="38" y="1211" fill="#e6e6e6" xml:space="preserve">`pr-routes-to-pr-skill` gain a scaffold and a `skill-loads` grader: the `bugfix` and `pr` skills </text>
+<text x="38" y="1231" fill="#e6e6e6" xml:space="preserve">run `gh`/`git` while they load, and without Bash they never loaded in this target, so </text>
+<text x="38" y="1251" fill="#e6e6e6" xml:space="preserve">`states-symptom` failed and the pr case passed on the Skill call alone (#52).</text>
+<text x="20" y="1271" fill="#e6e6e6" xml:space="preserve">  - Spec record `.ponderly/specs/design-skills/`.</text>
+<text x="20" y="1291" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1311" fill="#e6e6e6" xml:space="preserve">  ## Testing</text>
+<text x="20" y="1331" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1351" fill="#e6e6e6" xml:space="preserve">  `make validate`: 26 tests and the three validators pass.</text>
+<text x="20" y="1371" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1391" fill="#e6e6e6" xml:space="preserve">  Evals, three runs per case:</text>
+<text x="20" y="1411" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1431" fill="#e6e6e6" xml:space="preserve">  | Target | Case | Score | Pass | Cost |</text>
+<text x="20" y="1451" fill="#e6e6e6" xml:space="preserve">  |--------|------|-------|------|------|</text>
+<text x="20" y="1471" fill="#e6e6e6" xml:space="preserve">  | strategy | existing-offers-resume | 1.00 | 3/3 | $0.48 |</text>
+<text x="20" y="1491" fill="#e6e6e6" xml:space="preserve">  | strategy | writes-strategy | 1.00 | 3/3 | $1.92 |</text>
+<text x="20" y="1511" fill="#e6e6e6" xml:space="preserve">  | hld | unreadable-strategy-asks | 1.00 | 3/3 | $0.48 |</text>
+<text x="20" y="1531" fill="#e6e6e6" xml:space="preserve">  | hld | writes-from-strategy | 1.00 | 3/3 | $3.02 |</text>
+<text x="20" y="1551" fill="#e6e6e6" xml:space="preserve">  | lld | unreadable-hld-asks | 1.00 | 3/3 | $0.48 |</text>
+<text x="20" y="1571" fill="#e6e6e6" xml:space="preserve">  | lld | writes-from-hld | 1.00 | 3/3 | $1.98 |</text>
+<text x="20" y="1591" fill="#e6e6e6" xml:space="preserve">  | document-reviewer | finds-the-contradiction | 1.00 | 3/3 | $0.75 |</text>
+<text x="20" y="1611" fill="#e6e6e6" xml:space="preserve">  | document-reviewer | flags-an-unsourced-figure | 1.00 | 3/3 | $0.66 |</text>
+<text x="20" y="1631" fill="#e6e6e6" xml:space="preserve">  | document-reviewer | passes-a-clean-document | 1.00 | 3/3 | $0.68 |</text>
+<text x="20" y="1651" fill="#e6e6e6" xml:space="preserve">  | rule-workflow | all six cases | 1.00 | 3/3 each | $3.54 |</text>
+<text x="20" y="1671" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1691" fill="#e6e6e6" xml:space="preserve">  - The strategy and hld targets were last run before the skills gained the figure-attribution </text>
+<text x="38" y="1711" fill="#e6e6e6" xml:space="preserve">sentence; lld and the reviewer were run after it.</text>
+<text x="20" y="1731" fill="#e6e6e6" xml:space="preserve">  - `writes-strategy` missed its approval option once in its first run of three; the rerun passed </text>
+<text x="38" y="1751" fill="#e6e6e6" xml:space="preserve">3/3.</text>
+<text x="20" y="1771" fill="#e6e6e6" xml:space="preserve">  - `writes-from-strategy` timed out at 300 s once while applying a second review round's fixes; </text>
+<text x="38" y="1791" fill="#e6e6e6" xml:space="preserve">the three happy-path cases now carry `timeout_seconds: 600`.</text>
+<text x="20" y="1811" fill="#e6e6e6" xml:space="preserve">  - A kept `writes-from-hld` trace confirmed the reviewer reads the plugin's template path and does </text>
+<text x="38" y="1831" fill="#e6e6e6" xml:space="preserve">a real review.</text>
+<text x="20" y="1851" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1871" fill="#e6e6e6" xml:space="preserve">  ## Risk and rollout</text>
+<text x="20" y="1891" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1911" fill="#e6e6e6" xml:space="preserve">  Minor: beyond the new skills, the changes are tweaks and fixes, `start-task`'s description clause </text>
+<text x="38" y="1931" fill="#e6e6e6" xml:space="preserve">and the workflow eval target granting Bash.</text>
+<text x="20" y="1951" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1971" fill="#e6e6e6" xml:space="preserve">  ## Notes for reviewers</text>
+<text x="20" y="1991" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="2011" fill="#e6e6e6" xml:space="preserve">  - Look at the new skills, the templates and the minor fixes to other skills, and review the evals </text>
+<text x="38" y="2031" fill="#e6e6e6" xml:space="preserve">and prompt updates to confirm no edge cases are missed.</text>
+<text x="20" y="2051" fill="#e6e6e6" xml:space="preserve">  - The reviewer is strict: on a sound LLD it returns two or three should-fix items and a nit or </text>
+<text x="38" y="2071" fill="#e6e6e6" xml:space="preserve">two every run, so authors will rarely see `holds`. Left as is until real use.</text>
+<text x="20" y="2091" fill="#e6e6e6" xml:space="preserve">  - The YAML frontmatter check rejects a trailing ` # comment`, which YAML allows; such a value has </text>
+<text x="38" y="2111" fill="#e6e6e6" xml:space="preserve">to be quoted.</text>
+<text x="20" y="2131" fill="#e6e6e6" xml:space="preserve">  - Teaching `start-task` to read an LLD's tasks is out of scope.</text>
+<text x="20" y="2151" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="2171" fill="#e6e6e6" xml:space="preserve">  🤖 Generated with [Claude Code](https://claude.com/claude-code)</text>
+<text x="20" y="2191" fill="#e6e6e6" xml:space="preserve">  ```</text>
+<text x="20" y="2211" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="2231" fill="#e6e6e6" xml:space="preserve">  **Commit message**, for all 120 files:</text>
+<text x="20" y="2251" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="2271" fill="#e6e6e6" xml:space="preserve">  ```</text>
+<text x="20" y="2291" fill="#e6e6e6" xml:space="preserve">  Add strategy, hld and lld skills with a document reviewer</text>
+<text x="20" y="2311" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="2331" fill="#e6e6e6" xml:space="preserve">  Three skills write a tech strategy, a high level design and a low</text>
+<text x="20" y="2351" fill="#e6e6e6" xml:space="preserve">  level design, each from the document above it, with a document-reviewer</text>
+<text x="20" y="2371" fill="#e6e6e6" xml:space="preserve">  agent reading every draft before the author sees it. Also: free checks</text>
+<text x="20" y="2391" fill="#e6e6e6" xml:space="preserve">  for skill names and YAML frontmatter, and the workflow eval target now</text>
+<text x="20" y="2411" fill="#e6e6e6" xml:space="preserve">  grants Bash so the bugfix and pr skills load there.</text>
+<text x="20" y="2431" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="2451" fill="#e6e6e6" xml:space="preserve">  Closes #50</text>
+<text x="20" y="2471" fill="#e6e6e6" xml:space="preserve">  Closes #52</text>
+<text x="20" y="2491" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="2511" fill="#e6e6e6" xml:space="preserve">  Co-Authored-By: Claude Opus 5.5 &lt;[redacted]&gt;</text>
+<text x="20" y="2531" fill="#e6e6e6" xml:space="preserve">  ```</text>
+<text x="20" y="2551" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="2571" fill="#a6e3a1" xml:space="preserve">⏺ AskUserQuestion(questions: [{"question": "Approved commits all 120 files on 50-design-skills with </text>
+<text x="38" y="2591" fill="#a6e3a1" xml:space="preserve">the message above, pushes the branch to origin, and opens the PR ready for review as sabind. </text>
+<text x="38" y="2611" fill="#a6e3a1" xml:space="preserve">Approve?", "header": "Approve", "options": [{"label": "Approved", "description": "Commit, push </text>
+<text x="38" y="2631" fill="#a6e3a1" xml:space="preserve">and create the PR as drafted."}, {"label": "Changes needed", "description": "Say what to change </text>
+<text x="38" y="2651" fill="#a6e3a1" xml:space="preserve">in the free text."}], "multiSelect": false}])</text>
+<text x="20" y="2671" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="2691" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "Approved commits all 120 files on 50-design-skills with the </text>
+<text x="38" y="2711" fill="#a6e3a1" xml:space="preserve">message above, pushes the branch to origin, and opens the PR ready for review as sabind. </text>
+<text x="38" y="2731" fill="#a6e3a1" xml:space="preserve">Approve?"="Approved". You can now continue with these answers in mind.</text>
+<text x="920" y="2758" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly v1.1.0</text>
+</g>
+</svg>

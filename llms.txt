@@ -1,0 +1,44 @@
+# ponderly
+
+> This plugin helps you write code like a seasoned engineer, even if you don't know all the best practices. It leans on our own thinking for reasoning, since even the best AIs cannot reason: they predict the next token in a sequence, and we have to decide which direction to point them in.
+
+ponderly is a Claude Code plugin of skills, agents and team rules. Install it with `claude plugin marketplace add sabind/ponderly` and then `claude plugin install ponderly@sabind`. It needs Claude Code, and the `gh` CLI signed in for the `pr` and `bugfix` skills and for `tighten-tests` when it files the gaps it found. It is MIT licensed. The `start-task`, `implement-spec`, `bugfix`, `pr`, `readable-code` and `tighten-tests` skills and the `wave-reviewer` agent run `git` on the current repository; `pr` reads the address of `origin` with `git remote get-url origin`, and only `pr` reaches the remote, with `git fetch` and `git push` to the repository's own `origin`. `pr` and `bugfix` run `gh` to read issues; `bugfix` also comments on issues, `pr` views, creates and edits pull requests, and `tighten-tests` runs `gh issue create` only when you say yes to filing the gaps it found. The `task-executor` agent runs the project's own tests for the code it changes. `readable-code` and `tighten-tests` also run the project's own tests, `readable-code` the project's synthesis command where the branch holds infrastructure code, and `tighten-tests` the project's coverage tool, copying a source file to a backup folder in the system's temporary directory while it breaks that file on purpose and restoring it at once; when the project has none and you say yes to adding one, `tighten-tests` installs it as a development dependency with the project's own package manager. The `strategy`, `hld` and `lld` skills and the `document-reviewer` agent run no `git` and no `gh`. The hooks read only the plugin's `rules/` folder. No skill, agent or hook reads a credential, runs a package launcher or sends anything anywhere else; the project's own tests, synthesis command, coverage tool and package manager do whatever they do in that project.
+
+## Skills
+
+- [start-task](https://github.com/sabind/ponderly/tree/main/plugins/ponderly/skills/start-task): when you want to change code and no other skill fits; it routes one contained change to the task-executor agent, a defect to bugfix, and anything bigger to a spec of requirements, design and tasks written before any code
+- [strategy](https://github.com/sabind/ponderly/tree/main/plugins/ponderly/skills/strategy): when you plan a year, a half or a roadmap, or write a tech strategy; it needs no source code
+- [hld](https://github.com/sabind/ponderly/tree/main/plugins/ponderly/skills/hld): when you design a system, a service or a stream of work that a strategy names, as a high level design
+- [lld](https://github.com/sabind/ponderly/tree/main/plugins/ponderly/skills/lld): when you design a component, module or interface that a high level design names, down to tasks sized for start-task
+- [implement-spec](https://github.com/sabind/ponderly/tree/main/plugins/ponderly/skills/implement-spec): when you build, continue or resume a task whose spec already exists, wave by wave from its tasks.md
+- [bugfix](https://github.com/sabind/ponderly/tree/main/plugins/ponderly/skills/bugfix): when you fix, debug or investigate a bug from a ticket; it reproduces the bug before touching code and fixes the cause with a regression test
+- [readable-code](https://github.com/sabind/ponderly/tree/main/plugins/ponderly/skills/readable-code): when you want the code a branch changes to read plainly, for a readability pass or to simplify or untangle it; it proves the behaviour unchanged against a baseline of the full suite
+- [tighten-tests](https://github.com/sabind/ponderly/tree/main/plugins/ponderly/skills/tighten-tests): when you want a branch's tests slimmed, trimmed or audited; it keeps every covered line and every proof a requirement needs, and proves the smaller suite no weaker by line coverage and mutation checks
+- [pr](https://github.com/sabind/ponderly/tree/main/plugins/ponderly/skills/pr): when you open or update a GitHub pull request; it takes the ticket, explains each change for you to confirm or correct, and creates the PR with gh once you approve
+- [report](https://github.com/sabind/ponderly/tree/main/plugins/ponderly/skills/report): when work comes back, a decision is open, or you ask for status or what something is or why; it writes that message, and a hand-back or a status report puts problems first
+
+## Agents
+
+- [task-executor](https://github.com/sabind/ponderly/blob/main/plugins/ponderly/agents/task-executor.md): when you have one well-specified change to build as the smallest change in the project's style, proved and with its scratch work deleted
+- [wave-reviewer](https://github.com/sabind/ponderly/blob/main/plugins/ponderly/agents/wave-reviewer.md): when you want a set of changes reviewed against the requirements and design they implement, changing nothing
+- [document-reviewer](https://github.com/sabind/ponderly/blob/main/plugins/ponderly/agents/document-reviewer.md): when you want a strategy, high level design or low level design reviewed against its template and its parent, changing nothing
+
+## Rules
+
+- [workflow](https://github.com/sabind/ponderly/blob/main/plugins/ponderly/rules/workflow.md): loaded in every session; how a request finds its skill, never working on the default branch, and a merged spec being a record
+- [code-changes](https://github.com/sabind/ponderly/blob/main/plugins/ponderly/rules/code-changes.md): loaded in every session; how to change code: read first, match the project, write for the reader with plain names and control flow and no hidden side effects, make the smallest change, test it and run what you touched
+- [comments](https://github.com/sabind/ponderly/blob/main/plugins/ponderly/rules/comments.md): loaded in every session; docstrings on public contracts only, inline comments only for non-obvious details, a comment that explains what or how fixed by making the code readable instead, no dead code
+- [tests](https://github.com/sabind/ponderly/blob/main/plugins/ponderly/rules/tests.md): loaded in every session; one test per path and per input, at the boundaries, testing behaviour rather than values, with awkward input for parsers and fakes at the boundary
+- [collaboration](https://github.com/sabind/ponderly/blob/main/plugins/ponderly/rules/collaboration.md): loaded in every session; how skills and agents ask in the shape of the answer, batch facts and ask decisions one at a time, state the plan before acting, wait for a plain yes and hand off
+- [communication](https://github.com/sabind/ponderly/blob/main/plugins/ponderly/rules/communication.md): loaded in every session; how skills and agents write to you: problems first, a thing named by what it is, a decision laid out as the person it changes will live it, plain words, then stop, delivered with the report skill
+
+## Docs
+
+- [Front door](https://github.com/sabind/ponderly/blob/main/README.md): start here to learn what the plugin is, install it and pick a guide
+- [Plan a year](https://github.com/sabind/ponderly/blob/main/docs/guides/plan-a-year.md): a walk from a tech strategy through high and low level designs to tasks
+- [Build a feature](https://github.com/sabind/ponderly/blob/main/docs/guides/build-a-feature.md): a walk from a request through a spec and its waves to a pull request
+- [Fix a bug](https://github.com/sabind/ponderly/blob/main/docs/guides/fix-a-bug.md): a walk from a ticket through reproduction and a regression test to a pull request
+- [Make a small change](https://github.com/sabind/ponderly/blob/main/docs/guides/make-a-small-change.md): a walk through one contained change built by the task-executor
+- [Tune a template](https://github.com/sabind/ponderly/blob/main/docs/guides/tune-a-template.md): how a repository replaces a plugin template under .ponderly/
+- [Reference](https://github.com/sabind/ponderly/blob/main/docs/reference.md): every skill, agent, rule and hook, and what the plugin runs and sends
+- [Evidence](https://github.com/sabind/ponderly/blob/main/docs/evidence.md): what the plugin's evals measured, with and without the plugin

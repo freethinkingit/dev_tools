@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1052" viewBox="0 0 940 1052" role="img">
+<title>The author runs the report skill asking where linkshort stands. Claude reads the history and the code, runs the tests and tries the README commands, then answers in the template's sections: Blocked says nothing blocked; Shipped lists the link store and the add command with the checks that proved them; In flight lists the failing README serve command, the untested redirect server, possible duplicate codes and the uncommitted .ponderly folder; Up next lists two steps. It ends by saying it used the repository's template at .ponderly/report/status.md.</title>
+<rect width="940" height="1052" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — report</text>
+<text x="20" y="71" fill="#7fc8f8" xml:space="preserve">&gt; /ponderly:report status where does linkshort stand?</text>
+<text x="20" y="91" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="20" y="111" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: git log --stat -5 &amp;&amp; git status --short &amp;&amp; ls -la &amp;&amp; find . -path ./.git -prune -o </text>
+<text x="38" y="131" fill="#a6e3a1" xml:space="preserve">-type f -print | head -50 &amp;&amp; ls .ponderly/specs 2&gt;/dev/null, description: Inspect repo history, </text>
+<text x="38" y="151" fill="#a6e3a1" xml:space="preserve">status and files)</text>
+<text x="20" y="171" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="191" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: cat README.md .gitignore linkshort/store.py linkshort/__main__.py </text>
+<text x="38" y="211" fill="#a6e3a1" xml:space="preserve">tests/test_store.py; python3 -m pytest -q 2&gt;&amp;1 | tail -5 || python3 -m unittest -v 2&gt;&amp;1 | tail </text>
+<text x="38" y="231" fill="#a6e3a1" xml:space="preserve">-10, description: Read the project files and run the tests)</text>
+<text x="20" y="251" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="271" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: python3 -m unittest discover -s tests 2&gt;&amp;1 | tail -4; cd [redacted] &amp;&amp; </text>
+<text x="38" y="291" fill="#a6e3a1" xml:space="preserve">PYTHONPATH=~/ponderly-demos/tune-a-template python3 -m linkshort serve --db x.db 2&gt;&amp;1 | tail -2; </text>
+<text x="38" y="311" fill="#a6e3a1" xml:space="preserve">PYTHONPATH=~/ponderly-demos/tune-a-template python3 -m linkshort --db x.db add </text>
+<text x="38" y="331" fill="#a6e3a1" xml:space="preserve">https://example.com 2&gt;&amp;1; rm -f x.db, description: Run tests and try the README commands)</text>
+<text x="20" y="351" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="371" fill="#e6e6e6" xml:space="preserve">● ## Blocked</text>
+<text x="20" y="391" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="411" fill="#e6e6e6" xml:space="preserve">  Nothing blocked.</text>
+<text x="20" y="431" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="451" fill="#e6e6e6" xml:space="preserve">  ## Shipped</text>
+<text x="20" y="471" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="491" fill="#e6e6e6" xml:space="preserve">  - The link store, which saves a long URL under a new six-character code and looks it up again, is </text>
+<text x="38" y="511" fill="#e6e6e6" xml:space="preserve">built in `linkshort/store.py`. Both of its tests pass: a saved URL comes back by its code, and an </text>
+<text x="38" y="531" fill="#e6e6e6" xml:space="preserve">unknown code returns nothing (`python3 -m unittest discover -s tests`).</text>
+<text x="20" y="551" fill="#e6e6e6" xml:space="preserve">  - The `add` command, which prints a new code for a URL, works. Running `python3 -m linkshort --db </text>
+<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">x.db add https://example.com` printed `uai5kc`.</text>
+<text x="20" y="591" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="611" fill="#e6e6e6" xml:space="preserve">  ## In flight</text>
+<text x="20" y="631" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="651" fill="#e6e6e6" xml:space="preserve">  - **The README's serve command fails.** `python3 -m linkshort serve --db links.db` stops with </text>
+<text x="38" y="671" fill="#e6e6e6" xml:space="preserve">`unrecognized arguments: --db x.db`, because `--db` has to come before the subcommand. Anyone who </text>
+<text x="38" y="691" fill="#e6e6e6" xml:space="preserve">follows the README can't start the server. You can fix it by changing the README to `python3 -m </text>
+<text x="38" y="711" fill="#e6e6e6" xml:space="preserve">linkshort --db links.db serve`, or by moving `--db` onto each subcommand so the README stays as </text>
+<text x="38" y="731" fill="#e6e6e6" xml:space="preserve">written.</text>
+<text x="20" y="751" fill="#e6e6e6" xml:space="preserve">  - **The redirect server has no tests.** `serve` in `linkshort/__main__.py` answers `/&lt;code&gt;` with </text>
+<text x="38" y="771" fill="#e6e6e6" xml:space="preserve">a 302 redirect, or a 404 when the code is unknown. Nothing has run it yet, so this is from </text>
+<text x="38" y="791" fill="#e6e6e6" xml:space="preserve">reading the code only.</text>
+<text x="20" y="811" fill="#e6e6e6" xml:space="preserve">  - **Two links can get the same code.** `add` makes a random code and doesn't check whether it's </text>
+<text x="38" y="831" fill="#e6e6e6" xml:space="preserve">already taken. I expect a clash would make the database reject the insert with an error, but I </text>
+<text x="38" y="851" fill="#e6e6e6" xml:space="preserve">haven't tested this.</text>
+<text x="20" y="871" fill="#e6e6e6" xml:space="preserve">  - **`.ponderly/` is not committed.** It holds the new status template and is untracked on `main`.</text>
+<text x="20" y="891" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="911" fill="#e6e6e6" xml:space="preserve">  ## Up next</text>
+<text x="20" y="931" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="951" fill="#e6e6e6" xml:space="preserve">  1. Fix the README's serve command.</text>
+<text x="20" y="971" fill="#e6e6e6" xml:space="preserve">  2. Add tests for the redirect server and for `add` when two codes clash.</text>
+<text x="20" y="991" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1011" fill="#e6e6e6" xml:space="preserve">  This uses the repository's template at `.ponderly/report/status.md`.</text>
+<text x="920" y="1038" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-28 · ponderly v1.1.0</text>
+</g>
+</svg>

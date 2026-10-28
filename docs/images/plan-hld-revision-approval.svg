@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1352" viewBox="0 0 940 1352" role="img">
+<title>Claude shows what changed in the revised hld-platform-move.md, section by section: both risks now carry the author's likelihood, cost and response, cutover waits for the full month and a load test through the ingress, and every key decision has a Why line, followed by nine review findings still open. It asks whether the revised design is the one the author wants, and the author picks Approved.</title>
+<rect width="940" height="1352" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — hld</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● ```text</text>
+<text x="20" y="91" fill="#e6e6e6" xml:space="preserve">  .ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md</text>
+<text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  - Risks: Both risks now have your likelihood, cost and response. "The Kubernetes deployment is </text>
+<text x="38" y="131" fill="#e6e6e6" xml:space="preserve">load-tested through the ingress before cutover, and the VM keeps serving until the test passes." </text>
+<text x="38" y="151" fill="#e6e6e6" xml:space="preserve">For the noisy neighbour: "The cluster team is asked for a connection limit, and an alert fires </text>
+<text x="38" y="171" fill="#e6e6e6" xml:space="preserve">when the redirect p99 goes above 40 ms."</text>
+<text x="20" y="191" fill="#e6e6e6" xml:space="preserve">  - Architecture: "At the end of the full dual-write month, once its last seven nights in a row </text>
+<text x="38" y="211" fill="#e6e6e6" xml:space="preserve">have had zero mismatches, … and once the Kubernetes deployment has passed its load test through </text>
+<text x="38" y="231" fill="#e6e6e6" xml:space="preserve">the ingress, `go.internal` moves to the Kubernetes deployment." The diagram text now says the </text>
+<text x="38" y="251" fill="#e6e6e6" xml:space="preserve">one-time copy runs before the month starts.</text>
+<text x="20" y="271" fill="#e6e6e6" xml:space="preserve">  - Key decisions:</text>
+<text x="20" y="291" fill="#e6e6e6" xml:space="preserve">    - Cutover now waits for the full month and the last seven clean nights.</text>
+<text x="20" y="311" fill="#e6e6e6" xml:space="preserve">    - The trade-off of the VM-serves decision now names the pre-cutover load test.</text>
+<text x="20" y="331" fill="#e6e6e6" xml:space="preserve">    - The server decision says what is kept: the SQLite store, and the 302-or-404 redirect </text>
+<text x="38" y="351" fill="#e6e6e6" xml:space="preserve">behaviour.</text>
+<text x="20" y="371" fill="#e6e6e6" xml:space="preserve">    - The create-endpoint trade-off says anyone on the network or VPN can create links until SSO </text>
+<text x="38" y="391" fill="#e6e6e6" xml:space="preserve">arrives.</text>
+<text x="20" y="411" fill="#e6e6e6" xml:space="preserve">    - Every decision now has a "Why:" line.</text>
+<text x="20" y="431" fill="#e6e6e6" xml:space="preserve">  - Cross-cutting concerns: Performance and observability name the load test and the 40 ms alert, </text>
+<text x="38" y="451" fill="#e6e6e6" xml:space="preserve">attributed to you.</text>
+<text x="20" y="471" fill="#e6e6e6" xml:space="preserve">  - Context: "After cutover, linkshort keeps its links in a dedicated database…"</text>
+<text x="20" y="491" fill="#e6e6e6" xml:space="preserve">  - Low level designs: `link-stores-and-migration` also covers retiring SQLite and the VM. </text>
+<text x="38" y="511" fill="#e6e6e6" xml:space="preserve">`kubernetes-deployment` also covers the p99 alert and the cutover load test.</text>
+<text x="20" y="531" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="551" fill="#e6e6e6" xml:space="preserve">  Review: 9 finding(s) still open:</text>
+<text x="20" y="571" fill="#e6e6e6" xml:space="preserve">  - "ingress access logs in Loki are where the 99.9% is computed." (Context): The VM serves without </text>
+<text x="38" y="591" fill="#e6e6e6" xml:space="preserve">an ingress until cutover. How is the 99.9% measured in those months, and is one VM process enough </text>
+<text x="38" y="611" fill="#e6e6e6" xml:space="preserve">to hold it?</text>
+<text x="20" y="631" fill="#e6e6e6" xml:space="preserve">  - "`go.internal` back at the VM, with SQLite read-only for a month after cutover." (Key </text>
+<text x="38" y="651" fill="#e6e6e6" xml:space="preserve">decisions): After a rollback, links created in Postgres since cutover are missing from SQLite. </text>
+<text x="38" y="671" fill="#e6e6e6" xml:space="preserve">Are they copied back, and does SQLite become writable again?</text>
+<text x="20" y="691" fill="#e6e6e6" xml:space="preserve">  - "that night's compare reports the code as" (Key decisions): Who repairs a reported mismatch, </text>
+<text x="38" y="711" fill="#e6e6e6" xml:space="preserve">and how? Otherwise one failed Postgres write blocks the seven-night gate.</text>
+<text x="20" y="731" fill="#e6e6e6" xml:space="preserve">  - "The Postgres credentials are a Kubernetes secret." (Cross-cutting concerns): How do the VM's </text>
+<text x="38" y="751" fill="#e6e6e6" xml:space="preserve">service, the copy and the compare job get Postgres credentials and network access during the </text>
+<text x="38" y="771" fill="#e6e6e6" xml:space="preserve">month?</text>
+<text x="20" y="791" fill="#e6e6e6" xml:space="preserve">  - "SQLite into Postgres. Without it, the nightly compare would report every existing" </text>
+<text x="38" y="811" fill="#e6e6e6" xml:space="preserve">(Architecture): When does `add` switch to the create endpoint relative to the copy? A link </text>
+<text x="38" y="831" fill="#e6e6e6" xml:space="preserve">created through the old path between the two would be missing from Postgres.</text>
+<text x="20" y="851" fill="#e6e6e6" xml:space="preserve">  - "A load test through the ingress checks this" (Cross-cutting concerns): What request rate must </text>
+<text x="38" y="871" fill="#e6e6e6" xml:space="preserve">the load test pass at?</text>
+<text x="20" y="891" fill="#e6e6e6" xml:space="preserve">  - "**The ingress adds enough latency to break the 50 ms p99.** Likely, as the author" (Risks): If </text>
+<text x="38" y="911" fill="#e6e6e6" xml:space="preserve">the load test fails, what is the fallback? Holding cutover puts Q2 and the identity stream's </text>
+<text x="38" y="931" fill="#e6e6e6" xml:space="preserve">start at stake.</text>
+<text x="20" y="951" fill="#e6e6e6" xml:space="preserve">  - "connection limit, and an alert fires when the redirect p99 goes above 40 ms." (Risks): Is the </text>
+<text x="38" y="971" fill="#e6e6e6" xml:space="preserve">connection limit on linkshort or on the other tenants? And what is done when the alert fires?</text>
+<text x="20" y="991" fill="#e6e6e6" xml:space="preserve">  - "`link-stores-and-migration`: the Postgres schema, the store interface and its SQLite," (Low </text>
+<text x="38" y="1011" fill="#e6e6e6" xml:space="preserve">level designs): Which design covers confirming that the cluster's backups meet the 5-minute and </text>
+<text x="38" y="1031" fill="#e6e6e6" xml:space="preserve">one-hour targets, and the restore procedure? Should that be a candidate of its own?</text>
+<text x="20" y="1051" fill="#e6e6e6" xml:space="preserve">  fixed after round 2, not re-reviewed: 1</text>
+<text x="20" y="1071" fill="#e6e6e6" xml:space="preserve">  ```</text>
+<text x="20" y="1091" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1111" fill="#a6e3a1" xml:space="preserve">⏺ AskUserQuestion(questions: [{"question": "Is the revised </text>
+<text x="38" y="1131" fill="#a6e3a1" xml:space="preserve">.ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md the design you want? Put </text>
+<text x="38" y="1151" fill="#a6e3a1" xml:space="preserve">answers to the open findings, or anything missing or wrong, in the free text.", "header": </text>
+<text x="38" y="1171" fill="#a6e3a1" xml:space="preserve">"Approve", "multiSelect": false, "options": [{"label": "Approved", "description": "The design </text>
+<text x="38" y="1191" fill="#a6e3a1" xml:space="preserve">stands as written; move on to the low level designs."}, {"label": "Changes needed", </text>
+<text x="38" y="1211" fill="#a6e3a1" xml:space="preserve">"description": "Revise it using your answers or corrections, then review and show it again."}]}])</text>
+<text x="20" y="1231" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="1251" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "Is the revised </text>
+<text x="38" y="1271" fill="#a6e3a1" xml:space="preserve">.ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md the design you want? Put </text>
+<text x="38" y="1291" fill="#a6e3a1" xml:space="preserve">answers to the open findings, or anything missing or wrong, in the free text."="Approved". You </text>
+<text x="38" y="1311" fill="#a6e3a1" xml:space="preserve">can now continue with these answers in mind.</text>
+<text x="920" y="1338" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-28 · ponderly v1.1.0</text>
+</g>
+</svg>

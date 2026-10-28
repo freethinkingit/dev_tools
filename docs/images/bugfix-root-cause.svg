@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1272" viewBox="0 0 940 1272" role="img">
+<title>The bugfix skill shows the pr skill's permission error in the workflow eval target, a running summary that rules out three causes and confirms a fourth, then states the root cause and asks the author to confirm it, with the options Confirmed and Different cause; the author picks Confirmed.</title>
+<rect width="940" height="1272" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — bugfix</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● The `pr` skill fails to load in the workflow target too:</text>
+<text x="20" y="91" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  ```</text>
+<text x="20" y="131" fill="#e6e6e6" xml:space="preserve">  Shell command permission check failed for pattern "!`git fetch origin &gt;/dev/null 2&gt;&amp;1; git </text>
+<text x="38" y="151" fill="#e6e6e6" xml:space="preserve">rev-parse --verify -</text>
+<text x="20" y="171" fill="#e6e6e6" xml:space="preserve">  ```</text>
+<text x="20" y="191" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="211" fill="#e6e6e6" xml:space="preserve">  Its case still passes, because its only grader checks that the Skill tool was called. A call that </text>
+<text x="38" y="231" fill="#e6e6e6" xml:space="preserve">failed to load counts as called.</text>
+<text x="20" y="251" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="271" fill="#e6e6e6" xml:space="preserve">  **Running summary**</text>
+<text x="20" y="291" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="311" fill="#e6e6e6" xml:space="preserve">  | Candidate cause | Status | Evidence |</text>
+<text x="20" y="331" fill="#e6e6e6" xml:space="preserve">  |---|---|---|</text>
+<text x="20" y="351" fill="#e6e6e6" xml:space="preserve">  | The grader is wrong | Ruled out | It looks for the `bugfix` skill's own "Symptom" read-back, </text>
+<text x="38" y="371" fill="#e6e6e6" xml:space="preserve">which is the right check. It fails because the skill never loaded. |</text>
+<text x="20" y="391" fill="#e6e6e6" xml:space="preserve">  | Too few turns | Ruled out | The run ended on its own after 3 tool calls and $0.11, well inside </text>
+<text x="38" y="411" fill="#e6e6e6" xml:space="preserve">`max_turns: 10`. |</text>
+<text x="20" y="431" fill="#e6e6e6" xml:space="preserve">  | The skill no longer states the symptom | Ruled out | The skill's text still has the **Symptom** </text>
+<text x="38" y="451" fill="#e6e6e6" xml:space="preserve">read-back, and in a normal session it loads and runs. |</text>
+<text x="20" y="471" fill="#e6e6e6" xml:space="preserve">  | The workflow target grants no Bash | Confirmed | Reproduced 1 of 1 with the permission error </text>
+<text x="38" y="491" fill="#e6e6e6" xml:space="preserve">quoted above. The same failure appears for `pr`. |</text>
+<text x="20" y="511" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="531" fill="#e6e6e6" xml:space="preserve">  **Root cause.** The workflow rule's eval target grants no Bash: its Makefile line is only </text>
+<text x="38" y="551" fill="#e6e6e6" xml:space="preserve">`--scaffold`. Since commit 1170121 on 2026-10-16, `bugfix` runs `gh issue view` while it loads, </text>
+<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">and `pr` has always run `git` and `gh` while it loads. In that sandbox each Skill call fails with </text>
+<text x="38" y="591" fill="#e6e6e6" xml:space="preserve">"Permission to use Bash has been denied". The skill's text never reaches the session, and Claude </text>
+<text x="38" y="611" fill="#e6e6e6" xml:space="preserve">improvises an answer.</text>
+<text x="20" y="631" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="651" fill="#e6e6e6" xml:space="preserve">  The routing graders still pass, because they see the Skill call itself. Only `states-symptom` </text>
+<text x="38" y="671" fill="#e6e6e6" xml:space="preserve">looks for something the loaded skill would have said, so only it fails. Two consequences follow:</text>
+<text x="20" y="691" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="711" fill="#e6e6e6" xml:space="preserve">  - **The workflow eval proves less than it seems.** `pr-routes-to-pr-skill` passes 3 of 3 while </text>
+<text x="38" y="731" fill="#e6e6e6" xml:space="preserve">the `pr` skill never loads in it.</text>
+<text x="20" y="751" fill="#e6e6e6" xml:space="preserve">  - **Real users are not affected.** The skills' `allowed-tools` pre-approve those commands outside </text>
+<text x="38" y="771" fill="#e6e6e6" xml:space="preserve">the eval sandbox. This session's own `bugfix` load is the evidence.</text>
+<text x="20" y="791" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="811" fill="#e6e6e6" xml:space="preserve">  Inferred, not observed: that `states-symptom` passed before 1170121. No results from before </text>
+<text x="38" y="831" fill="#e6e6e6" xml:space="preserve">2026-10-16 remain on disk.</text>
+<text x="20" y="851" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="871" fill="#e6e6e6" xml:space="preserve">  **The fix I'd make.**</text>
+<text x="20" y="891" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="911" fill="#e6e6e6" xml:space="preserve">  - **Give the workflow target what the loaded skills need.** That is `--allow-tools Bash` with the </text>
+<text x="38" y="931" fill="#e6e6e6" xml:space="preserve">`bin` wrappers first on the PATH, as every other target whose skills run git does. The two </text>
+<text x="38" y="951" fill="#e6e6e6" xml:space="preserve">routing cases also get a scaffold that writes the wrappers.</text>
+<text x="20" y="971" fill="#e6e6e6" xml:space="preserve">  - **Add the regression guard.** It is a grader on `pr-routes-to-pr-skill` that fails when the </text>
+<text x="38" y="991" fill="#e6e6e6" xml:space="preserve">trace holds "Shell command permission check failed". `bug-routes-to-bugfix` gets the same grader, </text>
+<text x="38" y="1011" fill="#e6e6e6" xml:space="preserve">so a skill that cannot load fails loudly instead of passing on the call alone.</text>
+<text x="20" y="1031" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1051" fill="#a6e3a1" xml:space="preserve">⏺ AskUserQuestion(questions: [{"question": "Is that the root cause: the workflow eval target grants </text>
+<text x="38" y="1071" fill="#a6e3a1" xml:space="preserve">no Bash, so the bugfix and pr skills fail to load there and only states-symptom notices?", </text>
+<text x="38" y="1091" fill="#a6e3a1" xml:space="preserve">"header": "Root cause", "options": [{"label": "Confirmed", "description": "The diagnosis is </text>
+<text x="38" y="1111" fill="#a6e3a1" xml:space="preserve">right; go on to the fix: Bash and the wrappers for the workflow target, and a can't-load grader </text>
+<text x="38" y="1131" fill="#a6e3a1" xml:space="preserve">on the two routing cases."}, {"label": "Different cause", "description": "Say what you think the </text>
+<text x="38" y="1151" fill="#a6e3a1" xml:space="preserve">cause is in the free text."}], "multiSelect": false}])</text>
+<text x="20" y="1171" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="1191" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "Is that the root cause: the workflow eval target grants no </text>
+<text x="38" y="1211" fill="#a6e3a1" xml:space="preserve">Bash, so the bugfix and pr skills fail to load there and only states-symptom </text>
+<text x="38" y="1231" fill="#a6e3a1" xml:space="preserve">notices?"="Confirmed". You can now continue with these answers in mind.</text>
+<text x="920" y="1258" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly v1.1.0</text>
+</g>
+</svg>

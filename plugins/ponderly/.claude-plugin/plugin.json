@@ -1,8 +1,8 @@
 {
   "name": "ponderly",
   "displayName": "Ponderly",
-  "version": "1.1.0",
-  "description": "Shared engineering skills: standard workflows and prompts for day-to-day development.",
+  "version": "1.2.0",
+  "description": "This plugin helps you write code like a seasoned engineer, even if you don't know all the best practices.",
   "author": {
     "name": "Dan Sabin",
     "email": "dan.sabin@gmail.com",

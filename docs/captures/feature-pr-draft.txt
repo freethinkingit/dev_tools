@@ -1,0 +1,97 @@
+title: ponderly — pr
+date: 2026-10-22
+plugin: ponderly v1.1.0
+source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
+alt: The pr skill shows its full draft of a pull request, with title, Why, What, Changes, Testing with an eval table, Risk and Notes for reviewers, and a commit message; it asks for approval and the author picks Approved.
+
+● Here is the full draft.
+
+  **Repository:** `sabind/ponderly`, base `main`, branch `50-design-skills`. **Opened by:** `sabind`, the active `gh` account. **Ready for review**, not a draft.
+
+  **Title:** `[#50] Add strategy, hld and lld skills with a document reviewer`
+
+  **Description:**
+
+  ```markdown
+  ## Why
+
+  The plugin starts at `start-task`, which sizes one change. There is nothing above it: a year's direction, the systems it needs and the components inside them are planned in whatever document someone opens, with no fixed shape, no fixed place and no review of whether the sections make sense against each other or against the plan above. One tech strategy leads to one or more high level designs, each to one or more low level designs, and each of those to around a dozen `start-task` tasks.
+
+  Closes #50
+  Closes #52
+
+  ## What
+
+  Three new skills write a tech strategy, a high level design (HLD) and a low level design (LLD), each from the document above it, into a tree under `.ponderly/strategies/` and `.ponderly/designs/<strategy>/<hld>/`. A new `document-reviewer` agent reads every draft against its template and its parent before the author sees it. The workflow rule's eval target now lets the `bugfix` and `pr` skills load, which they silently could not.
+
+  ## Changes
+
+  - `strategy`, `hld` and `lld` skills: each reads its parent first (earlier strategies, the strategy, or the HLD and the code), asks one round in prose, writes from its template, has the reviewer read the draft for at most two rounds, shows the path with open findings first and asks Approved or Changes needed, then hands off to the next level down. A figure is attributed to its source or carried to the author as a question. Each document needs its sections to make sense against each other and against the plan above.
+  - Three self-describing templates under each skill's folder, telling one worked example as a tree: a links-product strategy, its shortener-service HLD and that service's visit-counter LLD. A repository can replace one under `.ponderly/<skill>/template.md`.
+  - `document-reviewer` agent (Read, Glob, Grep only): judges every section against its template, its parent and the document's other sections, flags figures stated with no source, and returns Findings in the wave reviewer's shape.
+  - `start-task`'s description gains one clause sending a strategy or a design to the new skills.
+  - Plugin README rows and sections for the three skills and the agent; root README gains the new eval target; version 0.15.0.
+  - Issue forms list the three skills and the agent in their component dropdown.
+  - Ten eval cases and four Makefile targets: per skill a happy path and an unreadable-parent or existing-file case; for the agent a contradiction, a clean document that draws no blocker, and an unsourced figure.
+  - Two free checks: each skill's `name` matches its folder (two skills shipped as `name: hld` mid-branch and nothing caught it), and every frontmatter block parses as YAML (an unquoted `: ` made the harness skip two cases, and an unquoted ` #7` silently truncated `opens-pr-with-ticket`'s expected outcome). `evals/README.md` tells case authors to quote such values.
+  - Workflow eval target grants Bash with the `bin` wrappers, and `bug-routes-to-bugfix` and `pr-routes-to-pr-skill` gain a scaffold and a `skill-loads` grader: the `bugfix` and `pr` skills run `gh`/`git` while they load, and without Bash they never loaded in this target, so `states-symptom` failed and the pr case passed on the Skill call alone (#52).
+  - Spec record `.ponderly/specs/design-skills/`.
+
+  ## Testing
+
+  `make validate`: 26 tests and the three validators pass.
+
+  Evals, three runs per case:
+
+  | Target | Case | Score | Pass | Cost |
+  |--------|------|-------|------|------|
+  | strategy | existing-offers-resume | 1.00 | 3/3 | $0.48 |
+  | strategy | writes-strategy | 1.00 | 3/3 | $1.92 |
+  | hld | unreadable-strategy-asks | 1.00 | 3/3 | $0.48 |
+  | hld | writes-from-strategy | 1.00 | 3/3 | $3.02 |
+  | lld | unreadable-hld-asks | 1.00 | 3/3 | $0.48 |
+  | lld | writes-from-hld | 1.00 | 3/3 | $1.98 |
+  | document-reviewer | finds-the-contradiction | 1.00 | 3/3 | $0.75 |
+  | document-reviewer | flags-an-unsourced-figure | 1.00 | 3/3 | $0.66 |
+  | document-reviewer | passes-a-clean-document | 1.00 | 3/3 | $0.68 |
+  | rule-workflow | all six cases | 1.00 | 3/3 each | $3.54 |
+
+  - The strategy and hld targets were last run before the skills gained the figure-attribution sentence; lld and the reviewer were run after it.
+  - `writes-strategy` missed its approval option once in its first run of three; the rerun passed 3/3.
+  - `writes-from-strategy` timed out at 300 s once while applying a second review round's fixes; the three happy-path cases now carry `timeout_seconds: 600`.
+  - A kept `writes-from-hld` trace confirmed the reviewer reads the plugin's template path and does a real review.
+
+  ## Risk and rollout
+
+  Minor: beyond the new skills, the changes are tweaks and fixes, `start-task`'s description clause and the workflow eval target granting Bash.
+
+  ## Notes for reviewers
+
+  - Look at the new skills, the templates and the minor fixes to other skills, and review the evals and prompt updates to confirm no edge cases are missed.
+  - The reviewer is strict: on a sound LLD it returns two or three should-fix items and a nit or two every run, so authors will rarely see `holds`. Left as is until real use.
+  - The YAML frontmatter check rejects a trailing ` # comment`, which YAML allows; such a value has to be quoted.
+  - Teaching `start-task` to read an LLD's tasks is out of scope.
+
+  🤖 Generated with [Claude Code](https://claude.com/claude-code)
+  ```
+
+  **Commit message**, for all 120 files:
+
+  ```
+  Add strategy, hld and lld skills with a document reviewer
+
+  Three skills write a tech strategy, a high level design and a low
+  level design, each from the document above it, with a document-reviewer
+  agent reading every draft before the author sees it. Also: free checks
+  for skill names and YAML frontmatter, and the workflow eval target now
+  grants Bash so the bugfix and pr skills load there.
+
+  Closes #50
+  Closes #52
+
+  Co-Authored-By: Claude Opus 5.5 <[redacted]>
+  ```
+
+⏺ AskUserQuestion(questions: [{"question": "Approved commits all 120 files on 50-design-skills with the message above, pushes the branch to origin, and opens the PR ready for review as sabind. Approve?", "header": "Approve", "options": [{"label": "Approved", "description": "Commit, push and create the PR as drafted."}, {"label": "Changes needed", "description": "Say what to change in the free text."}], "multiSelect": false}])
+
+  Your questions have been answered: "Approved commits all 120 files on 50-design-skills with the message above, pushes the branch to origin, and opens the PR ready for review as sabind. Approve?"="Approved". You can now continue with these answers in mind.

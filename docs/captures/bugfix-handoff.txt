@@ -1,0 +1,37 @@
+title: ponderly — bugfix
+date: 2026-10-22
+plugin: ponderly v1.1.0
+source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
+alt: The bugfix skill hands back: Problems first, then Done with the root cause, the fix and the prevention, the checks that pass, the files changed, and Next, which says to open one pull request with /ponderly:pr #50.
+
+● ## Problems
+
+  - **The `bugfix` change has no ticket.** The record of the investigation stays in this conversation. The change sits on branch `50-design-skills`, outside issue #50's scope, so the pull request should name it as a separate fix.
+  - **The new YAML check also rejects one shape YAML allows.** A plain value followed by a ` # comment` fails the check and has to be quoted. That is deliberate, because a stray ` #` silently truncated two values in `opens-pr-with-ticket`. No file in the repository uses a trailing comment today.
+  - **The guard against invented figures is still open.** The skills can fill a thin answer with a confident, made-up number, and nothing checks that each figure has a source. Options: add one sentence to the reviewer's procedure so it flags figures with no source, or have the skills label such figures as assumptions. You can also leave it with the reviewer tuning you chose to wait on.
+  - **The reviewer's strictness is carried.** You chose to leave it until real use, so it goes in the PR as a follow-up.
+
+  ## Done
+
+  - **Root cause.** The workflow rule's eval target granted no Bash. The `bugfix` skill has run `gh issue view` while it loads since commit 1170121 on 2026-10-16. The `pr` skill runs `git` and `gh` while it loads. In that sandbox both loads failed with "Shell command permission check failed ... Permission to use Bash has been denied". The skill's text never reached the session. The routing graders passed on the Skill call alone, and only `states-symptom` noticed. Real users are not affected, because each skill's `allowed-tools` pre-approves those commands.
+  - **Fix.** The Makefile's `eval-rule-workflow` line now grants `--allow-tools Bash`, with the `bin` wrappers first on the PATH. `bug-routes-to-bugfix` and `pr-routes-to-pr-skill` each have a scaffold that builds the calc fixture with those wrappers.
+  - **Prevention.** Both routing cases carry a new `skill-loads` grader. It fails when the trace holds "Shell command permission check failed". The two kept traces from before the fix each hold that line once, so the grader would have failed them.
+  - **Task 11, the YAML frontmatter check (Requirements 9.3, 9.4).** `checks/test_frontmatter_yaml.py` covers every case prompt, grader, skill and agent frontmatter. It failed on each of seven planted faults and on both earlier broken files in their old form. A Ruby YAML parser accepts all 304 real files. It caught `opens-pr-with-ticket`, whose `expected_outcome` a stray ` #7` had cut down to "Claude reads ticket", and both values there are now quoted.
+
+  ## Checks
+
+  - `make validate` passes: 26 tests and the three validators.
+  - `make eval-rule-workflow` scored 1.00 on all six cases at 3 of 3 each, for $3.54 against $2.50 before the fix.
+
+  ## Files
+
+  - `Makefile`
+  - `evals/rules/workflow/bug-routes-to-bugfix/`
+  - `evals/rules/workflow/pr-routes-to-pr-skill/`
+  - `evals/skills/pr/opens-pr-with-ticket/prompt.md`
+  - `checks/test_frontmatter_yaml.py`
+  - `.ponderly/specs/design-skills/tasks.md`
+
+  ## Next
+
+  Every task in the spec is ticked. Nothing on `50-design-skills` is committed, so this fix and the whole branch go into one pull request with `/ponderly:pr #50`.

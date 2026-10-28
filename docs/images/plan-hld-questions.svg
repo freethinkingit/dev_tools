@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1592" viewBox="0 0 940 1592" role="img">
+<title>Claude runs the hld skill for the platform-move stream, lists what it took from the strategy and what it found in the code, such as the README serve command failing and a colliding code failing the add, then asks nine grouped questions on context, dual-write, Postgres and backups, running on Kubernetes, creating links, the collision check, observability, risks and out of scope. The author pastes one numbered answer per question.</title>
+<rect width="940" height="1592" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — hld</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● Name: `platform-move`. The document will be written to </text>
+<text x="38" y="91" fill="#e6e6e6" xml:space="preserve">`.ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md`. It takes the strategy's </text>
+<text x="38" y="111" fill="#e6e6e6" xml:space="preserve">`platform-move` candidate: the Kubernetes deployment, the Postgres store, the SQLite migration by </text>
+<text x="38" y="131" fill="#e6e6e6" xml:space="preserve">dual-write and compare, backups, the short-code collision check and the corrected serve command.</text>
+<text x="20" y="151" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="171" fill="#e6e6e6" xml:space="preserve">  **Taken from the strategy:**</text>
+<text x="20" y="191" fill="#e6e6e6" xml:space="preserve">  - the scope above</text>
+<text x="20" y="211" fill="#e6e6e6" xml:space="preserve">  - the goal it serves (99.9% of redirects succeed)</text>
+<text x="20" y="231" fill="#e6e6e6" xml:space="preserve">  - redirects under 50 ms at p99</text>
+<text x="20" y="251" fill="#e6e6e6" xml:space="preserve">  - Kubernetes and Postgres, with no new vendors</text>
+<text x="20" y="271" fill="#e6e6e6" xml:space="preserve">  - two half-time engineers</text>
+<text x="20" y="291" fill="#e6e6e6" xml:space="preserve">  - a month of dual-write and compare before SQLite is retired</text>
+<text x="20" y="311" fill="#e6e6e6" xml:space="preserve">  - Q1 to Q2</text>
+<text x="20" y="331" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="351" fill="#e6e6e6" xml:space="preserve">  **From the code:**</text>
+<text x="20" y="371" fill="#e6e6e6" xml:space="preserve">  - Links are created only with the `add` command, which writes straight to the SQLite file.</text>
+<text x="20" y="391" fill="#e6e6e6" xml:space="preserve">  - The server is the standard library's single-threaded `HTTPServer`.</text>
+<text x="20" y="411" fill="#e6e6e6" xml:space="preserve">  - The README's serve command fails because `--db` has to come before `serve`.</text>
+<text x="20" y="431" fill="#e6e6e6" xml:space="preserve">  - A colliding code isn't overwritten. It raises an error from the primary key, so the `add` fails.</text>
+<text x="20" y="451" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="471" fill="#e6e6e6" xml:space="preserve">  Please answer these in one reply:</text>
+<text x="20" y="491" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="511" fill="#e6e6e6" xml:space="preserve">  1. **Context.**</text>
+<text x="20" y="531" fill="#e6e6e6" xml:space="preserve">     - Who and what reaches linkshort today: only browsers on the internal network or VPN, or </text>
+<text x="38" y="551" fill="#e6e6e6" xml:space="preserve">anything else?</text>
+<text x="20" y="571" fill="#e6e6e6" xml:space="preserve">     - What hostname do links use, and does it stay the same after the move?</text>
+<text x="20" y="591" fill="#e6e6e6" xml:space="preserve">     - Is anything besides the `add` command creating links?</text>
+<text x="20" y="611" fill="#e6e6e6" xml:space="preserve">  2. **Dual-write.**</text>
+<text x="20" y="631" fill="#e6e6e6" xml:space="preserve">     - Which store is the source of truth during the month, and which one serves redirects?</text>
+<text x="20" y="651" fill="#e6e6e6" xml:space="preserve">     - How are the two stores compared: a scheduled job, or a check on each read?</text>
+<text x="20" y="671" fill="#e6e6e6" xml:space="preserve">     - What counts as a mismatch, and what has to be true before you cut over to Postgres and </text>
+<text x="38" y="691" fill="#e6e6e6" xml:space="preserve">retire SQLite?</text>
+<text x="20" y="711" fill="#e6e6e6" xml:space="preserve">     - If Postgres misbehaves, is the rollback just pointing back at SQLite?</text>
+<text x="20" y="731" fill="#e6e6e6" xml:space="preserve">  3. **Postgres and backups.**</text>
+<text x="20" y="751" fill="#e6e6e6" xml:space="preserve">     - Does the company Postgres give you a dedicated database or a shared instance?</text>
+<text x="20" y="771" fill="#e6e6e6" xml:space="preserve">     - Do its backups count as "adds backups", or does linkshort need backups of its own?</text>
+<text x="20" y="791" fill="#e6e6e6" xml:space="preserve">     - How much data loss is acceptable, and how quickly must service come back after a restore?</text>
+<text x="20" y="811" fill="#e6e6e6" xml:space="preserve">  4. **Running on Kubernetes.**</text>
+<text x="20" y="831" fill="#e6e6e6" xml:space="preserve">     - How many replicas, and is a rolling deploy enough for availability?</text>
+<text x="20" y="851" fill="#e6e6e6" xml:space="preserve">     - Does the single-threaded standard-library server stay, or should I propose a decision on </text>
+<text x="38" y="871" fill="#e6e6e6" xml:space="preserve">replacing it? It can't run behind the platform's ingress with more than one request at a time.</text>
+<text x="20" y="891" fill="#e6e6e6" xml:space="preserve">  5. **Creating links after the move.** Should the `add` command connect to Postgres directly, or </text>
+<text x="38" y="911" fill="#e6e6e6" xml:space="preserve">should the service get a create endpoint? The identity stream will later put SSO in front of </text>
+<text x="38" y="931" fill="#e6e6e6" xml:space="preserve">creation.</text>
+<text x="20" y="951" fill="#e6e6e6" xml:space="preserve">  6. **Collision check.** Should a colliding code be retried with a new one, and how many times? Or </text>
+<text x="38" y="971" fill="#e6e6e6" xml:space="preserve">should codes get longer?</text>
+<text x="20" y="991" fill="#e6e6e6" xml:space="preserve">  7. **Observability.** Where do the platform's logs and metrics go? The 99.9% goal is measured </text>
+<text x="38" y="1011" fill="#e6e6e6" xml:space="preserve">from server logs, so the design has to say where those logs end up.</text>
+<text x="20" y="1031" fill="#e6e6e6" xml:space="preserve">  8. **Risks.** What could make this design fail, beyond losing links in the migration?</text>
+<text x="20" y="1051" fill="#e6e6e6" xml:space="preserve">  9. **Out of scope.** I plan to leave SSO, owners, the edit and delete page and the public flag to </text>
+<text x="38" y="1071" fill="#e6e6e6" xml:space="preserve">the identity and ownership design. Anything else to exclude?</text>
+<text x="20" y="1091" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1111" fill="#7fc8f8" xml:space="preserve">&gt; </text>
+<text x="20" y="1131" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="20" y="1151" fill="#7fc8f8" xml:space="preserve">  &lt;pasted_content id="aeb4"&gt;</text>
+<text x="20" y="1171" fill="#7fc8f8" xml:space="preserve">  1. Only browsers on the internal network or VPN, plus Slack unfurl bots inside the company. Links </text>
+<text x="38" y="1191" fill="#7fc8f8" xml:space="preserve">use go.internal; it stays the same after the move. Nothing besides the add command creates links.</text>
+<text x="20" y="1211" fill="#7fc8f8" xml:space="preserve">  2. SQLite stays the source of truth and keeps serving redirects during the month; every write </text>
+<text x="38" y="1231" fill="#7fc8f8" xml:space="preserve">goes to both. A nightly job compares every code and URL and posts mismatches to the team channel. </text>
+<text x="38" y="1251" fill="#7fc8f8" xml:space="preserve">A mismatch is a code missing from either store or a URL that differs. Cut over after seven nights </text>
+<text x="38" y="1271" fill="#7fc8f8" xml:space="preserve">in a row with zero mismatches. Rollback is pointing redirects back at SQLite, which we keep </text>
+<text x="38" y="1291" fill="#7fc8f8" xml:space="preserve">read-only for a month after cutover.</text>
+<text x="20" y="1311" fill="#7fc8f8" xml:space="preserve">  3. A dedicated database on the shared company Postgres cluster. Its point-in-time backups count; </text>
+<text x="38" y="1331" fill="#7fc8f8" xml:space="preserve">no backups of our own. We can lose at most 5 minutes of new links and must be back within an hour.</text>
+<text x="20" y="1351" fill="#7fc8f8" xml:space="preserve">  4. Two replicas, rolling deploy is enough. Please propose a decision on replacing the server; I </text>
+<text x="38" y="1371" fill="#7fc8f8" xml:space="preserve">lean to a small ASGI app with uvicorn since it is already on the platform allow-list.</text>
+<text x="20" y="1391" fill="#7fc8f8" xml:space="preserve">  5. Give the service a create endpoint; the add command calls it. SSO will go in front of that </text>
+<text x="38" y="1411" fill="#7fc8f8" xml:space="preserve">endpoint later.</text>
+<text x="20" y="1431" fill="#7fc8f8" xml:space="preserve">  6. Retry with a new code up to three times, then fail loudly; keep six characters.</text>
+<text x="20" y="1451" fill="#7fc8f8" xml:space="preserve">  7. Logs go to the company Loki and metrics to Prometheus; the 99.9% is computed from the ingress </text>
+<text x="38" y="1471" fill="#7fc8f8" xml:space="preserve">access logs in Loki.</text>
+<text x="20" y="1491" fill="#7fc8f8" xml:space="preserve">  8. The ingress adds latency that breaks the 50 ms p99; the shared Postgres has a noisy neighbour.</text>
+<text x="20" y="1511" fill="#7fc8f8" xml:space="preserve">  9. Also exclude the browser extension and Slack unfurl work, which belong to adoption.</text>
+<text x="20" y="1531" fill="#7fc8f8" xml:space="preserve">  &lt;/pasted_content id="aeb4"&gt;</text>
+<text x="20" y="1551" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="920" y="1578" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-28 · ponderly v1.1.0</text>
+</g>
+</svg>

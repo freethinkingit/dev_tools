@@ -1,6 +1,6 @@
 ---
 name: wave-reviewer
-description: Reviews one set of changes against the requirements and design they implement and the files they must agree with, gathering the diff itself and returning Findings, a verdict followed by each problem with an exact quote and a severity. Use it directly on any diff; implement-spec launches it at the end of every wave, and once more over the whole run when the author chose to hand back only at the end.
+description: Reviews one set of changes against the requirements and design they implement and the files they must agree with, gathering the diff itself and returning Findings, a verdict followed by each problem with an exact quote and a severity. Use it directly on any diff; implement-spec launches it at the end of every wave and, when the author chose to hand back only at the end, once more over the whole run; readable-code and tighten-tests launch it once per run to read their pass.
 tools: Read, Glob, Grep, Bash, LSP
 model: opus
 effort: high

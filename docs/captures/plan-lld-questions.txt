@@ -1,0 +1,51 @@
+title: ponderly — lld
+date: 2026-10-28
+plugin: ponderly v1.1.0
+source: ponderly-demos/plan-a-year (local demo repository), session 0f811516-896e-4671-9e48-b5a845150036
+alt: Claude runs the lld skill for link-stores-and-migration, lists what it takes from the platform move design and what it found in the code, such as LinkStore's add and resolve and the project having no dependencies, then asks ten questions, several of them findings the high level design left open: the Postgres driver, the schema, the store interface and collision retry, the order of the copy and dual-write, repairing a mismatch, rollback, the compare job on the VM, retiring SQLite, testing and risks. The author pastes one numbered answer per question.
+
+● Name: `link-stores-and-migration`. The document will be written to `.ponderly/designs/linkshort-2027/platform-move/lld-link-stores-and-migration.md`. It takes the platform move design's `link-stores-and-migration` candidate:
+  - the Postgres schema
+  - the store interface with its SQLite, Postgres and dual-write implementations
+  - the one-time copy and the nightly compare job
+  - cutover, rollback, and retiring SQLite and the VM
+
+  **From the code:**
+  - `LinkStore` in `linkshort/store.py` has `add(url)`, which returns the code, and `resolve(code)`, which returns the URL or `None`.
+  - Its SQLite table is `links (code TEXT PRIMARY KEY, url TEXT NOT NULL)`.
+  - `add` makes one attempt, and a colliding code raises an integrity error.
+  - The project has no dependencies, and its tests use `unittest` against an in-memory SQLite.
+
+  **From the high level design:** the dual-write rules, the seven-clean-nights gate at the end of the full month, the mismatch definition, the three collision retries, and SQLite kept read-only for a month after cutover.
+
+  Please answer these in one reply. Several are findings the high level design left open, and they land in this design:
+
+  1. **Postgres driver.** Linkshort has no dependencies today, and the team rule is to ask before adding one. Which driver should the Postgres store use? Is it on the platform allow-list?
+  2. **Schema.** Should Postgres hold exactly `code` and `url`, or also a creation time? The identity stream will add owners later; should this design leave room for them, or leave them entirely to that stream?
+  3. **The store interface and the collision retry.** Should the store's `add` take a code and fail on a duplicate, with the service doing the three retries? Or should the store generate the code and retry itself?
+  4. **The copy and the switch of `add`.** Which comes first: dual-write going live, or the one-time copy? If dual-write starts first, the copy has to skip codes Postgres already has. If the copy goes first, creates must pause between the two.
+  5. **Repairing a mismatch.** Who repairs a code the nightly compare reports, and how? For example, the compare job could copy a code missing from Postgres from SQLite automatically, or a person could fix it by hand. Does a repaired mismatch still count against the seven clean nights?
+  6. **Rollback.** If you roll back after cutover, should the links created in Postgres since cutover be copied back into SQLite, with SQLite made writable again? Or is losing them accepted?
+  7. **The compare job on the VM.**
+     - How does it run: cron on the VM?
+     - How does it post to the team channel, for example through a Slack webhook?
+     - How do the VM's service, the copy and the compare job get the Postgres credentials and network access?
+  8. **Retiring SQLite.** At the end of the read-only month, what happens to the SQLite file and the VM: archived, deleted, or handed back?
+  9. **Testing.** Should the Postgres store be tested against a real Postgres, in a container or a test database, or against a fake? Is there one available to CI?
+  10. **Risks.** Anything you foresee for the stores or the migration beyond what the high level design names?
+
+> 
+
+  <pasted_content id="aeb4">
+  1. psycopg 3; it is on the platform allow-list. Adding it is approved.
+  2. code, url and a created_at timestamp. Leave owners entirely to the identity stream.
+  3. The store add takes a code and raises on a duplicate; the service generates codes and does the three retries.
+  4. Dual-write goes live first, then the one-time copy, which skips codes Postgres already has.
+  5. The compare job copies a code missing from Postgres from SQLite automatically and reports it; a URL that differs is fixed by hand by whoever is on call. A night with any repair is not clean.
+  6. Copy the links created since cutover back into SQLite and make it writable again.
+  7. Cron on the VM at 02:00; it posts through the team Slack webhook. The VM gets the Postgres credentials from the company Vault agent already on it, and the network team opens the VM to the cluster for the month.
+  8. Archive the SQLite file to the backup bucket for a year, then hand the VM back.
+  9. A real Postgres in a container in CI, which the platform CI already offers; the SQLite store keeps its in-memory tests.
+  10. The one-time copy could run long and hold a lock that slows redirects; run it in batches of 500 off-hours.
+  </pasted_content id="aeb4">
+

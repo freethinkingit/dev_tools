@@ -1,0 +1,35 @@
+title: ponderly — report
+date: 2026-10-28
+plugin: ponderly v1.1.0
+source: ponderly-demos/tune-a-template (local demo repository), session ee0ea074-a1aa-4cea-bac6-464eb6f193fd
+alt: The author asks for .ponderly/report/status.md with exact content: a Status report template whose sections are Blocked, with who can unblock it, Shipped, with the check that proved it, In flight, and Up next, the next one or two things in order. Claude checks the folder, writes the file with that text and says it created the file and the folder, with nothing committed.
+
+> 
+
+  <pasted_content id="afc5">
+  Create .ponderly/report/status.md with exactly this content, and nothing else:
+
+  # Status report
+
+  Sections are `## <Name>` headings, in this order.
+
+  1. **Blocked.** One bullet per thing that cannot move, with who can unblock it. Write `Nothing blocked.` when there is none.
+  2. **Shipped.** What is finished, one bullet each, with the check that proved it.
+  3. **In flight.** What is started and not finished, one bullet each.
+  4. **Up next.** The next one or two things, in order.
+  </pasted_content id="afc5">
+
+
+⏺ Bash(command: ls -la .ponderly/report/ 2>&1, description: Check whether the report folder exists)
+
+⏺ Write(file_path: ~/ponderly-demos/tune-a-template/.ponderly/report/status.md, content: # Status report
+
+  Sections are `## <Name>` headings, in this order.
+
+  1. **Blocked.** One bullet per thing that cannot move, with who can unblock it. Write `Nothing blocked.` when there is none.
+  2. **Shipped.** What is finished, one bullet each, with the check that proved it.
+  3. **In flight.** What is started and not finished, one bullet each.
+  4. **Up next.** The next one or two things, in order.
+  )
+
+● I created `.ponderly/report/status.md` with exactly the text you gave. The `.ponderly/report/` folder didn't exist before, so it was created too. Nothing is committed, and the working tree is on `main`.

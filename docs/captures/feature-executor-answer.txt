@@ -1,0 +1,39 @@
+title: ponderly — implement-spec
+date: 2026-10-20
+plugin: ponderly v1.1.0
+source: inline-email, session 4c0c154a-4af6-4bd3-b6c5-b6dbbc7a15b0
+alt: The wave 3 report opens with the stopped README task under Problems, then Done, Checks, Files and Next with two ways to fix the README's first screen; Claude asks which, with the options Reorder (Recommended) and Keep order, relax to 90, and the author picks Reorder (Recommended).
+
+● ## Problems
+
+  - **The README rewrite, task 4.6, stopped on a contradiction in the spec, and needs your decision.** Requirements 1.1 and 1.6 put the pitch, the Quickstart, the "when to use it" list and links to all four guides, the reference and `MIGRATION.md` within 60 lines after the badges, in that order. The Quickstart must quote its two example files byte for byte, 43 lines on their own. With the fences, the install line, the image, the migration callout and headings, the "when to use it" list lands near line 77 and the last link near line 85. I set the limit when writing the spec without counting the Quickstart. The README is unchanged.
+  - **Kept for your veto:** `llms.txt` has a short key-facts paragraph after its summary. The `llms.txt` convention allows it, every claim in it checks out against 4.0.1, and it helps an assistant recommend the package. Requirement 5.1 only names a summary.
+  - **Carried:** the examples gallery still renders the digest with the shared CSS and the gallery's own tone colours, so it looks slightly different from what the guide's script prints. No page claims otherwise.
+
+  ## Done
+
+  - **Branch moved onto 4.0.1.** The docs branch was fast-forwarded to the merged `master`, with the three fixes, and its `package.json` edits re-applied.
+  - **4.3 The CLI preview guide** (Requirements 2.1, 2.2, 2.4, 2.6): the guide's own-project command, run from an installed 4.0.1 tarball, rendered the order and "Total: $73.35"; the strict failure and the overwrite error appear as the page says.
+  - **5.1 `llms.txt`** (Requirements 5.1 to 5.4): 19 lines; it opens with the pitch in Requirement 1.2's own words, which the README will reuse verbatim; its seven repository links exist; it is in the tarball.
+  - **Corrections after the 4.0.1 fixes:** the digest guide's script renders built-in tone colours without `style`, and its page says so, with the right limit on what an override can change. The reference says `data-inline-...` attributes survive inlining, with `data-inline-ignore` as the exception. The guide test now asserts the digest's colours.
+  - **Review fixes to `llms.txt`:** the pitch wording, the removed `## Optional` section, and `<email>` no longer described as table markup.
+
+  ## Checks
+
+  - Suite: 9 files, 306 tests, passing six runs in a row with nothing else building. The occasional "cannot find `dist/index.js`" failures happen only while another executor rebuilds `dist/`.
+  - Wave review of wave 3: findings, four should-fix and two nits, all fixed except the key-facts paragraph, kept as above; carried: see Problems.
+
+  ## Files
+
+  - `llms.txt`, `package.json`, `docs/guides/digest.md`, `examples/guides/digest/send.mjs`, `docs/reference.md`, `test/guides.test.ts`, `.ponderly/specs/newcomer-docs/tasks.md`
+
+  ## Next
+
+  Two ways to fix the README's first screen:
+
+  1. **Reorder (recommended).** Pitch, then a single line of links to the four guides, the reference and the migration guide, then the image, the "when to use it" list, and the Quickstart. Everything a reader needs to decide, and every link, sits in the first 60 lines, and the Quickstart follows as the first thing they try. It needs one spec edit. Requirement 1.1 becomes: "THE README SHALL open, within its first 60 lines after the badges, with the Pitch, links to each Guide, the Reference and `MIGRATION.md`, and a 'when to use it' list, followed by the Quickstart." The design's README table and task 4.6 change their order to match.
+  2. **Keep the order, relax the limit.** Pitch, Quickstart, "when to use it", "Learn more", as written, with the 60 in Requirements 1.1 and 1.6, the design and task 5.2 raised to 90. Only numbers change, but a reader scrolls past the 43-line Quickstart before learning whether the library suits them.
+
+⏺ AskUserQuestion(questions: [{"question": "How should the README's first screen be fixed?", "header": "README", "multiSelect": false, "options": [{"label": "Reorder (Recommended)", "description": "Pitch, one line of links, image, when to use it, then the Quickstart; all within 60 lines. Edits Requirement 1.1, the design's README table and task 4.6."}, {"label": "Keep order, relax to 90", "description": "Pitch, Quickstart, when to use it, Learn more as written; the 60-line limit becomes 90 in 1.1, 1.6, the design and task 5.2."}]}])
+
+  Your questions have been answered: "How should the README's first screen be fixed?"="Reorder (Recommended)". You can now continue with these answers in mind.

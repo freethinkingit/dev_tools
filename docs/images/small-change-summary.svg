@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1992" viewBox="0 0 940 1992" role="img">
+<title>The task-executor's Summary returns with status: done. It lists the five new files of the reads-back-without-ticket eval case, explains the prompt and its four regex graders, reports make validate passing and a scratch Node check of the patterns, gives the command to run the case, and lists what it is unsure of, including that the skill's own text in the run record could make the graders pass.</title>
+<rect width="940" height="1992" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — start-task</text>
+<text x="20" y="71" fill="#a6e3a1" xml:space="preserve">⏺ status: done</text>
+<text x="20" y="91" fill="#a6e3a1" xml:space="preserve">  files changed:</text>
+<text x="20" y="111" fill="#a6e3a1" xml:space="preserve">  - </text>
+<text x="38" y="131" fill="#a6e3a1" xml:space="preserve">~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads</text>
+<text x="38" y="151" fill="#a6e3a1" xml:space="preserve">-back-without-ticket/prompt.md (new)</text>
+<text x="20" y="171" fill="#a6e3a1" xml:space="preserve">  - </text>
+<text x="38" y="191" fill="#a6e3a1" xml:space="preserve">~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads</text>
+<text x="38" y="211" fill="#a6e3a1" xml:space="preserve">-back-without-ticket/graders/states-symptom.md (new)</text>
+<text x="20" y="231" fill="#a6e3a1" xml:space="preserve">  - </text>
+<text x="38" y="251" fill="#a6e3a1" xml:space="preserve">~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads</text>
+<text x="38" y="271" fill="#a6e3a1" xml:space="preserve">-back-without-ticket/graders/states-expected.md (new)</text>
+<text x="20" y="291" fill="#a6e3a1" xml:space="preserve">  - </text>
+<text x="38" y="311" fill="#a6e3a1" xml:space="preserve">~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads</text>
+<text x="38" y="331" fill="#a6e3a1" xml:space="preserve">-back-without-ticket/graders/states-context.md (new)</text>
+<text x="20" y="351" fill="#a6e3a1" xml:space="preserve">  - </text>
+<text x="38" y="371" fill="#a6e3a1" xml:space="preserve">~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads</text>
+<text x="38" y="391" fill="#a6e3a1" xml:space="preserve">-back-without-ticket/graders/reads-back-before-bash.md (new)</text>
+<text x="20" y="411" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="431" fill="#a6e3a1" xml:space="preserve">  What the case is: the prompt is `/ponderly:bugfix ` followed by the session's advance context, </text>
+<text x="38" y="451" fill="#a6e3a1" xml:space="preserve">word for word. Its frontmatter is tags [skill, bugfix], max_turns 10 and a single-quoted </text>
+<text x="38" y="471" fill="#a6e3a1" xml:space="preserve">description and expected_outcome. There is no case.yaml and no scaffold: the workspace is empty, </text>
+<text x="38" y="491" fill="#a6e3a1" xml:space="preserve">so the make command in the prompt cannot run. The Makefile's bugfix target still grants Bash, and </text>
+<text x="38" y="511" fill="#a6e3a1" xml:space="preserve">that is what makes the real failure possible: running the command before the read-back. All four </text>
+<text x="38" y="531" fill="#a6e3a1" xml:space="preserve">graders are regexes that search the whole run record (`target: trace`).</text>
+<text x="20" y="551" fill="#a6e3a1" xml:space="preserve">  - states-symptom: `'\bSymptom\b[*_]*\s*:'`, flags i</text>
+<text x="20" y="571" fill="#a6e3a1" xml:space="preserve">  - states-expected: `'\bExpected\b[*_]*\s*:'`, flags i</text>
+<text x="20" y="591" fill="#a6e3a1" xml:space="preserve">  - states-context: `'\bContext\b[*_]*\s*:'`, flags i</text>
+<text x="20" y="611" fill="#a6e3a1" xml:space="preserve">  - reads-back-before-bash: `'^(?:(?!Symptom[*_]*\s*:)[\s\S])*"name"\s*:\s*"Bash"'`, flags i, match </text>
+<text x="38" y="631" fill="#a6e3a1" xml:space="preserve">not_contains. It fails when a Bash tool call appears in the run record before any "Symptom:" </text>
+<text x="38" y="651" fill="#a6e3a1" xml:space="preserve">label.</text>
+<text x="20" y="671" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="691" fill="#a6e3a1" xml:space="preserve">  Why the patterns need a colon: a bare `symptom` would match the run's own words. The advance </text>
+<text x="38" y="711" fill="#a6e3a1" xml:space="preserve">context names the "states-symptom grader", and the real session's next message quoted that </text>
+<text x="38" y="731" fill="#a6e3a1" xml:space="preserve">grader. Requiring the read-back's label form, `**Symptom**:` or `Symptom:`, avoids that.</text>
+<text x="20" y="751" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="771" fill="#a6e3a1" xml:space="preserve">  checks run:</text>
+<text x="20" y="791" fill="#a6e3a1" xml:space="preserve">  - `make validate`: passed. "Ran 31 tests ... OK" (this includes checks/test_eval_cases.py and </text>
+<text x="38" y="811" fill="#a6e3a1" xml:space="preserve">test_frontmatter_yaml.py), and every `claude plugin validate --strict` printed "Validation </text>
+<text x="38" y="831" fill="#a6e3a1" xml:space="preserve">passed".</text>
+<text x="20" y="851" fill="#a6e3a1" xml:space="preserve">  - Scratch check: a Node script ran the four patterns as JavaScript regexes on made-up run records:</text>
+<text x="20" y="871" fill="#a6e3a1" xml:space="preserve">    - Bash call, then read-back: the order grader matched, so it fails as intended.</text>
+<text x="20" y="891" fill="#a6e3a1" xml:space="preserve">    - Read-back, then Bash: no match, so it passes.</text>
+<text x="20" y="911" fill="#a6e3a1" xml:space="preserve">    - Read-back only: no match, so it passes.</text>
+<text x="20" y="931" fill="#a6e3a1" xml:space="preserve">    - Bash only: the order grader matched, so it fails.</text>
+<text x="20" y="951" fill="#a6e3a1" xml:space="preserve">    - In all four, the three label graders matched exactly when the read-back was present.</text>
+<text x="20" y="971" fill="#a6e3a1" xml:space="preserve">  - Same script on the 40 newest kept run records under /private/tmp/e-*/out/trace.jsonl: none </text>
+<text x="38" y="991" fill="#a6e3a1" xml:space="preserve">matched "Symptom:" or "Context:". One, e-MDubbG, a workflow run, matched "Expected:", which comes </text>
+<text x="38" y="1011" fill="#a6e3a1" xml:space="preserve">from the Skill-tool args that held that case's prompt. Three matched the order grader, all </text>
+<text x="38" y="1031" fill="#a6e3a1" xml:space="preserve">non-bugfix runs with Bash and no read-back, which is correct.</text>
+<text x="20" y="1051" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="1071" fill="#a6e3a1" xml:space="preserve">  ephemeral check:</text>
+<text x="20" y="1091" fill="#a6e3a1" xml:space="preserve">  ```js</text>
+<text x="20" y="1111" fill="#a6e3a1" xml:space="preserve">  const fs=require('fs');</text>
+<text x="20" y="1131" fill="#a6e3a1" xml:space="preserve">  const </text>
+<text x="38" y="1151" fill="#a6e3a1" xml:space="preserve">pats={sym:/\bSymptom\b[*_]*\s*:/i,exp:/\bExpected\b[*_]*\s*:/i,ctx:/\bContext\b[*_]*\s*:/i,order:/</text>
+<text x="38" y="1171" fill="#a6e3a1" xml:space="preserve">^(?:(?!Symptom[*_]*\s*:)[\s\S])*"name"\s*:\s*"Bash"/i};</text>
+<text x="20" y="1191" fill="#a6e3a1" xml:space="preserve">  const run=(name,t)=&gt;{const r={};for(const k in pats){const </text>
+<text x="38" y="1211" fill="#a6e3a1" xml:space="preserve">m=t.match(pats[k]);r[k]=m?JSON.stringify(m[0].slice(-40)):false}console.log(name,JSON.stringify(r)</text>
+<text x="38" y="1231" fill="#a6e3a1" xml:space="preserve">)};</text>
+<text x="20" y="1251" fill="#a6e3a1" xml:space="preserve">  for(const f of process.argv.slice(2)) run(f,fs.readFileSync(f,'utf8'));</text>
+<text x="20" y="1271" fill="#a6e3a1" xml:space="preserve">  const </text>
+<text x="38" y="1291" fill="#a6e3a1" xml:space="preserve">bash='{"type":"assistant","message":{"content":[{"type":"tool_use","id":"x","name":"Bash","input":</text>
+<text x="38" y="1311" fill="#a6e3a1" xml:space="preserve">{"command":"make eval"}}]}}';</text>
+<text x="20" y="1331" fill="#a6e3a1" xml:space="preserve">  const rb='{"type":"assistant","message":{"content":[{"type":"text","text":"No ticket read.\\n\\n- </text>
+<text x="38" y="1351" fill="#a6e3a1" xml:space="preserve">**Symptom**: fails\\n- **Expected**: passes\\n- **Context**: make"}]}}';</text>
+<text x="20" y="1371" fill="#a6e3a1" xml:space="preserve">  const init='{"type":"system","subtype":"init","tools":["Bash","Read"]}';</text>
+<text x="20" y="1391" fill="#a6e3a1" xml:space="preserve">  run('SYN bash-first',[init,bash,rb].join('\n'));</text>
+<text x="20" y="1411" fill="#a6e3a1" xml:space="preserve">  run('SYN readback-first',[init,rb,bash].join('\n'));</text>
+<text x="20" y="1431" fill="#a6e3a1" xml:space="preserve">  run('SYN readback-only',[init,rb].join('\n'));</text>
+<text x="20" y="1451" fill="#a6e3a1" xml:space="preserve">  run('SYN bash-only',[init,bash].join('\n'));</text>
+<text x="20" y="1471" fill="#a6e3a1" xml:space="preserve">  ```</text>
+<text x="20" y="1491" fill="#a6e3a1" xml:space="preserve">  Run as `node check.js $(ls -t /private/tmp/e-*/out/trace.jsonl | head -40)`. The script was </text>
+<text x="38" y="1511" fill="#a6e3a1" xml:space="preserve">deleted afterwards.</text>
+<text x="20" y="1531" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="1551" fill="#a6e3a1" xml:space="preserve">  Command to run just this case (not run; it costs money):</text>
+<text x="20" y="1571" fill="#a6e3a1" xml:space="preserve">  `make eval-skill-bugfix EVAL_ARGS="--case reads-back-without-ticket"`</text>
+<text x="20" y="1591" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="1611" fill="#a6e3a1" xml:space="preserve">  unsure:</text>
+<text x="20" y="1631" fill="#a6e3a1" xml:space="preserve">  - Whether a `/ponderly:bugfix` prompt and its expanded SKILL.md appear in the run record is </text>
+<text x="38" y="1651" fill="#a6e3a1" xml:space="preserve">inferred, not seen. No kept run record from a slash-command bugfix run was on disk. In the </text>
+<text x="38" y="1671" fill="#a6e3a1" xml:space="preserve">records I did read (e-EZG7P2, e-MDubbG), the user prompt does not appear, and SKILL.md's "what </text>
+<text x="38" y="1691" fill="#a6e3a1" xml:space="preserve">actually happens" line does not appear. If the expanded SKILL.md did appear, its `**Symptom**:` </text>
+<text x="38" y="1711" fill="#a6e3a1" xml:space="preserve">line would make all four graders pass whatever the model did. The first real run should be </text>
+<text x="38" y="1731" fill="#a6e3a1" xml:space="preserve">checked with `--keep-temp` to confirm.</text>
+<text x="20" y="1751" fill="#a6e3a1" xml:space="preserve">  - The label graders assume the read-back uses "Symptom", "Expected" and "Context" followed by a </text>
+<text x="38" y="1771" fill="#a6e3a1" xml:space="preserve">colon, as SKILL.md writes them. A read-back in a different form, such as "Symptom —", would fail </text>
+<text x="38" y="1791" fill="#a6e3a1" xml:space="preserve">them.</text>
+<text x="20" y="1811" fill="#a6e3a1" xml:space="preserve">  - The order grader treats only a Bash call before the read-back as a failure. A Read, Glob or </text>
+<text x="38" y="1831" fill="#a6e3a1" xml:space="preserve">Grep before it is allowed. I read "before it reproduces anything" as running something.</text>
+<text x="20" y="1851" fill="#a6e3a1" xml:space="preserve">  - I left out allowed_tools, as reads-ticket-first does. I have not checked which read-only tools </text>
+<text x="38" y="1871" fill="#a6e3a1" xml:space="preserve">the harness gives by default.</text>
+<text x="20" y="1891" fill="#a6e3a1" xml:space="preserve">  - Outside this task: the kept workflow run record /private/tmp/e-MDubbG/out/trace.jsonl contains </text>
+<text x="38" y="1911" fill="#a6e3a1" xml:space="preserve">no "symptom" at all. Its bugfix Skill call returned "Shell command permission check failed for </text>
+<text x="38" y="1931" fill="#a6e3a1" xml:space="preserve">pattern \"!`gh issue view \"ENG-412:\" 2&gt;". That may bear on the bug-routes-to-bugfix </text>
+<text x="38" y="1951" fill="#a6e3a1" xml:space="preserve">states-symptom failure. I did not investigate it.</text>
+<text x="920" y="1978" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly v1.1.0</text>
+</g>
+</svg>

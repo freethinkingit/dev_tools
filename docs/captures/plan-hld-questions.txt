@@ -1,0 +1,61 @@
+title: ponderly — hld
+date: 2026-10-28
+plugin: ponderly v1.1.0
+source: ponderly-demos/plan-a-year (local demo repository), session 0f811516-896e-4671-9e48-b5a845150036
+alt: Claude runs the hld skill for the platform-move stream, lists what it took from the strategy and what it found in the code, such as the README serve command failing and a colliding code failing the add, then asks nine grouped questions on context, dual-write, Postgres and backups, running on Kubernetes, creating links, the collision check, observability, risks and out of scope. The author pastes one numbered answer per question.
+
+● Name: `platform-move`. The document will be written to `.ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md`. It takes the strategy's `platform-move` candidate: the Kubernetes deployment, the Postgres store, the SQLite migration by dual-write and compare, backups, the short-code collision check and the corrected serve command.
+
+  **Taken from the strategy:**
+  - the scope above
+  - the goal it serves (99.9% of redirects succeed)
+  - redirects under 50 ms at p99
+  - Kubernetes and Postgres, with no new vendors
+  - two half-time engineers
+  - a month of dual-write and compare before SQLite is retired
+  - Q1 to Q2
+
+  **From the code:**
+  - Links are created only with the `add` command, which writes straight to the SQLite file.
+  - The server is the standard library's single-threaded `HTTPServer`.
+  - The README's serve command fails because `--db` has to come before `serve`.
+  - A colliding code isn't overwritten. It raises an error from the primary key, so the `add` fails.
+
+  Please answer these in one reply:
+
+  1. **Context.**
+     - Who and what reaches linkshort today: only browsers on the internal network or VPN, or anything else?
+     - What hostname do links use, and does it stay the same after the move?
+     - Is anything besides the `add` command creating links?
+  2. **Dual-write.**
+     - Which store is the source of truth during the month, and which one serves redirects?
+     - How are the two stores compared: a scheduled job, or a check on each read?
+     - What counts as a mismatch, and what has to be true before you cut over to Postgres and retire SQLite?
+     - If Postgres misbehaves, is the rollback just pointing back at SQLite?
+  3. **Postgres and backups.**
+     - Does the company Postgres give you a dedicated database or a shared instance?
+     - Do its backups count as "adds backups", or does linkshort need backups of its own?
+     - How much data loss is acceptable, and how quickly must service come back after a restore?
+  4. **Running on Kubernetes.**
+     - How many replicas, and is a rolling deploy enough for availability?
+     - Does the single-threaded standard-library server stay, or should I propose a decision on replacing it? It can't run behind the platform's ingress with more than one request at a time.
+  5. **Creating links after the move.** Should the `add` command connect to Postgres directly, or should the service get a create endpoint? The identity stream will later put SSO in front of creation.
+  6. **Collision check.** Should a colliding code be retried with a new one, and how many times? Or should codes get longer?
+  7. **Observability.** Where do the platform's logs and metrics go? The 99.9% goal is measured from server logs, so the design has to say where those logs end up.
+  8. **Risks.** What could make this design fail, beyond losing links in the migration?
+  9. **Out of scope.** I plan to leave SSO, owners, the edit and delete page and the public flag to the identity and ownership design. Anything else to exclude?
+
+> 
+
+  <pasted_content id="aeb4">
+  1. Only browsers on the internal network or VPN, plus Slack unfurl bots inside the company. Links use go.internal; it stays the same after the move. Nothing besides the add command creates links.
+  2. SQLite stays the source of truth and keeps serving redirects during the month; every write goes to both. A nightly job compares every code and URL and posts mismatches to the team channel. A mismatch is a code missing from either store or a URL that differs. Cut over after seven nights in a row with zero mismatches. Rollback is pointing redirects back at SQLite, which we keep read-only for a month after cutover.
+  3. A dedicated database on the shared company Postgres cluster. Its point-in-time backups count; no backups of our own. We can lose at most 5 minutes of new links and must be back within an hour.
+  4. Two replicas, rolling deploy is enough. Please propose a decision on replacing the server; I lean to a small ASGI app with uvicorn since it is already on the platform allow-list.
+  5. Give the service a create endpoint; the add command calls it. SSO will go in front of that endpoint later.
+  6. Retry with a new code up to three times, then fail loudly; keep six characters.
+  7. Logs go to the company Loki and metrics to Prometheus; the 99.9% is computed from the ingress access logs in Loki.
+  8. The ingress adds latency that breaks the 50 ms p99; the shared Postgres has a noisy neighbour.
+  9. Also exclude the browser extension and Slack unfurl work, which belong to adoption.
+  </pasted_content id="aeb4">
+
