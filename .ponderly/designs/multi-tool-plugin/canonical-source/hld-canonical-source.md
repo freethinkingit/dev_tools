@@ -1,6 +1,6 @@
 # Canonical source
 
-Parent: .freethinking/strategies/multi-tool-plugin.md
+Parent: .ponderly/strategies/multi-tool-plugin.md
 
 > **Draft, not approved.** The `hld` skill stopped at its questions on 2026-10-26, and the author asked to commit the work so far. Every answer marked *(provisional)* is Claude's recommendation, not yet the author's answer. The document has not been through the `document-reviewer` agent. The seven open questions are listed under "Open questions" at the end.
 
@@ -12,7 +12,7 @@ It covers four things:
 - the canonical folder that holds every skill, rule and agent once;
 - the neutral markers where agents differ;
 - the compiler, with its freshness and completeness check;
-- the first target, Claude Code, whose generated output must match today's `plugins/freethinking/` byte for byte, so the migration changes no behaviour.
+- the first target, Claude Code, whose generated output must match today's `plugins/ponderly/` byte for byte, so the migration changes no behaviour.
 
 Every other agent's target is the agent targets stream, #64. The eval harness is the cross-agent evals stream, #65.
 
@@ -23,7 +23,7 @@ flowchart LR
     M["Maintainer"] -->|"edits"| CAN["canonical/"]
     CAN --> B["Compiler (make build)"]
     T["targets/claude/"] --> B
-    B -->|"writes"| P["plugins/freethinking/"]
+    B -->|"writes"| P["plugins/ponderly/"]
     P -->|"installed by"| CC["Claude Code"]
     P -->|"read by"| EV["claude plugin eval (evals/)"]
     B -.->|"same compiler, more targets"| AT["Agent targets #64"]
@@ -31,7 +31,7 @@ flowchart LR
     CI["CI: make validate"] -->|"freshness and completeness check"| B
 ```
 
-The maintainer edits only `canonical/` and a target's own files. `make build` writes `plugins/freethinking/`, the folder Claude Code's marketplace installs and `evals/` reads, so neither changes. CI runs the freshness and completeness check through `make validate`. The agent targets stream adds more targets to the same compiler, and the MCP delivery stream reads the same canonical text.
+The maintainer edits only `canonical/` and a target's own files. `make build` writes `plugins/ponderly/`, the folder Claude Code's marketplace installs and `evals/` reads, so neither changes. CI runs the freshness and completeness check through `make validate`. The agent targets stream adds more targets to the same compiler, and the MCP delivery stream reads the same canonical text.
 
 ## Architecture
 
@@ -49,7 +49,7 @@ flowchart TB
         EX["exclusions (none)"]
     end
     C["Compiler (stdlib Python)"]
-    OUT["plugins/freethinking/ (generated, checked in)"]
+    OUT["plugins/ponderly/ (generated, checked in)"]
     CHK["Freshness and completeness check (checks/)"]
     CAN --> C
     TC --> C
@@ -70,16 +70,16 @@ flowchart TB
     - `hooks/hooks.json`, `load-rules.sh` and `load-rules-subagent.sh`;
     - the listing README and the icon.
   - Its exclusions, which are none.
-- **Compiler:** a stdlib Python script behind `make build`. It reads `canonical/` and one target folder, expands the slots and blocks, maps the frontmatter, copies the target's own files, and writes the target's output. For Claude Code, that output is `plugins/freethinking/`.
+- **Compiler:** a stdlib Python script behind `make build`. It reads `canonical/` and one target folder, expands the slots and blocks, maps the frontmatter, copies the target's own files, and writes the target's output. For Claude Code, that output is `plugins/ponderly/`.
 - **Freshness and completeness check:** a stdlib `unittest` file under `checks/`, run by `make validate` in CI.
   - It builds every target into a temporary folder and fails when the result differs from the checked-in output.
   - It also fails when a target leaves out a canonical skill, rule or agent that is not in that target's exclusions *(provisional definition)*.
 
-A change moves through it like this. The maintainer edits a skill in `canonical/` and runs `make build`, which rewrites `plugins/freethinking/`. Both are committed together, and CI fails if the second was forgotten.
+A change moves through it like this. The maintainer edits a skill in `canonical/` and runs `make build`, which rewrites `plugins/ponderly/`. Both are committed together, and CI fails if the second was forgotten.
 
 ## Key decisions
 
-**Key decision: the Claude Code target must reproduce today's plugin byte for byte before anything else changes.** The migration copies `plugins/freethinking/` into `canonical/` as it is. It then replaces Claude-only syntax with slots one kind at a time, and after each kind `make build` must leave no diff *(provisional order)*. That way the benchmark tool, Claude Code, reads exactly what it reads today, and every step can be checked mechanically.
+**Key decision: the Claude Code target must reproduce today's plugin byte for byte before anything else changes.** The migration copies `plugins/ponderly/` into `canonical/` as it is. It then replaces Claude-only syntax with slots one kind at a time, and after each kind `make build` must leave no diff *(provisional order)*. That way the benchmark tool, Claude Code, reads exactly what it reads today, and every step can be checked mechanically.
 
 The trade-off is a slower migration, done in several small steps rather than one rewrite.
 
@@ -114,14 +114,14 @@ Rejected: building at install time.
 ## Cross-cutting concerns
 
 - **The benchmark.** The byte-for-byte requirement means no Claude Code eval needs to run during the migration itself. Once canonical text starts to differ from today's, every Claude Code eval target runs before and after, as the strategy sets.
-- **Validation.** `plugins/freethinking/` must keep passing `claude plugin validate --strict` and `checks/test_listing.py`. The existing checks under `checks/` read `plugins/freethinking/`. They keep doing so, now against generated output.
+- **Validation.** `plugins/ponderly/` must keep passing `claude plugin validate --strict` and `checks/test_listing.py`. The existing checks under `checks/` read `plugins/ponderly/`. They keep doing so, now against generated output.
 - **Size.** Rules still reach Claude Code through hook output capped at 10,000 characters, which `checks/test_rules_size.py` guards.
 - **No checks on prompt text.** The freshness check compares built files, and the completeness check compares which skills, rules and agents are present. Neither reads a skill's wording.
 
 ## Risks
 
 - **A construct resists a slot.** Some Claude-only text may not fit any named slot. Likely for one or two passages; it would cost a block or a new slot. The migration meets these one at a time, and each new slot is decided in the low level design, not ad hoc.
-- **Generated output is edited by hand.** Likely, especially at first, since `plugins/freethinking/` is where every edit happens today. It would cost a silent revert at the next build. The freshness check fails in CI, and the plugin's README and the contributing guide say where edits go.
+- **Generated output is edited by hand.** Likely, especially at first, since `plugins/ponderly/` is where every edit happens today. It would cost a silent revert at the next build. The freshness check fails in CI, and the plugin's README and the contributing guide say where edits go.
 - **Byte-for-byte parity hides a slot bug.** A slot that expands correctly for Claude Code could still be wrong for other agents. Possible. The agent targets stream, #64, proves each target with the cross-agent evals, #65.
 - **The build becomes a barrier to small fixes.** Certain, and a small cost on every edit. `make build` is one command, and the freshness check names the file to rebuild.
 
@@ -142,7 +142,7 @@ Rejected: building at install time.
 
 Asked of the author on 2026-10-23 and not yet answered. The recommendation for each is written into the design above as *(provisional)*.
 
-1. **Folder names.** `canonical/` and `targets/<agent>/`, with Claude Code's output staying at `plugins/freethinking/`?
+1. **Folder names.** `canonical/` and `targets/<agent>/`, with Claude Code's output staying at `plugins/ponderly/`?
 2. **What is canonical and what a target owns.** Are skills, rules and agents canonical, while the manifest, hooks, README and icon belong to each target?
 3. **The marker syntax.** Named slots for the measured differences, plus per-agent blocks as a rare escape hatch, expanded with stdlib Python only?
 4. **Frontmatter.** Should canonical frontmatter hold every field any agent uses, with each target keeping, translating or dropping each one, and a dropped field recorded as a gap?
