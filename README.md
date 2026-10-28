@@ -27,7 +27,9 @@ You ask Claude for a job, and the plugin runs the skill that fits it. A small,
 contained change goes to one agent that builds it and proves it. A bug goes to
 `bugfix`, which reproduces it before any code changes. Anything bigger becomes
 a spec of requirements, design and tasks, each of which you approve before the
-next, and `implement-spec` builds it wave by wave.
+next, and `implement-spec` builds it wave by wave. Before the pull request,
+`readable-code` makes the branch's code read plainly without changing what it
+does, and `tighten-tests` slims its tests without losing a covered line.
 
 ```mermaid
 flowchart LR
@@ -41,6 +43,11 @@ flowchart LR
     start-task -->|"after a done change"| pr
     implement-spec -->|"every task ticked"| pr
     bugfix --> pr
+    readable-code -->|"then the tests"| tighten-tests
+    readable-code --> pr
+    tighten-tests -->|"code not yet readable"| readable-code
+    tighten-tests -->|"each gap found"| start-task
+    tighten-tests --> pr
 ```
 
 [The Reference](docs/reference.md) describes each skill and agent, including
@@ -73,15 +80,20 @@ never in CI, and [the evidence](docs/evidence.md) shows what they found.
 ## What this does not do
 
 - It does not commit, push or open a pull request unless you ask, and `pr`
-  opens one only after you approve its draft.
+  opens one only after you approve its draft. `readable-code` and
+  `tighten-tests` leave their changes uncommitted.
 - It does not commit on the default branch. When you are on it, `pr` and
   `implement-spec` offer to create a branch first.
 - It does not decide what to build. You own each spec document and approve it
   before the next, and `implement-spec` never edits the spec beyond its
   checkboxes without your approval.
-- It does not read a credential or send anything anywhere except through
-  `git` and `gh` to your repository's own remote. What each part runs is in
-  the Reference's
+- The plugin itself does not read a credential or send anything anywhere
+  except through `git` and `gh` to your repository's own remote.
+  The `task-executor` agent and the `readable-code` and `tighten-tests`
+  skills also run the project's own tests, and the two skills its other
+  tools, which do whatever they do in that project. `tighten-tests` adds a
+  coverage tool only when you say yes. What each part runs is in the
+  Reference's
   [What the plugin runs and sends](docs/reference.md#what-the-plugin-runs-and-sends).
 
 ## Develop the plugin

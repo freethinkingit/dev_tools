@@ -1,7 +1,8 @@
 # Build a feature
 
 This guide specs and builds a feature with three skills: `start-task`,
-`implement-spec` and `pr`. At the end you have a spec of three files in
+`implement-spec` and `pr`, with `readable-code` and `tighten-tests` as
+optional steps before `pr`. At the end you have a spec of three files in
 `.ponderly/specs/<task>/`, code built and reviewed wave by wave with
 every task ticked, and a pull request open on GitHub.
 
@@ -188,7 +189,37 @@ The author picked **Reorder (Recommended)**.
 The spec is yours. When an executor stops, you decide how the spec changes,
 and the run goes on from there.
 
-## 7. Open the pull request
+## 7. Optional: make the code readable and tighten the tests
+
+Two skills can run on the branch before the pull request. Both are
+optional, and neither commits anything. This example used neither, so
+there is no capture of them.
+
+- `/ponderly:readable-code` makes the source the branch changes read
+  plainly, without changing what it does. It first runs the full suite as
+  a baseline. Then it shows groups of like files and the decisions they
+  share, and stops with the header `Groups`: **Approved** or **Changes
+  needed**. One `task-executor` agent works each group. It runs the suite
+  again, asks whether to revert or keep any file whose change made a
+  difference, has the `wave-reviewer` agent read the pass, and hands back.
+- `/ponderly:tighten-tests` slims the tests the branch adds or changes. It
+  first asks, with the header `Readability`, whether `readable-code` has
+  run on the final code: **It has run**, **Run readable-code first
+  (Recommended)** or **Go on without it**. It asks you in prose which tests
+  must stay. Then it shows its keep, merge or drop verdicts, every merge
+  and drop in full, and stops with the header `Approve`: **Approved** or
+  **Changes needed**. It changes no source file, and proves the smaller
+  suite no weaker by line coverage and mutation checks. When it finds a
+  gap, a behaviour no test proves, its hand-back is the text of a last
+  question, with the header `Gaps`: **File them** files each gap as its own
+  GitHub issue with `gh issue create` and shows each issue's URL; **Leave
+  them** keeps the gaps in the hand-back only.
+
+Run `readable-code` first, since tidier code changes what the tests should
+assert. Both leave their changes uncommitted in your working tree, for
+`pr` to offer to commit.
+
+## 8. Open the pull request
 
 When every task is ticked, the last report recommends `/ponderly:pr`.
 Give it the issue as `#50`, with the `#`; a bare `50` is read as no ticket:
@@ -197,27 +228,54 @@ Give it the issue as `#50`, with the `#`; a bare `50` is read as no ticket:
 /ponderly:pr #50
 ```
 
-This step has no capture until the draft. `pr` first checks where the branch
-stands, and may stop twice:
+This step has no capture until the draft. The capture of the draft comes
+from an earlier version of `pr`, so the steps before it are described here
+in words.
 
-- On the default branch, it offers to create a branch: **Create
-  `<name>`** (Recommended) or **Stop**.
-- With uncommitted files, which a spec branch fresh from `implement-spec`
-  usually has, it lists them and offers to commit them: **Commit after the
+`pr` first says how it read what you typed, such as which ticket and which
+base branch. It stops here only if the repository has no GitHub `origin`,
+if `gh` is not signed in, or if it cannot read the issue, when it asks you
+to paste it. It notes whether you are on the default branch and
+which files are uncommitted, and asks about them later. Then it reads the
+issue and its comments with `gh`, and says what it read.
+
+A branch built from a spec whose tasks are all ticked gets the short form.
+`pr` puts the whole walkthrough in one message. The first line names the
+spec and says the draft comes from it and from the reports
+`implement-spec` handed back in this session. If those reports are not in
+the session, it says so, and says the testing is as the tasks' checks
+describe it, not as seen run. Then there is one entry per top-level task,
+in task order: the task's number and title, its files, what changed in a
+line, and why, drawn from the requirements the task cites. A changed file
+no task names follows as a group of its own, with a question for you to
+confirm, correct or add to its explanation. A line says which files were
+skipped and why.
+
+The message ends with one round of questions in prose, for what the spec,
+the reports and the issue do not already say. Examples are what you ran,
+anything that needs care on deploy, where reviewers should look hardest,
+and any reason that changed during the run. Answer in your own words.
+
+Then it asks the fixed choices together in one round, each only when it
+applies:
+
+- **Branch**, on the default branch: **Create `<name>`** (Recommended) or
+  **Stop**.
+- **Commit**, with uncommitted files, which a spec branch fresh from
+  `implement-spec` usually has. It lists them: **Commit after the
   walkthrough** (Recommended) or **Leave them out**. Left out, they are not
   in the PR.
-
-Then it walks the branch's changes with you one at a time, in prose, with a
-few review prompts. Your own words become the description's Changes bullets.
-It asks once, in prose, for what the diff and your answers do not cover.
-When the repository's pull request template has a `Closes #<number>`
-convention and the ticket is a GitHub issue, it also asks whether merging
-finishes the issue: **Merging finishes it** or **Only related**.
+- **Closes**, when the ticket is a GitHub issue and the repository's pull
+  request template has a `Closes #<number>` convention: **Merging finishes
+  it** or **Only related**.
+- **Draft**: **Ready for review** or **Draft**.
 
 Then it shows the full draft: the repository and base branch, the GitHub
-account, the title, the description and the commit message. It asks:
+account, whether it opens as a draft, the title, the description and, if
+you chose to commit, the commit message. It asks, with the header
+`Approve`:
 
-- **Approved**: commit, push and open the PR as drafted.
+- **Approved**: commit if you chose to, push and open the PR as drafted.
 - **Changes needed**: say what to change, and it asks again.
 
 ![The pr skill shows its full draft of a pull request, with title, Why, What, Changes, Testing with an eval table, Risk and Notes for reviewers, and a commit message; it asks for approval and the author picks Approved.](../images/feature-pr-draft.svg)
@@ -231,6 +289,8 @@ pull request with `gh`. You see the PR's URL.
 - Reference for the parts used here:
   - [start-task](../reference.md#start-task)
   - [implement-spec](../reference.md#implement-spec)
+  - [readable-code](../reference.md#readable-code)
+  - [tighten-tests](../reference.md#tighten-tests)
   - [pr](../reference.md#pr)
   - [report](../reference.md#report)
   - [task-executor](../reference.md#task-executor)

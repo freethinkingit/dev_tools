@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1632" viewBox="0 0 940 1632" role="img">
+<title>Claude names two points of the platform move design it wrote itself, then shows the summary of hld-platform-move.md: nine review findings still open, two of them blockers because the ingress latency and noisy neighbour risks have no likelihood, cost or response, then one line per section. It asks whether this is the design the author wants. The author answers Changes needed, giving the likelihood, cost and response for both risks and saying cutover waits for the full month with the last seven nights clean.</title>
+<rect width="940" height="1632" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — hld</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● I wrote two points of the design myself; your answers didn't state them:</text>
+<text x="20" y="91" fill="#e6e6e6" xml:space="preserve">  - **Where SQLite lives during the month.** The VM keeps serving `go.internal` through the </text>
+<text x="38" y="111" fill="#e6e6e6" xml:space="preserve">dual-write month, and Kubernetes takes over only at cutover. SQLite can't sit behind two replicas.</text>
+<text x="20" y="131" fill="#e6e6e6" xml:space="preserve">  - **The starting copy.** A one-time copy loads the existing links into Postgres before dual-write </text>
+<text x="38" y="151" fill="#e6e6e6" xml:space="preserve">begins.</text>
+<text x="20" y="171" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="191" fill="#e6e6e6" xml:space="preserve">  ```text</text>
+<text x="20" y="211" fill="#e6e6e6" xml:space="preserve">  .ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md</text>
+<text x="20" y="231" fill="#e6e6e6" xml:space="preserve">  You can open the file to read it in full before answering.</text>
+<text x="20" y="251" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="271" fill="#e6e6e6" xml:space="preserve">  Review: 9 finding(s) still open:</text>
+<text x="20" y="291" fill="#e6e6e6" xml:space="preserve">  - "The ingress adds enough latency to break the 50 ms p99." (Risks): How likely is this, what </text>
+<text x="38" y="311" fill="#e6e6e6" xml:space="preserve">would it cost, and what is the response? This is a blocker.</text>
+<text x="20" y="331" fill="#e6e6e6" xml:space="preserve">  - "A noisy neighbour on the shared Postgres cluster slows redirects." (Risks): How likely is </text>
+<text x="38" y="351" fill="#e6e6e6" xml:space="preserve">this, what would it cost, and what is the response? This is a blocker.</text>
+<text x="20" y="371" fill="#e6e6e6" xml:space="preserve">  - "the cutover is also its first day under load" (Key decisions): Should this be a risk too? If </text>
+<text x="38" y="391" fill="#e6e6e6" xml:space="preserve">so, what is the response, for example load-testing the Kubernetes deployment before cutover?</text>
+<text x="20" y="411" fill="#e6e6e6" xml:space="preserve">  - "ingress access logs in Loki are where the 99.9% is computed" (Context): In the dual-write </text>
+<text x="38" y="431" fill="#e6e6e6" xml:space="preserve">month the VM serves without the platform ingress. How is the 99.9% measured that month, and is </text>
+<text x="38" y="451" fill="#e6e6e6" xml:space="preserve">one VM process enough to hold it?</text>
+<text x="20" y="471" fill="#e6e6e6" xml:space="preserve">  - "After seven nights in a row with zero mismatches" (Architecture): Can cutover come as soon as </text>
+<text x="38" y="491" fill="#e6e6e6" xml:space="preserve">there are seven clean nights, or only at the end of the full month once the last seven nights are </text>
+<text x="38" y="511" fill="#e6e6e6" xml:space="preserve">clean?</text>
+<text x="20" y="531" fill="#e6e6e6" xml:space="preserve">  - "that night's compare reports the code as missing" (Key decisions): Who repairs a reported </text>
+<text x="38" y="551" fill="#e6e6e6" xml:space="preserve">mismatch, and how? A code missing from Postgres would otherwise block cutover forever.</text>
+<text x="20" y="571" fill="#e6e6e6" xml:space="preserve">  - "back at the VM, with SQLite read-only for a month after cutover" (Key decisions): After a </text>
+<text x="38" y="591" fill="#e6e6e6" xml:space="preserve">rollback, links created in Postgres since cutover are missing from SQLite, and the read-only </text>
+<text x="38" y="611" fill="#e6e6e6" xml:space="preserve">SQLite can't take new links. Are they copied back, or does rollback mean SQLite becomes writable </text>
+<text x="38" y="631" fill="#e6e6e6" xml:space="preserve">again?</text>
+<text x="20" y="651" fill="#e6e6e6" xml:space="preserve">  - "The Postgres credentials are a Kubernetes secret." (Cross-cutting concerns): The VM writes to </text>
+<text x="38" y="671" fill="#e6e6e6" xml:space="preserve">Postgres during the month. How does it get the credentials, and which low level design covers the </text>
+<text x="38" y="691" fill="#e6e6e6" xml:space="preserve">VM's side?</text>
+<text x="20" y="711" fill="#e6e6e6" xml:space="preserve">  - "It can lose at most 5 minutes of new links and must be back within an hour" (Key decisions): </text>
+<text x="38" y="731" fill="#e6e6e6" xml:space="preserve">Has the cluster team confirmed that point-in-time restore of one database meets these targets?</text>
+<text x="20" y="751" fill="#e6e6e6" xml:space="preserve">  fixed after round 2, not re-reviewed: 5</text>
+<text x="20" y="771" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="791" fill="#e6e6e6" xml:space="preserve">  1. Scope: The platform move stream: VM and SQLite to two Kubernetes replicas on the shared </text>
+<text x="38" y="811" fill="#e6e6e6" xml:space="preserve">Postgres cluster, with migration, backups, the collision check, a create endpoint and the README </text>
+<text x="38" y="831" fill="#e6e6e6" xml:space="preserve">fix. Serves the 99.9% goal, Q1–Q2.</text>
+<text x="20" y="851" fill="#e6e6e6" xml:space="preserve">  2. Context: Internal browsers and Slack unfurl bots on go.internal, the add command, the Postgres </text>
+<text x="38" y="871" fill="#e6e6e6" xml:space="preserve">cluster, Loki, Prometheus and the team channel.</text>
+<text x="20" y="891" fill="#e6e6e6" xml:space="preserve">  3. Architecture: Three phases: one-time copy, the dual-write month on the VM, then cutover to </text>
+<text x="38" y="911" fill="#e6e6e6" xml:space="preserve">Kubernetes. Components: the linkshort service, the link store with its SQLite, Postgres and </text>
+<text x="38" y="931" fill="#e6e6e6" xml:space="preserve">dual-write implementations, the add command, the one-time copy, the nightly compare job and the </text>
+<text x="38" y="951" fill="#e6e6e6" xml:space="preserve">deployment.</text>
+<text x="20" y="971" fill="#e6e6e6" xml:space="preserve">  4. Key decisions:</text>
+<text x="20" y="991" fill="#e6e6e6" xml:space="preserve">     - "SQLite stays the source of truth through a month of dual-write, and cutover waits for seven </text>
+<text x="38" y="1011" fill="#e6e6e6" xml:space="preserve">clean nights."</text>
+<text x="20" y="1031" fill="#e6e6e6" xml:space="preserve">     - "The VM serves during the dual-write month, and Kubernetes serves only after cutover."</text>
+<text x="20" y="1051" fill="#e6e6e6" xml:space="preserve">     - "Replace the standard-library server with a small ASGI app on uvicorn."</text>
+<text x="20" y="1071" fill="#e6e6e6" xml:space="preserve">     - "Links are created through a create endpoint, and the `add` command calls it."</text>
+<text x="20" y="1091" fill="#e6e6e6" xml:space="preserve">     - "A collision is retried with a new six-character code up to three times, then fails loudly."</text>
+<text x="20" y="1111" fill="#e6e6e6" xml:space="preserve">     - "The cluster's point-in-time backups are linkshort's backups."</text>
+<text x="20" y="1131" fill="#e6e6e6" xml:space="preserve">  5. Cross-cutting concerns: Covers performance, availability, data safety, security and </text>
+<text x="38" y="1151" fill="#e6e6e6" xml:space="preserve">observability.</text>
+<text x="20" y="1171" fill="#e6e6e6" xml:space="preserve">  6. Risks: Ingress latency, the noisy Postgres neighbour, and migration link loss, which has the </text>
+<text x="38" y="1191" fill="#e6e6e6" xml:space="preserve">strategy's response.</text>
+<text x="20" y="1211" fill="#e6e6e6" xml:space="preserve">  7. Out of scope: SSO, owners, the edit page and the public flag go to identity and ownership. The </text>
+<text x="38" y="1231" fill="#e6e6e6" xml:space="preserve">browser extension and Slack unfurl work go to adoption.</text>
+<text x="20" y="1251" fill="#e6e6e6" xml:space="preserve">  8. Low level designs: `linkshort-service`, `link-stores-and-migration`, `kubernetes-deployment`.</text>
+<text x="20" y="1271" fill="#e6e6e6" xml:space="preserve">  ```</text>
+<text x="20" y="1291" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1311" fill="#a6e3a1" xml:space="preserve">⏺ AskUserQuestion(questions: [{"question": "Is </text>
+<text x="38" y="1331" fill="#a6e3a1" xml:space="preserve">.ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md the design you want? Put </text>
+<text x="38" y="1351" fill="#a6e3a1" xml:space="preserve">answers to the open findings, or anything missing or wrong, in the free text.", "header": </text>
+<text x="38" y="1371" fill="#a6e3a1" xml:space="preserve">"Approve", "multiSelect": false, "options": [{"label": "Approved", "description": "The design </text>
+<text x="38" y="1391" fill="#a6e3a1" xml:space="preserve">stands as written; move on to the low level designs."}, {"label": "Changes needed", </text>
+<text x="38" y="1411" fill="#a6e3a1" xml:space="preserve">"description": "Revise it using your answers or corrections, then review and show it again."}]}])</text>
+<text x="20" y="1431" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="1451" fill="#a6e3a1" xml:space="preserve">  The user answered: "Is .ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md the </text>
+<text x="38" y="1471" fill="#a6e3a1" xml:space="preserve">design you want? Put answers to the open findings, or anything missing or wrong, in the free </text>
+<text x="38" y="1491" fill="#a6e3a1" xml:space="preserve">text."="Changes needed. Ingress latency: likely, it would breach the 50 ms p99 for every </text>
+<text x="38" y="1511" fill="#a6e3a1" xml:space="preserve">redirect; load-test the Kubernetes deployment through the ingress before cutover and keep the VM </text>
+<text x="38" y="1531" fill="#a6e3a1" xml:space="preserve">serving until it passes. Noisy neighbour: unlikely, it would slow redirects for hours; ask the </text>
+<text x="38" y="1551" fill="#a6e3a1" xml:space="preserve">cluster team for a connection limit and alert on p99 above 40 ms. Cutover waits for the full </text>
+<text x="38" y="1571" fill="#a6e3a1" xml:space="preserve">month and the last seven nights clean.". Read the answers carefully — they may request </text>
+<text x="38" y="1591" fill="#a6e3a1" xml:space="preserve">clarification, changes, or that you not proceed — and follow what they actually say.</text>
+<text x="920" y="1618" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-28 · ponderly v1.1.0</text>
+</g>
+</svg>

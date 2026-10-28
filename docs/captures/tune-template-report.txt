@@ -1,0 +1,36 @@
+title: ponderly — report
+date: 2026-10-28
+plugin: ponderly v1.1.0
+source: ponderly-demos/tune-a-template (local demo repository), session ee0ea074-a1aa-4cea-bac6-464eb6f193fd
+alt: The author runs the report skill asking where linkshort stands. Claude reads the history and the code, runs the tests and tries the README commands, then answers in the template's sections: Blocked says nothing blocked; Shipped lists the link store and the add command with the checks that proved them; In flight lists the failing README serve command, the untested redirect server, possible duplicate codes and the uncommitted .ponderly folder; Up next lists two steps. It ends by saying it used the repository's template at .ponderly/report/status.md.
+
+> /ponderly:report status where does linkshort stand?
+
+⏺ Bash(command: git log --stat -5 && git status --short && ls -la && find . -path ./.git -prune -o -type f -print | head -50 && ls .ponderly/specs 2>/dev/null, description: Inspect repo history, status and files)
+
+⏺ Bash(command: cat README.md .gitignore linkshort/store.py linkshort/__main__.py tests/test_store.py; python3 -m pytest -q 2>&1 | tail -5 || python3 -m unittest -v 2>&1 | tail -10, description: Read the project files and run the tests)
+
+⏺ Bash(command: python3 -m unittest discover -s tests 2>&1 | tail -4; cd [redacted] && PYTHONPATH=~/ponderly-demos/tune-a-template python3 -m linkshort serve --db x.db 2>&1 | tail -2; PYTHONPATH=~/ponderly-demos/tune-a-template python3 -m linkshort --db x.db add https://example.com 2>&1; rm -f x.db, description: Run tests and try the README commands)
+
+● ## Blocked
+
+  Nothing blocked.
+
+  ## Shipped
+
+  - The link store, which saves a long URL under a new six-character code and looks it up again, is built in `linkshort/store.py`. Both of its tests pass: a saved URL comes back by its code, and an unknown code returns nothing (`python3 -m unittest discover -s tests`).
+  - The `add` command, which prints a new code for a URL, works. Running `python3 -m linkshort --db x.db add https://example.com` printed `uai5kc`.
+
+  ## In flight
+
+  - **The README's serve command fails.** `python3 -m linkshort serve --db links.db` stops with `unrecognized arguments: --db x.db`, because `--db` has to come before the subcommand. Anyone who follows the README can't start the server. You can fix it by changing the README to `python3 -m linkshort --db links.db serve`, or by moving `--db` onto each subcommand so the README stays as written.
+  - **The redirect server has no tests.** `serve` in `linkshort/__main__.py` answers `/<code>` with a 302 redirect, or a 404 when the code is unknown. Nothing has run it yet, so this is from reading the code only.
+  - **Two links can get the same code.** `add` makes a random code and doesn't check whether it's already taken. I expect a clash would make the database reject the insert with an error, but I haven't tested this.
+  - **`.ponderly/` is not committed.** It holds the new status template and is untracked on `main`.
+
+  ## Up next
+
+  1. Fix the README's serve command.
+  2. Add tests for the redirect server and for `add` when two codes clash.
+
+  This uses the repository's template at `.ponderly/report/status.md`.

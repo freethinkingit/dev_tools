@@ -53,10 +53,10 @@ the difference. That doubles the cost, so raise the cost ceiling with
 
 ## Results against Claude Code without the plugin
 
-These are the four rule targets, each run with and without the plugin. The
-with-plugin arm loads the whole plugin, every rule, skill, agent and hook, not
-only the one rule. So each Δ compares the whole plugin with plain Claude Code,
-on cases written for that rule.
+These are the four rule targets that were run with and without the plugin.
+The with-plugin arm loads the whole plugin, every rule, skill, agent and hook,
+not only the one rule. So each Δ compares the whole plugin with plain Claude
+Code, on cases written for that rule.
 
 How to read the tables:
 
@@ -75,8 +75,25 @@ Each table is copied as the command printed it. They are snapshots of three
 runs per arm on one day, not a benchmark. A different day or a different model
 version can move them.
 
-All four ran on 2026-10-22, on plugin version 0.17.0 from the working tree of
-the branch that added this page, before that version was released.
+All four ran on 2026-10-22, on plugin version 0.17.0. That version still had
+the plugin's former name, `freethinking`. The runs used the working tree of the
+branch that added this page, before the plugin was renamed to `ponderly` at
+1.0.0. The headings below keep the version the runs used.
+
+The rules have changed on `main` since the runs, so each table is a snapshot of
+the rules as they were on 2026-10-22. The `git log` of
+`plugins/ponderly/rules/`, and of the same folder under the former name
+`freethinking` before the rename, shows these changes:
+
+- Pull request #74, 2026-10-27, changed `code-changes` and `comments` and
+  added the `tests` rule.
+- Pull request #77, 2026-10-28, renamed the plugin. It changed one line in
+  `communication` and one in `workflow`, each to the new name.
+- Pull request #73, 2026-10-28, changed `collaboration`, `communication` and
+  `workflow`.
+
+The command under each heading still runs. It now runs the current rules, so
+their results can differ from the tables.
 
 ### collaboration: 2026-10-22, plugin 0.17.0
 
@@ -207,14 +224,14 @@ WITH score does not say whether the skill was called either. Case by case:
 ## Not measured
 
 The components below have no result against Claude Code without the plugin.
-This page makes no comparison for them. All but the `comments` rule have eval
-cases that run with the plugin loaded, which check that the component does its
-job.
+This page makes no comparison for them. Each has eval cases that run with the
+plugin loaded, which check that the component does its job, except the
+`comments` rule, which has none.
 
-The skills: `bugfix`, `hld`, `implement-spec`, `lld`, `pr`, `report`,
-`start-task` and `strategy`. Their targets are `make eval-skill-<name>`.
-Without the plugin the skill does not exist, and their graders check for what
-the skill does and writes.
+The skills: `bugfix`, `hld`, `implement-spec`, `lld`, `pr`, `readable-code`,
+`report`, `start-task`, `strategy` and `tighten-tests`. Their targets are
+`make eval-skill-<name>`. Without the plugin the skill does not exist, and
+their graders check for what the skill does and writes.
 
 The agents: `document-reviewer`, `task-executor` and `wave-reviewer`. Their
 targets are `make eval-agent-<name>`. Without the plugin the agent does not
@@ -224,6 +241,10 @@ The hooks: the two cases under `evals/hook/`, run by `make eval-hook`. They
 check that the plugin's hooks load the rules into a session and into a
 sub-agent. Without the plugin there is no hook and no rule, and their graders
 check for the rules' headings.
+
+The `tests` rule. It has eval cases under `evals/rules/tests/`, run by
+`make eval-rule-tests`, but they have not been run without the plugin. The
+rule was added after the runs above.
 
 The `comments` rule. It has no eval cases yet, with the plugin or without.
 

@@ -1,0 +1,45 @@
+title: ponderly — hld
+date: 2026-10-28
+plugin: ponderly v1.1.0
+source: ponderly-demos/plan-a-year (local demo repository), session 0f811516-896e-4671-9e48-b5a845150036
+alt: Claude names two points of the platform move design it wrote itself, then shows the summary of hld-platform-move.md: nine review findings still open, two of them blockers because the ingress latency and noisy neighbour risks have no likelihood, cost or response, then one line per section. It asks whether this is the design the author wants. The author answers Changes needed, giving the likelihood, cost and response for both risks and saying cutover waits for the full month with the last seven nights clean.
+
+● I wrote two points of the design myself; your answers didn't state them:
+  - **Where SQLite lives during the month.** The VM keeps serving `go.internal` through the dual-write month, and Kubernetes takes over only at cutover. SQLite can't sit behind two replicas.
+  - **The starting copy.** A one-time copy loads the existing links into Postgres before dual-write begins.
+
+  ```text
+  .ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md
+  You can open the file to read it in full before answering.
+
+  Review: 9 finding(s) still open:
+  - "The ingress adds enough latency to break the 50 ms p99." (Risks): How likely is this, what would it cost, and what is the response? This is a blocker.
+  - "A noisy neighbour on the shared Postgres cluster slows redirects." (Risks): How likely is this, what would it cost, and what is the response? This is a blocker.
+  - "the cutover is also its first day under load" (Key decisions): Should this be a risk too? If so, what is the response, for example load-testing the Kubernetes deployment before cutover?
+  - "ingress access logs in Loki are where the 99.9% is computed" (Context): In the dual-write month the VM serves without the platform ingress. How is the 99.9% measured that month, and is one VM process enough to hold it?
+  - "After seven nights in a row with zero mismatches" (Architecture): Can cutover come as soon as there are seven clean nights, or only at the end of the full month once the last seven nights are clean?
+  - "that night's compare reports the code as missing" (Key decisions): Who repairs a reported mismatch, and how? A code missing from Postgres would otherwise block cutover forever.
+  - "back at the VM, with SQLite read-only for a month after cutover" (Key decisions): After a rollback, links created in Postgres since cutover are missing from SQLite, and the read-only SQLite can't take new links. Are they copied back, or does rollback mean SQLite becomes writable again?
+  - "The Postgres credentials are a Kubernetes secret." (Cross-cutting concerns): The VM writes to Postgres during the month. How does it get the credentials, and which low level design covers the VM's side?
+  - "It can lose at most 5 minutes of new links and must be back within an hour" (Key decisions): Has the cluster team confirmed that point-in-time restore of one database meets these targets?
+  fixed after round 2, not re-reviewed: 5
+
+  1. Scope: The platform move stream: VM and SQLite to two Kubernetes replicas on the shared Postgres cluster, with migration, backups, the collision check, a create endpoint and the README fix. Serves the 99.9% goal, Q1–Q2.
+  2. Context: Internal browsers and Slack unfurl bots on go.internal, the add command, the Postgres cluster, Loki, Prometheus and the team channel.
+  3. Architecture: Three phases: one-time copy, the dual-write month on the VM, then cutover to Kubernetes. Components: the linkshort service, the link store with its SQLite, Postgres and dual-write implementations, the add command, the one-time copy, the nightly compare job and the deployment.
+  4. Key decisions:
+     - "SQLite stays the source of truth through a month of dual-write, and cutover waits for seven clean nights."
+     - "The VM serves during the dual-write month, and Kubernetes serves only after cutover."
+     - "Replace the standard-library server with a small ASGI app on uvicorn."
+     - "Links are created through a create endpoint, and the `add` command calls it."
+     - "A collision is retried with a new six-character code up to three times, then fails loudly."
+     - "The cluster's point-in-time backups are linkshort's backups."
+  5. Cross-cutting concerns: Covers performance, availability, data safety, security and observability.
+  6. Risks: Ingress latency, the noisy Postgres neighbour, and migration link loss, which has the strategy's response.
+  7. Out of scope: SSO, owners, the edit page and the public flag go to identity and ownership. The browser extension and Slack unfurl work go to adoption.
+  8. Low level designs: `linkshort-service`, `link-stores-and-migration`, `kubernetes-deployment`.
+  ```
+
+⏺ AskUserQuestion(questions: [{"question": "Is .ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md the design you want? Put answers to the open findings, or anything missing or wrong, in the free text.", "header": "Approve", "multiSelect": false, "options": [{"label": "Approved", "description": "The design stands as written; move on to the low level designs."}, {"label": "Changes needed", "description": "Revise it using your answers or corrections, then review and show it again."}]}])
+
+  The user answered: "Is .ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md the design you want? Put answers to the open findings, or anything missing or wrong, in the free text."="Changes needed. Ingress latency: likely, it would breach the 50 ms p99 for every redirect; load-test the Kubernetes deployment through the ingress before cutover and keep the VM serving until it passes. Noisy neighbour: unlikely, it would slow redirects for hours; ask the cluster team for a connection limit and alert on p99 above 40 ms. Cutover waits for the full month and the last seven nights clean.". Read the answers carefully — they may request clarification, changes, or that you not proceed — and follow what they actually say.

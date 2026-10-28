@@ -1,0 +1,36 @@
+title: ponderly — hld
+date: 2026-10-28
+plugin: ponderly v1.1.0
+source: ponderly-demos/plan-a-year (local demo repository), session 0f811516-896e-4671-9e48-b5a845150036
+alt: Claude shows what changed in the revised hld-platform-move.md, section by section: both risks now carry the author's likelihood, cost and response, cutover waits for the full month and a load test through the ingress, and every key decision has a Why line, followed by nine review findings still open. It asks whether the revised design is the one the author wants, and the author picks Approved.
+
+● ```text
+  .ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md
+  - Risks: Both risks now have your likelihood, cost and response. "The Kubernetes deployment is load-tested through the ingress before cutover, and the VM keeps serving until the test passes." For the noisy neighbour: "The cluster team is asked for a connection limit, and an alert fires when the redirect p99 goes above 40 ms."
+  - Architecture: "At the end of the full dual-write month, once its last seven nights in a row have had zero mismatches, … and once the Kubernetes deployment has passed its load test through the ingress, `go.internal` moves to the Kubernetes deployment." The diagram text now says the one-time copy runs before the month starts.
+  - Key decisions:
+    - Cutover now waits for the full month and the last seven clean nights.
+    - The trade-off of the VM-serves decision now names the pre-cutover load test.
+    - The server decision says what is kept: the SQLite store, and the 302-or-404 redirect behaviour.
+    - The create-endpoint trade-off says anyone on the network or VPN can create links until SSO arrives.
+    - Every decision now has a "Why:" line.
+  - Cross-cutting concerns: Performance and observability name the load test and the 40 ms alert, attributed to you.
+  - Context: "After cutover, linkshort keeps its links in a dedicated database…"
+  - Low level designs: `link-stores-and-migration` also covers retiring SQLite and the VM. `kubernetes-deployment` also covers the p99 alert and the cutover load test.
+
+  Review: 9 finding(s) still open:
+  - "ingress access logs in Loki are where the 99.9% is computed." (Context): The VM serves without an ingress until cutover. How is the 99.9% measured in those months, and is one VM process enough to hold it?
+  - "`go.internal` back at the VM, with SQLite read-only for a month after cutover." (Key decisions): After a rollback, links created in Postgres since cutover are missing from SQLite. Are they copied back, and does SQLite become writable again?
+  - "that night's compare reports the code as" (Key decisions): Who repairs a reported mismatch, and how? Otherwise one failed Postgres write blocks the seven-night gate.
+  - "The Postgres credentials are a Kubernetes secret." (Cross-cutting concerns): How do the VM's service, the copy and the compare job get Postgres credentials and network access during the month?
+  - "SQLite into Postgres. Without it, the nightly compare would report every existing" (Architecture): When does `add` switch to the create endpoint relative to the copy? A link created through the old path between the two would be missing from Postgres.
+  - "A load test through the ingress checks this" (Cross-cutting concerns): What request rate must the load test pass at?
+  - "**The ingress adds enough latency to break the 50 ms p99.** Likely, as the author" (Risks): If the load test fails, what is the fallback? Holding cutover puts Q2 and the identity stream's start at stake.
+  - "connection limit, and an alert fires when the redirect p99 goes above 40 ms." (Risks): Is the connection limit on linkshort or on the other tenants? And what is done when the alert fires?
+  - "`link-stores-and-migration`: the Postgres schema, the store interface and its SQLite," (Low level designs): Which design covers confirming that the cluster's backups meet the 5-minute and one-hour targets, and the restore procedure? Should that be a candidate of its own?
+  fixed after round 2, not re-reviewed: 1
+  ```
+
+⏺ AskUserQuestion(questions: [{"question": "Is the revised .ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md the design you want? Put answers to the open findings, or anything missing or wrong, in the free text.", "header": "Approve", "multiSelect": false, "options": [{"label": "Approved", "description": "The design stands as written; move on to the low level designs."}, {"label": "Changes needed", "description": "Revise it using your answers or corrections, then review and show it again."}]}])
+
+  Your questions have been answered: "Is the revised .ponderly/designs/linkshort-2027/platform-move/hld-platform-move.md the design you want? Put answers to the open findings, or anything missing or wrong, in the free text."="Approved". You can now continue with these answers in mind.

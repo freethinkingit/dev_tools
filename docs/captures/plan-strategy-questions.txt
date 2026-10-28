@@ -1,0 +1,32 @@
+title: ponderly — strategy
+date: 2026-10-28
+plugin: ponderly v1.1.0
+source: ponderly-demos/plan-a-year (local demo repository), session 0f811516-896e-4671-9e48-b5a845150036
+alt: Claude runs the strategy skill for linkshort's plan for 2027, names the document linkshort-2027 and asks eight questions in one round: horizon, who it serves, goals with measures and worth, current state, principles and constraints, streams of work, risks, and out of scope. The author pastes one numbered answer per question: a quarterly-reviewed 2027, growth from 40 engineers to 600 people, three ranked goals, a single VM with SQLite, Kubernetes and Postgres with two half-time engineers, a request that Claude propose the streams, three risks with responses, and three exclusions.
+
+● Name: `linkshort-2027`. The document will be written to `.ponderly/strategies/linkshort-2027.md`. No strategies exist under `.ponderly/strategies/` yet, so this one replaces, extends or leaves alone nothing.
+
+  Your words give only the subject (linkshort) and the year (2027). Please answer these in one reply:
+
+  1. **Horizon.** Is it January to December 2027? How often will it be reviewed: quarterly, at the half, or something else?
+  2. **Who it serves and what the work is.** Who uses linkshort today, and who should it serve by the end of 2027?
+  3. **Goals.** What three to five outcomes must 2027 deliver? For each, what measure will you check at the review, and what is it worth? The worth should show which goal wins when two compete for the same people.
+  4. **Current state.** Where does linkshort stand today? Give users, traffic and how it is deployed and run, with numbers where you have them. Say what works and must be kept, and what falls short.
+  5. **Principles and constraints.** What rules must every design respect? Examples: latency or privacy rules, the platform or vendors allowed, budget, team size.
+  6. **Streams of work.** How do you see the year breaking into streams? Give each stream's rough timing and say which streams depend on others. If you'd rather I propose streams from the goals, say so.
+  7. **Risks.** What could stop the plan delivering? For each, how likely is it, how bad would it be, and what would you do about it?
+  8. **Out of scope.** What will 2027 deliberately not do, especially things a reader might expect? Give the reason or where each belongs instead.
+
+> 
+
+  <pasted_content id="aeb4">
+  1. January to December 2027, reviewed each quarter.
+  2. Today about 40 engineers on one team use it for runbook and dashboard links. By the end of 2027 it should serve the whole company, around 600 people, including support and sales, who share links with customers.
+  3. Goals: (a) Company-wide adoption: 400 weekly active creators by Q4; worth the most, it is why we fund it. (b) Links never break: 99.9% of redirects succeed each month, measured from server logs; second, because a broken link in a customer email costs trust. (c) Owners can see and fix their links: every link has an owner and an edit page, measured as zero ownerless links at the Q4 review; third.
+  4. Current state: one Python process on a single VM, SQLite file, no auth, no backups, about 3,000 links and 20,000 redirects a month. The store and redirect work and must be kept; codes are random with no collision check, there is no way to edit or delete a link, and the README serve command is wrong.
+  5. Principles: redirects stay under 50 ms at p99; links shared with customers must never expose internal URLs to people outside the company without an explicit public flag; we run on the company Kubernetes platform and Postgres, no new vendors; two engineers, half time.
+  6. Please propose streams from the goals.
+  7. Risks: SSO integration slips because the identity team is busy (likely, high impact; start the request in Q1 and ship read-only creation behind VPN meanwhile). Migration from SQLite loses links (unlikely, high impact; dual-write and compare for a month). Adoption stalls because people keep using docs bookmarks (medium, medium; browser extension and Slack unfurls).
+  8. Out of scope: analytics beyond click counts (product analytics owns that), custom vanity domains (next year), a public URL shortener for the internet (not our job).
+  </pasted_content id="aeb4">
+

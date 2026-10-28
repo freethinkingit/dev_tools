@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="772" viewBox="0 0 940 772" role="img">
+<title>The author asks for .ponderly/report/status.md with exact content: a Status report template whose sections are Blocked, with who can unblock it, Shipped, with the check that proved it, In flight, and Up next, the next one or two things in order. Claude checks the folder, writes the file with that text and says it created the file and the folder, with nothing committed.</title>
+<rect width="940" height="772" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — report</text>
+<text x="20" y="71" fill="#7fc8f8" xml:space="preserve">&gt; </text>
+<text x="20" y="91" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="20" y="111" fill="#7fc8f8" xml:space="preserve">  &lt;pasted_content id="afc5"&gt;</text>
+<text x="20" y="131" fill="#7fc8f8" xml:space="preserve">  Create .ponderly/report/status.md with exactly this content, and nothing else:</text>
+<text x="20" y="151" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="20" y="171" fill="#7fc8f8" xml:space="preserve">  # Status report</text>
+<text x="20" y="191" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="20" y="211" fill="#7fc8f8" xml:space="preserve">  Sections are `## &lt;Name&gt;` headings, in this order.</text>
+<text x="20" y="231" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="20" y="251" fill="#7fc8f8" xml:space="preserve">  1. **Blocked.** One bullet per thing that cannot move, with who can unblock it. Write `Nothing </text>
+<text x="38" y="271" fill="#7fc8f8" xml:space="preserve">blocked.` when there is none.</text>
+<text x="20" y="291" fill="#7fc8f8" xml:space="preserve">  2. **Shipped.** What is finished, one bullet each, with the check that proved it.</text>
+<text x="20" y="311" fill="#7fc8f8" xml:space="preserve">  3. **In flight.** What is started and not finished, one bullet each.</text>
+<text x="20" y="331" fill="#7fc8f8" xml:space="preserve">  4. **Up next.** The next one or two things, in order.</text>
+<text x="20" y="351" fill="#7fc8f8" xml:space="preserve">  &lt;/pasted_content id="afc5"&gt;</text>
+<text x="20" y="371" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="20" y="391" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="20" y="411" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: ls -la .ponderly/report/ 2&gt;&amp;1, description: Check whether the report folder exists)</text>
+<text x="20" y="431" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="451" fill="#a6e3a1" xml:space="preserve">⏺ Write(file_path: ~/ponderly-demos/tune-a-template/.ponderly/report/status.md, content: # Status </text>
+<text x="38" y="471" fill="#a6e3a1" xml:space="preserve">report</text>
+<text x="20" y="491" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="511" fill="#a6e3a1" xml:space="preserve">  Sections are `## &lt;Name&gt;` headings, in this order.</text>
+<text x="20" y="531" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="551" fill="#a6e3a1" xml:space="preserve">  1. **Blocked.** One bullet per thing that cannot move, with who can unblock it. Write `Nothing </text>
+<text x="38" y="571" fill="#a6e3a1" xml:space="preserve">blocked.` when there is none.</text>
+<text x="20" y="591" fill="#a6e3a1" xml:space="preserve">  2. **Shipped.** What is finished, one bullet each, with the check that proved it.</text>
+<text x="20" y="611" fill="#a6e3a1" xml:space="preserve">  3. **In flight.** What is started and not finished, one bullet each.</text>
+<text x="20" y="631" fill="#a6e3a1" xml:space="preserve">  4. **Up next.** The next one or two things, in order.</text>
+<text x="20" y="651" fill="#a6e3a1" xml:space="preserve">  )</text>
+<text x="20" y="671" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="691" fill="#e6e6e6" xml:space="preserve">● I created `.ponderly/report/status.md` with exactly the text you gave. The `.ponderly/report/` </text>
+<text x="38" y="711" fill="#e6e6e6" xml:space="preserve">folder didn't exist before, so it was created too. Nothing is committed, and the working tree is </text>
+<text x="38" y="731" fill="#e6e6e6" xml:space="preserve">on `main`.</text>
+<text x="920" y="758" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-28 · ponderly v1.1.0</text>
+</g>
+</svg>

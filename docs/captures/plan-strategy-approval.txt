@@ -1,0 +1,36 @@
+title: ponderly — strategy
+date: 2026-10-28
+plugin: ponderly v1.1.0
+source: ponderly-demos/plan-a-year (local demo repository), session 0f811516-896e-4671-9e48-b5a845150036
+alt: Claude shows the summary of the strategy at .ponderly/strategies/linkshort-2027.md: eight review findings still open, each quoting the line it is about, then one line per section from horizon to the three high level designs platform-move, identity-and-ownership and adoption, and a note that Claude proposed the streams. It asks whether this is the strategy the author wants, with Approved and Changes needed, and the author picks Approved.
+
+● ```text
+  .ponderly/strategies/linkshort-2027.md
+  You can open the file to read it in full before answering.
+
+  Review: 8 finding(s) still open:
+  - "The store and the redirect work and must be kept." (Current state): Does "the store" mean the stored links? The platform move retires the SQLite file, so the sentence contradicts the plan if it means the file.
+  - "Worth: third." (Goals): Why does ownership matter? The goal gives its rank but no reason, so a reader can't weigh it against the other two.
+  - "99.9% of redirects succeed each month" (Goals): Does a redirect to a deleted link, or one refused because the link isn't public, count as a failure?
+  - "20,000 redirects a month" (Current state): Do you have today's figures for redirect success rate, p99 latency and weekly creators? Without them a reader can't see the gap each goal closes.
+  - "Meanwhile, read-only creation ships behind the VPN." (Risks): What ships if SSO slips, and which stream builds it? "Read-only creation" contradicts itself.
+  - "Q1 to Q2; the other streams build on" (Streams of work): The streams run one after another, so an overrun in the platform move delays everything after it, including the Q4 adoption target. Should this be a risk? If so, how likely is it and what is the response?
+  - "Analytics beyond click counts: product analytics owns that." (Out of scope): Does linkshort count clicks today? Is click counting planned for 2027?
+  - "Custom vanity domains: deferred to next year." (Out of scope): Does "next year" mean 2028?
+  fixed after round 2, not re-reviewed: 1
+
+  1. Introduction and horizon: Linkshort grows from about 40 engineers using it for runbook and dashboard links to around 600 people company-wide, including support and sales. January to December 2027, reviewed quarterly.
+  2. Goals: Company-wide adoption (400 weekly active creators by Q4, ranked first); links never break (99.9% of redirects succeed each month); owners can see and fix their links (zero ownerless links at Q4).
+  3. Current state: One Python process on a VM with SQLite, no auth, no backups, about 3,000 links and 20,000 redirects a month. Five shortfalls are listed: no collision check, no edit or delete, no owners, no public flag, and the README's serve command is wrong.
+  4. Principles and constraints: Redirects stay under 50 ms at p99. No internal URL is exposed outside the company without the public flag. Linkshort runs on the company Kubernetes platform and Postgres, with no new vendors. Two half-time engineers, so streams run one after another.
+  5. Streams of work: Platform move (Q1–Q2), then Identity and ownership (SSO requested in Q1, built Q2–Q3), then Adoption (Q3–Q4).
+  6. Risks: The SSO integration slips; the migration from SQLite loses links; adoption stalls because people keep using docs bookmarks.
+  7. Out of scope: Analytics beyond click counts, custom vanity domains, and a public URL shortener for the internet.
+  8. High level designs: `platform-move`, `identity-and-ownership`, `adoption`.
+  ```
+
+  I proposed the three streams from your goals; you didn't name them. Each figure in the document is marked as yours, since you gave them in your answers.
+
+⏺ AskUserQuestion(questions: [{"question": "Is .ponderly/strategies/linkshort-2027.md the strategy you want? Put any answers to the open findings, or anything missing or wrong, in the free text.", "header": "Approve", "multiSelect": false, "options": [{"label": "Approved", "description": "The document stands as written; move on to the high level designs."}, {"label": "Changes needed", "description": "Revise the document using your answers or corrections, then review and show it again."}]}])
+
+  Your questions have been answered: "Is .ponderly/strategies/linkshort-2027.md the strategy you want? Put any answers to the open findings, or anything missing or wrong, in the free text."="Approved". You can now continue with these answers in mind.

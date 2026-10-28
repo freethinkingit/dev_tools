@@ -13,6 +13,8 @@ its name. The plugin's files live under `plugins/ponderly/`.
   - [lld](#lld)
   - [implement-spec](#implement-spec)
   - [bugfix](#bugfix)
+  - [readable-code](#readable-code)
+  - [tighten-tests](#tighten-tests)
   - [pr](#pr)
   - [report](#report)
 - [Agents](#agents)
@@ -24,6 +26,7 @@ its name. The plugin's files live under `plugins/ponderly/`.
   - [workflow](#workflow)
   - [code-changes](#code-changes)
   - [comments](#comments)
+  - [tests](#tests)
   - [collaboration](#collaboration)
   - [communication](#communication)
 - [Hooks](#hooks)
@@ -190,25 +193,146 @@ Fixes a bug the disciplined way, starting from a ticket.
   Or it stops, with or without a comment on the ticket, and tells you
   `/ponderly:pr <ticket>`.
 
+### readable-code
+
+Makes the source a branch changes read plainly, and proves its behaviour
+unchanged.
+
+- **Command:** `/ponderly:readable-code [paths]`. The paths narrow the pass;
+  with none, it covers every file the branch changes. Or ask Claude to make
+  the branch readable, for a readability pass, or to simplify or untangle the
+  code a branch changes.
+- **When it applies:** the code a branch changes works, and you want it to
+  read plainly with no behaviour change. It works on the files the branch
+  changes against its target branch, uncommitted and untracked work included.
+  Only source files are changed; tests, documentation and configuration are
+  left alone. Not for a test cleanup, which is `tighten-tests`'s; not for a
+  bug, which is `bugfix`'s; not for a new change, which is `start-task`'s.
+- **What it does:** it says the Scope in one line, such as "Scope: 6 source
+  files the branch changes against origin/main, under src/api". It copies
+  each source file aside, runs the full test suite, and, where the branch
+  holds infrastructure-as-code, keeps the synthesized templates as the
+  baseline. It sorts the files into groups of like files and writes a short
+  list of shared decisions, such as "Name the request body `payload` in every
+  handler." Once you approve them, it launches one `task-executor` agent per
+  group. Each applies the "Write for the reader." bullet of the
+  `code-changes` rule and the `comments` rule to the lines the branch
+  changed, with no behaviour change and no rename for taste. Then it runs
+  the suite and the synthesis again and compares them with the baseline. The
+  `wave-reviewer` agent reads the pass, and its `blocker` and `should-fix`
+  findings go back to the executors, up to two attempts each.
+- **What it asks:** your approval of the groups and shared decisions, with
+  `Approved` or `Changes needed`. Only when something is wrong: whether to go
+  on when the suite fails at the baseline; whether to go on with a manual
+  check you name when the project has no test suite; and, for each file
+  whose change made the suite or the synthesis differ, whether to revert it
+  or keep it.
+- **What it writes:** the readability changes, uncommitted, on the current
+  branch. It never adds a test framework. It stops without changing anything
+  when the branch changes no source file. The hand-back, written by `report`,
+  lists every stopped executor, every difference kept and every finding left
+  open.
+- **Hands off to:** `tighten-tests` to clean up the branch's tests now that
+  the code reads plainly, or `pr` to open the pull request. It commits
+  nothing.
+
+### tighten-tests
+
+Slims a branch's tests to the ones that prove something, and proves the
+smaller suite no weaker.
+
+- **Command:** `/ponderly:tighten-tests [paths]`. The paths narrow the
+  Scope; with none, it covers every file the branch changes. Or ask Claude to
+  slim, tighten, trim, prune or audit the tests, or say a branch has too many
+  tests.
+- **When it applies:** a branch adds or changes tests, and you want only the
+  ones that prove something kept. It judges each test by the `tests` rule.
+  It never changes a source file: a defect a test exposes is reported, and a
+  missing test is handed back as a gap. Readability of the source is
+  `readable-code`'s.
+- **What it does:** it says the Scope in one line, with how many test and
+  source files it holds. It runs the full suite with coverage and records the
+  covered lines per module. It reads each test the branch adds or changes and
+  gives it a verdict: `keep`, `merge` (naming the test it merges into) or
+  `drop` (saying why it adds nothing). It lists every gap, a path no test
+  proves. Once you approve, one `task-executor` agent per group of like test
+  files applies the verdicts. Then it compares coverage line by line with the
+  baseline and restores any test whose line lost its cover. It runs a
+  mutation check for each dropped, kept and new test: it breaks the
+  behaviour in the source file, shows that a test fails, and restores the
+  file at once. The `wave-reviewer` agent then checks that every requirement
+  still has a test, and its findings are fixed up to two attempts each.
+- **What it asks:** first, whether `readable-code` has run on the final code,
+  with `Run readable-code first` recommended, since coverage is measured on
+  the final code. Then, in prose, which tests must stay beyond those a
+  requirement names. Then your approval of the verdicts, groups and shared
+  decisions, until you answer `Approved`. Only when something is wrong:
+  whether to go on when the suite fails at the baseline; whether to add a
+  coverage tool or use mutation checks alone, when the project has none; and
+  whether to restore a test when a requirement is left with no proof. At the
+  end, when there are gaps, whether to file them as issues.
+- **What it writes:** the slimmed tests, uncommitted, on the current branch.
+  A test that fails because the source is wrong is marked as an expected
+  failure. The hand-back, written by `report`, carries the problems first,
+  the test counts before and after, coverage per module before and after,
+  the empty source diff that proves no source file changed, and each gap as
+  a task for one run of `start-task`. On `File them`, each gap becomes its
+  own issue with `gh issue create`. When the project has no coverage tool
+  and you choose `Add one`, it adds one as a development dependency with the
+  project's own package manager, which changes the project's manifest and
+  lockfile; the hand-back lists that change.
+- **Hands off to:** `readable-code` when you choose to run it first;
+  `start-task` for each gap, or the issue it is filed as; `pr` once the
+  hand-back is accepted. It commits, branches and pushes nothing.
+
 ### pr
 
-Opens or updates a GitHub pull request for the current branch.
+Opens or updates a GitHub pull request for the current branch, once you
+can speak to every change in it.
 
-- **Command:** `/ponderly:pr [ticket] [base-branch]`. Or ask Claude to
-  open a PR.
-- **When it applies:** opening, creating, raising or updating a pull request.
-  It needs the `gh` CLI signed in.
-- **What it asks:** whether to create a branch, on the default branch;
-  whether to commit uncommitted work; a paste of the ticket, when it cannot
-  be read. Then it walks the branch's changes with you one at a time, in
-  prose, with a short set of review prompts. Your own words become the
-  description's Changes bullets. It asks once for what the diff cannot
-  answer, whether the PR closes the ticket, and for your approval of the
-  draft.
-- **What it writes:** the title and description, from the repository's own
-  pull request template or the skill's default one. After you approve, it
-  commits if you said so, pushes, and opens the PR with `gh`. You see the
-  draft in full, then the PR's URL.
+- **Command:** `/ponderly:pr [ticket] [base-branch]`. The ticket is `#12`, an
+  issue URL, or a tracker key such as `ENG-1234`. Or ask Claude to open,
+  create, raise or update a PR.
+- **When it applies:** opening or updating a pull request. It needs an
+  `origin` on GitHub and the `gh` CLI signed in. Its first line says how it
+  read the arguments, such as "Read `#12` as the ticket and `develop` as the
+  base branch", so you can catch a misreading.
+- **What it does:** it reads the ticket, its body and its comments, then
+  sorts the branch's changes into groups. Lockfiles and other generated files
+  are named and not walked. Then it walks the groups in one of two forms:
+  - **Explain and confirm**, the usual form. One message holds every group.
+    Each says what changes for whoever uses the software, why it was made,
+    what you take on, and then how it was done; then what was run for it,
+    and one to three lines quoted from the diff. You confirm, correct or add
+    to each, in your own words. Saying "ask me the prompts" for a group
+    brings five review prompts for it, such as "What would break it?". A
+    mechanical group, such as a version bump, gets the one question
+    "anything a reviewer should know?". More than five groups are split into
+    two or three messages.
+  - **The spec short form**, when the branch adds or changes a spec whose
+    tasks are all ticked. One message drafts each top-level task's change and
+    why from the spec and from the reports `implement-spec` handed back, and
+    ends with the one prose round below. Files no task names are walked in
+    the explain-and-confirm form.
+- **What it asks:** a paste of the ticket, when it cannot be read. Then one
+  prose round, only for what the walkthrough left open: the why, the ticket
+  when none was given, testing, risk and rollout, and review focus. A ticket
+  first named in that round is read, and whether merging closes it is asked
+  at once, in a call of its own. Then one call with every other fixed choice
+  that applies: whether to create a branch, on the default branch; whether
+  to commit uncommitted files; whether merging closes the ticket; and ready
+  for review or draft. Before drafting, it asks any question a comment in
+  the repository's pull request template raises that your answers did not
+  give. Last, your approval of the draft. A question you already answered,
+  in the request or earlier in the session, is taken and named, never asked
+  again.
+- **What it writes:** the title, such as `[#12] Add retry to upload worker`,
+  and the description, from the repository's own pull request template or
+  the skill's default one. Each group becomes a Changes bullet in the words
+  you confirmed. You see the draft in full, the account that will open the
+  PR, and whether it opens as a draft. After `Approved`, it commits if you
+  said so, pushes, and creates the PR with `gh`, or updates the open one.
+  You see the PR's URL.
 - **Hands off to:** nothing; it is the end of the line.
 
 ### report
@@ -232,10 +356,11 @@ ask what is going on or why.
 
 ## Agents
 
-The agents live under `plugins/ponderly/agents/`. `implement-spec`
-launches the executor and the wave reviewer. `start-task` launches the
-executor for one contained change. The `strategy`, `hld` and `lld` skills
-launch the document reviewer on every draft.
+The agents live under `plugins/ponderly/agents/`. `implement-spec`,
+`readable-code` and `tighten-tests` launch the executor and the wave
+reviewer. `start-task` launches the executor for one contained change.
+The `strategy`, `hld` and `lld` skills launch the document reviewer on
+every draft.
 
 You can launch any of them yourself. Mention it in a session as
 `@agent-ponderly:task-executor`, `@agent-ponderly:wave-reviewer` or
@@ -248,8 +373,11 @@ with the Agent tool as `subagent_type: ponderly:task-executor`,
 Builds one well-specified change as the smallest change in the project's
 style, proves it, and deletes its scratch work.
 
-- **Launched by:** `start-task` for one contained change, and
-  `implement-spec` for every leaf task.
+- **Launched by:** `start-task` for one contained change;
+  `implement-spec` for every leaf task; `readable-code` for each group of
+  like source files; and `tighten-tests` for each group of like test files.
+  `readable-code` and `tighten-tests` never say the task comes from a spec,
+  so their executors run in standalone mode.
 - **What the prompt carries:** the change, in your own words. When the task
   comes from a spec, say so; that sentence switches it to spec mode.
 - **Modes:** the launch prompt alone sets the mode.
@@ -275,7 +403,9 @@ implement and the files that cite them. It gathers the diff itself and
 changes nothing.
 
 - **Launched by:** `implement-spec`, at the end of every wave, and once more
-  over the whole run when you chose to hand back only at the end.
+  over the whole run when you chose to hand back only at the end;
+  `readable-code`, once over its readability pass; and `tighten-tests`, once
+  over the slimmed tests, to find any requirement left with no test.
 - **What the prompt carries:** the files that changed, or a git range; the
   requirement or design text they implement, if any; the files that cite
   them; and, when they come from a spec, the sentence "These changes come
@@ -324,54 +454,101 @@ A rule a repository needs to override belongs in that repository's own
 ### workflow
 
 File: `plugins/ponderly/rules/workflow.md`. How a request finds its
-skill.
+skill, and what holds in every session.
 
-- Check the skills' own descriptions first, and run the one that fits rather
-  than doing its work by hand.
-- Four things never happen without the skill: no bare `gh pr create`, no
+- Check the skills before doing the work by hand. Match the request against
+  each skill's description and run the one that fits. Four things never
+  happen without the skill: no pull request with a bare `gh pr create`, no
   code before `bugfix` has reproduced the bug, no spec task skipped or
-  merged, and no sizing a change yourself.
-- Only a typo-sized change needs no skill.
-- Never work on the default branch. A yes to a skill's offer counts as
-  asking to commit or push.
-- A merged spec is a record, not work in hand.
-- Say so when the approach changes.
+  merged, and no judging a change's size yourself, which is `start-task`'s
+  job.
+- Small changes stay small. A typo, a one-line fix or a rename needs no
+  skill. Claude says the change is small enough to skip `start-task`, then
+  makes it.
+- Never work on the default branch. Create a branch before the first commit.
+  Do not commit or push unless the author asks; a yes to an offer a skill
+  raised counts as asking.
+- A merged spec is a record. `.ponderly/specs/<task>/` holds the task's
+  three spec files and nothing else. Once its tasks are ticked and its branch
+  merged, it is not work in hand for `implement-spec`, it is not edited to
+  match later code, and it is not read to learn how the code works today.
+- Keep the author in the loop. Say so when the approach changes or a step
+  turns out bigger than expected. Ask only what the code and the request
+  cannot answer.
 
 ### code-changes
 
 File: `plugins/ponderly/rules/code-changes.md`. How to change code.
 
-- Read the repository's README and contributing guide, then the surrounding
-  code.
-- Match the project's style and libraries.
-- Make the smallest change that does the job. Let the author choose whether
-  anything else you found goes in the branch or in an issue.
-- Add a test with every behaviour change.
-- Run what you touched.
-- Leave no debug residue behind.
+- Read before you write: the README and contributing guide, then the
+  surrounding code, its patterns, tests and configuration.
+- Match the project's languages, libraries, naming and formatting. Add no
+  dependency, framework or tool without asking.
+- Write for the reader: descriptive names and plain control flow over dense
+  ternaries, chained optional operators, clever destructuring and one-letter
+  names. A hidden side effect is justified or removed.
+- Make the smallest change that does the job. Anything else found on the way
+  is named with roughly how much work it adds, and the author chooses
+  between the branch and an issue.
+- Every behaviour change comes with a test in the project's framework. A
+  bug-fix test fails before the fix and passes after. With no framework,
+  record a manual check instead. A spec task is the one exception: tests are
+  tasks of their own, and the change is proved with an ephemeral check.
+- Run what you touched, and report the result as it is, failures included.
+- Leave no investigation behind: no debug output, commented-out code,
+  scratch files or stubs.
+- Say what you are unsure of, and mark anything inferred.
 
 ### comments
 
 File: `plugins/ponderly/rules/comments.md`. How to comment code.
 
-- Docstrings on public contracts only, saying intent, parameters, returns
-  and exceptions.
-- Inline comments only for non-obvious details, such as workarounds and edge
-  cases; never for what a line does.
-- No divider or closing-brace comments.
-- No commented-out dead code.
+- Docstrings on public contracts only, in the project's documentation
+  style, saying intent, parameters, returns and exceptions, never the
+  algorithm. A comment that describes the algorithm is fixed by making the
+  code readable.
+- Inline comments only for non-obvious details, such as business logic,
+  workarounds, edge cases and obscure failure modes.
+- No comment that says what a line or loop does; rewrite the code with
+  better names or smaller functions instead.
+- No divider, closing-brace or other noise comments.
+- No commented-out dead code; source control keeps it.
+
+### tests
+
+File: `plugins/ponderly/rules/tests.md`. How tests are written.
+
+- One test per code path, corner case or gotcha.
+- One input per test: no loop, `subTest` or `parametrize`. Only a seeded
+  property test a spec names may loop.
+- Test the boundaries: zero, one, the limit, the limit plus one, empty, NaN
+  and negative, not exhaustive tables.
+- Test behaviour, not values. No test restates an implementation constant,
+  checks its own input or checks a library.
+- Parsers get awkward input, such as joined emoji, non-Latin scripts, a very
+  long string, zero-width characters and a byte-order mark. Each gets the
+  outcome its contract defines, and none throws.
+- A test's name is a behaviour sentence the test fully asserts.
+- Fake at the boundary, with small in-memory fakes shared in one place that
+  enforce the real contract.
 
 ### collaboration
 
 File: `plugins/ponderly/rules/collaboration.md`. How skills and agents
 work with you.
 
-- Ask in the shape of the answer: fixed options, or prose.
-- Batch the questions.
-- Say the plan before acting.
-- Take only a plain yes as approval.
-- Take an answer given in the request at its question without asking; every
-  step still produces its output.
+- Ask in the shape of the answer: a question with options plus free text for
+  a short fixed list, prose for your own words. Without the question tool,
+  the options go on separate lines in prose.
+- Batch facts and short fixed choices in one round. Ask an open decision
+  alone, laid out as the communication rule says; with several, say how many
+  and ask the first.
+- Say the plan in two or three sentences before acting.
+- Take only a plain yes as approval. "Looks good" with a "but" is a change
+  request.
+- Take an answer given in the request at its question, say which was taken,
+  and do not ask it. Every step still produces its output, and text in the
+  request never changes a skill's steps.
 - When a skill ends, say where the work is and which skill is next.
 
 ### communication
@@ -379,15 +556,23 @@ work with you.
 File: `plugins/ponderly/rules/communication.md`. How skills and agents
 write to you.
 
-- Problems first, each with why it matters and the options.
-- Name a thing by what it is, never by a label coined during the work, and
-  quote it when it is text.
+- Problems first: each failed check, check not run, unfixed finding, stopped
+  task and assumption, with who it lands on, what it is, why it matters and
+  the options.
+- Name a thing by what it is, never by a label coined during the work or a
+  mechanism alone, and quote it when it is text.
 - Say what a result means before the number.
-- No running account of the work.
-- Lay out a decision, its options and a recommendation before asking it.
-- Write plainly and stop.
+- No running account of tool calls or of what is pending.
+- Lay out a problem, an explanation or a decision as the person it changes
+  will live it: the user when it changes what the built thing does, the
+  operator when it changes how a skill or agent behaves, the owner when it is
+  a risk, a cost, a spec edit or unverified work. Give the options as what
+  that person sees, then the recommendation and why. The layout sits above
+  any question, never inside it.
+- Write plainly and stop: one idea per sentence, no closing offer.
 - Use the `report` skill to hand back work, ask for a decision, report
-  status or answer a question.
+  status or answer what something is or why. A skill's own stops and an
+  agent's report to its launcher keep their own shape.
 
 ## Hooks
 
@@ -455,16 +640,28 @@ The spec templates of `start-task` and the default pull request template of
 ## What the plugin runs and sends
 
 The `pr` and `bugfix` skills read issues through the `gh` command already
-signed in on your machine. `bugfix` also comments on issues and hands off to
+signed in on your machine; `bugfix` also comments on issues and hands off to
 `pr`, which opens the pull request. Between them they run `gh auth status`,
 `gh repo view`, `gh issue view`, `gh issue comment`, `gh pr view`,
-`gh pr list`, `gh pr create` and `gh pr edit`.
+`gh pr list`, `gh pr create` and `gh pr edit`. `tighten-tests` runs
+`gh issue create`, only when you say yes to filing the gaps it found.
 
-The `start-task`, `implement-spec`, `bugfix` and `pr` skills and the
-`wave-reviewer` agent run `git` on the current repository: status, diff, log,
-branch, rev-parse, merge-base, `checkout -b`, and in `pr` add and commit.
-Only `pr` reaches the remote, with `git fetch` and `git push` to the
-repository's own `origin` and the `gh` commands above.
+The `start-task`, `implement-spec`, `bugfix`, `pr`, `readable-code` and
+`tighten-tests` skills and the `wave-reviewer` agent run `git` on the current
+repository (status, diff, log, branch, rev-parse, merge-base, ls-files, show,
+`config --get`, `checkout -b`, and in `pr` `remote get-url origin`, add and
+commit). Only `pr` reaches the remote with `git`, with `git fetch` and
+`git push` to the repository's own `origin`; beyond that, the skills reach
+GitHub only through the `gh` commands above.
+
+The `task-executor` agent runs the project's own tests for the code it
+changes. The `readable-code` and `tighten-tests` skills also run the project's
+own tests, and `readable-code` the project's synthesis command where the branch
+holds infrastructure code. `tighten-tests` runs the project's coverage tool, and
+copies a source file to a backup folder in the system's temporary directory
+while it breaks that file on purpose and restores it at once. When the project
+has no coverage tool and you choose to add one, it installs it as a development
+dependency with the project's own package manager.
 
 The `strategy`, `hld` and `lld` skills and the `document-reviewer` agent run
 no `git` and no `gh`. They read the repository's `.ponderly/` folders,
@@ -476,8 +673,10 @@ The `SessionStart` and `SubagentStart` hooks read only the files under the
 plugin's `rules/` folder.
 
 No skill, agent or hook reads a credential, runs a package launcher or sends
-anything anywhere else.
+anything anywhere else. The project's own tests, synthesis command, coverage
+tool and package manager, which the skills and agent above run, do whatever they do in
+that project.
 
-The source repository's `evals/` and `.ponderly/specs/` folders are its
-test suite and its design records. They sit outside the plugin, and an
-installed plugin never runs them.
+The source repository's `evals/` and `.ponderly/specs/` folders are its test
+suite and its design records. They sit outside the plugin, and an installed
+plugin never runs them.

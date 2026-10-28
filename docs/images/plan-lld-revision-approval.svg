@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1192" viewBox="0 0 940 1192" role="img">
+<title>Claude warns that the platform move design changed at the author's request and was checked only as this design's parent, not re-reviewed or re-approved, then shows what changed in both documents: the copy runs once dual-write is live, the SQLite store's add takes the code, rollback copies links back, and new tasks and tests, followed by seven review findings still open. It asks whether the revised design with the matching parent changes is what the author wants, and the author picks Approved.</title>
+<rect width="940" height="1192" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — lld</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● The platform move design changed at your request, and its own reviewer hasn't checked it again. </text>
+<text x="38" y="91" fill="#e6e6e6" xml:space="preserve">The changes were checked only as this design's parent. Its new lines on the copy order, the </text>
+<text x="38" y="111" fill="#e6e6e6" xml:space="preserve">SQLite store and the rollback copy-back are not re-approved either.</text>
+<text x="20" y="131" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="151" fill="#e6e6e6" xml:space="preserve">  ```text</text>
+<text x="20" y="171" fill="#e6e6e6" xml:space="preserve">  .ponderly/designs/linkshort-2027/platform-move/lld-link-stores-and-migration.md</text>
+<text x="20" y="191" fill="#e6e6e6" xml:space="preserve">  - Platform move design (hld-platform-move.md): The copy now runs "once dual-write is live". The </text>
+<text x="38" y="211" fill="#e6e6e6" xml:space="preserve">SQLite store's "`add` now takes the code the service generates, and it gains the operations the </text>
+<text x="38" y="231" fill="#e6e6e6" xml:space="preserve">migration jobs need". "Rollback copies the links created in Postgres since cutover back into </text>
+<text x="38" y="251" fill="#e6e6e6" xml:space="preserve">SQLite, makes SQLite writable again, and points `go.internal` back at the VM."</text>
+<text x="20" y="271" fill="#e6e6e6" xml:space="preserve">  - Tasks: `store-interface` "lands in one pull request with the linkshort service's change to </text>
+<text x="38" y="291" fill="#e6e6e6" xml:space="preserve">`add`". `store-tests` now covers the stores only and comes before `dual-write-go-live`. Each job </text>
+<text x="38" y="311" fill="#e6e6e6" xml:space="preserve">task carries its own tests. `postgres-store` also connects through the Kubernetes secret after </text>
+<text x="38" y="331" fill="#e6e6e6" xml:space="preserve">cutover.</text>
+<text x="20" y="351" fill="#e6e6e6" xml:space="preserve">  - Interfaces: The copy-back no longer calls `links`. "The dual-write store raises only when </text>
+<text x="38" y="371" fill="#e6e6e6" xml:space="preserve">SQLite is unavailable". `created_since` returns links "at or after" the cutover time.</text>
+<text x="20" y="391" fill="#e6e6e6" xml:space="preserve">  - Testing: New tests for paging boundaries, a create during the copy, a repair-only night not </text>
+<text x="38" y="411" fill="#e6e6e6" xml:space="preserve">being clean, a link created exactly at the cutover time, and SQLite unavailable on a dual-write </text>
+<text x="38" y="431" fill="#e6e6e6" xml:space="preserve">`add`. The store-unavailable test now says which stores it covers.</text>
+<text x="20" y="451" fill="#e6e6e6" xml:space="preserve">  - Behaviour: "every new link is written to both stores".</text>
+<text x="20" y="471" fill="#e6e6e6" xml:space="preserve">  - Data: The network opening "for the month" is attributed to you.</text>
+<text x="20" y="491" fill="#e6e6e6" xml:space="preserve">  - Risks: The claim that a code missing from SQLite "can't happen" is gone.</text>
+<text x="20" y="511" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="531" fill="#e6e6e6" xml:space="preserve">  Review: 7 finding(s) still open:</text>
+<text x="20" y="551" fill="#e6e6e6" xml:space="preserve">  - "The network team opens the VM to the cluster for the month, as the author set." (Data): Does </text>
+<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">the opening last through the read-only month? A rollback copy-back needs Postgres then.</text>
+<text x="20" y="591" fill="#e6e6e6" xml:space="preserve">  - "The cutover time is recorded. SQLite is then opened read-only, and" (Behaviour): In what order </text>
+<text x="38" y="611" fill="#e6e6e6" xml:space="preserve">do recording the time, the `go.internal` move and SQLite going read-only happen? Where is the </text>
+<text x="38" y="631" fill="#e6e6e6" xml:space="preserve">time stored, and which clock sets it?</text>
+<text x="20" y="651" fill="#e6e6e6" xml:space="preserve">  - "SQLite is then made writable again, and `go.internal` points back at the VM." (Behaviour): Who </text>
+<text x="38" y="671" fill="#e6e6e6" xml:space="preserve">points `go.internal` back? After a rollback, does the VM run on dual-write or on SQLite alone? </text>
+<text x="38" y="691" fill="#e6e6e6" xml:space="preserve">How do links created between the copy-back and the switch reach SQLite?</text>
+<text x="20" y="711" fill="#e6e6e6" xml:space="preserve">  - "It walks both stores in code order and finds" (Behaviour): How does the compare avoid </text>
+<text x="38" y="731" fill="#e6e6e6" xml:space="preserve">reporting a create caught mid-walk, for example by skipping links from the last few minutes?</text>
+<text x="20" y="751" fill="#e6e6e6" xml:space="preserve">  - "A night with any mismatch or repair is not clean." (Behaviour): Is a night clean if the </text>
+<text x="38" y="771" fill="#e6e6e6" xml:space="preserve">compare stops because a store is unavailable, or the Slack post fails?</text>
+<text x="20" y="791" fill="#e6e6e6" xml:space="preserve">  - "Rejected: none was put forward. psycopg 3 is the allow-listed driver." (Key decisions): Was </text>
+<text x="38" y="811" fill="#e6e6e6" xml:space="preserve">any other driver weighed?</text>
+<text x="20" y="831" fill="#e6e6e6" xml:space="preserve">  - "**The one-time copy runs long and holds a lock that slows redirects.**" (Risks): What are the </text>
+<text x="38" y="851" fill="#e6e6e6" xml:space="preserve">likelihood and impact of each of the three risks?</text>
+<text x="20" y="871" fill="#e6e6e6" xml:space="preserve">  fixed after round 2, not re-reviewed: 3</text>
+<text x="20" y="891" fill="#e6e6e6" xml:space="preserve">  ```</text>
+<text x="20" y="911" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="931" fill="#a6e3a1" xml:space="preserve">⏺ AskUserQuestion(questions: [{"question": "Is the revised </text>
+<text x="38" y="951" fill="#a6e3a1" xml:space="preserve">.ponderly/designs/linkshort-2027/platform-move/lld-link-stores-and-migration.md, with the </text>
+<text x="38" y="971" fill="#a6e3a1" xml:space="preserve">matching changes to the platform move design, what you want? Put answers to the open findings, or </text>
+<text x="38" y="991" fill="#a6e3a1" xml:space="preserve">anything wrong, in the free text.", "header": "Approve", "multiSelect": false, "options": </text>
+<text x="38" y="1011" fill="#a6e3a1" xml:space="preserve">[{"label": "Approved", "description": "Both documents stand as written; move on to the tasks."}, </text>
+<text x="38" y="1031" fill="#a6e3a1" xml:space="preserve">{"label": "Changes needed", "description": "Revise using your answers, then review and show it </text>
+<text x="38" y="1051" fill="#a6e3a1" xml:space="preserve">again."}]}])</text>
+<text x="20" y="1071" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="1091" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "Is the revised </text>
+<text x="38" y="1111" fill="#a6e3a1" xml:space="preserve">.ponderly/designs/linkshort-2027/platform-move/lld-link-stores-and-migration.md, with the </text>
+<text x="38" y="1131" fill="#a6e3a1" xml:space="preserve">matching changes to the platform move design, what you want? Put answers to the open findings, or </text>
+<text x="38" y="1151" fill="#a6e3a1" xml:space="preserve">anything wrong, in the free text."="Approved". You can now continue with these answers in mind.</text>
+<text x="920" y="1178" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-28 · ponderly v1.1.0</text>
+</g>
+</svg>

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The first wave lays down what needs nothing else: the capture renderer, the Reference built from today's Listing_Page, the contributor material moved into the contributing guide, and the author's own work, which is the four with-without eval runs and three short sessions that the Guides with no existing transcript need. The second wave turns transcripts into captures and writes the pages that need only the first wave: the Evidence_Page, the Listing_Page, `llms.txt` and the manifests. The third wave writes the five Guides and the Front_Door, which need the captures. The fourth writes the Integrity_Check against the finished pages, and the last tests it and sets the GitHub metadata on the author's yes. Each code task is proved by an ephemeral check plus `make validate`; each page task by `make validate` and the manual check its text names; the renderer and the Integrity_Check have their own test tasks. There is no issue yet; the branch is `newcomer-docs`.
+The first wave lays down what needs nothing else: the capture renderer, the Reference built from today's Listing_Page, the contributor material moved into the contributing guide, and the author's own work, which is the four with-without eval runs and three short sessions that the Guides with no existing transcript need. The second wave turns transcripts into captures and writes the pages that need only the first wave: the Evidence_Page, the Listing_Page, `llms.txt` and the manifests. The third wave writes the five Guides and the Front_Door, which need the captures. The fourth writes the Integrity_Check against the finished pages, and the last tests it and sets the GitHub metadata on the author's yes. Each code task is proved by an ephemeral check plus `make validate`; each page task by `make validate` and the manual check its text names; the renderer and the Integrity_Check have their own test tasks. There is no issue yet; the branch is `newcomer-docs`. Task 10 brings the finished pages up to the plugin as it stands on main at 1.2.0, after #73, #74 and #75 landed while this branch was open; the plugin source under `plugins/ponderly/` is the truth for what each component does.
 
 ## Tasks
 
@@ -29,37 +29,37 @@ The first wave lays down what needs nothing else: the capture renderer, the Refe
     - A table of contents, then Skills, Agents, Rules, Hooks, Tune the plugin for a repository, and What the plugin runs and sends, with a `###` heading per component named exactly as its folder or file, from today's `plugins/ponderly/README.md` and each component's frontmatter description. Each skill gives its command and arguments, when it applies, what it asks, what it writes and what it hands off to; each hook script its event and what it loads. Change no file under `plugins/`. Manual check: every skill folder, agent file, rule file and hook script under `plugins/ponderly/` has a heading, and every table-of-contents link resolves to a heading; `make validate` passes
     - _Requirements: 7.1, 7.2, 7.3_
 
-- [ ] 4. Gather the Session_Captures
-  - [ ] 4.1 Run a plan-a-year session (the author, by hand)
+- [x] 4. Gather the Session_Captures
+  - [x] 4.1 Run a plan-a-year session (the author, by hand)
     - In a scratch or docs repository, run `/ponderly:strategy`, then `/ponderly:hld` for one candidate, then `/ponderly:lld` for one of its candidates, answering as a real author would, and report the transcript's path and the plugin version. Follow the steps the plan-a-year Guide will give and say where they did not go as written
     - _Requirements: 5.1, 5.3, 6.4_
   - [x] 4.2 Run a contained-change session (the author, by hand)
     - In a repository of the author's choice, ask for one contained change so that `start-task` offers the executor route, accept it, and let `task-executor` make the change; report the transcript's path and the plugin version
     - _Requirements: 5.1, 5.3, 6.4_
-  - [ ] 4.3 Run a tune-a-template session (the author, by hand)
+  - [x] 4.3 Run a tune-a-template session (the author, by hand)
     - In a repository of the author's choice, replace one template under `.ponderly/` (a report template or a design template), then run the skill that reads it and confirm it used the replacement; report the transcript's path and the plugin version
     - _Requirements: 5.1, 5.3, 6.4_
   - [x] 4.4 Extract and render the captures from existing sessions
     - With `docs/captures/render.py`, extract and render from this repository's design-skills session (`8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a`) the hero hand-back that lists problems first, then what was done, then the next step, named `hero-handback`; a spec approval summary, an `implement-spec` wave report and the `pr` draft for the feature Guide; and the `bugfix` root-cause confirmation and hand-off for issue #52 for the bug Guide. From the inline-email newcomer-docs session (`4c0c154a-4af6-4bd3-b6c5-b6dbbc7a15b0`), extract the executor's `status: stopped` Summary that begins "The README cannot meet Requirements 1.1 and 1.6" and the author's answer after it. Redact only credentials, tokens, private repository names, email addresses and home-directory paths, and replace the plugin's former names with the current ones, and fill `alt` for each. Manual check: each source's body matches its transcript range apart from the listed redactions, shown as a diff in the Summary; `make validate` passes
     - _Requirements: 5.5, 6.1, 6.4, 6.5, 6.8, 6.9_
-  - [ ] 4.5 Extract and render the captures from the author's three sessions
+  - [x] 4.5 Extract and render the captures from the author's three sessions
     - With `docs/captures/render.py`, extract and render from the transcripts tasks 4.1, 4.2 and 4.3 reported: each skill's question round, summary and approval for plan-a-year; the route question, the executor's Summary and the hand-back for the contained change; the replaced template and the output that used it for tune-a-template. Redact and fill `alt` as in task 4.4. Manual check: as in task 4.4; `make validate` passes
     - _Requirements: 6.4, 6.5, 6.8, 6.9_
 
-- [ ] 5. Write the Guides
+- [x] 5. Write the Guides
   - [x] 5.1 Write `docs/guides/build-a-feature.md`
     - The shape the design gives for a Guide, for the job "spec and build a feature with `start-task`, `implement-spec` and `pr`", from the captures of task 4.4: the request, the route statement, the three approvals with their options, the waves, the inline-email stop and what the author did next, and the `pr` draft, with a sequence Diagram of one `implement-spec` wave with its executors and the `wave-reviewer`. "Next" links `fix-a-bug.md` and the Reference sections used. Manual check: every step names the exact command or request, and every image has alt text; `make validate` passes
     - _Requirements: 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 6.3, 6.8_
   - [x] 5.2 Write `docs/guides/fix-a-bug.md`
     - The Guide shape for the job "fix a bug with `bugfix` and `pr`", from task 4.4's issue #52 captures: the ticket described in words (the captured run began from a description and filed issue #52 after the hand-off), the read-back described in words, the reproduction, the root-cause question with its options, the fix with its regression test, and the hand-off. "Next" links `make-a-small-change.md`. Manual check: as in task 5.1; `make validate` passes
     - _Requirements: 5.2, 5.3, 5.4, 5.6, 5.7, 6.8_
-  - [ ] 5.3 Write `docs/guides/plan-a-year.md`
+  - [x] 5.3 Write `docs/guides/plan-a-year.md`
     - The Guide shape for the job "plan a year with `strategy`, `hld` and `lld`", from task 4.5's captures and the steps the author reported in task 4.1, with a sequence Diagram of a skill and the `document-reviewer` over its two rounds. "Next" links `build-a-feature.md`. Manual check: as in task 5.1, and every step the author said did not go as written is corrected; `make validate` passes
     - _Requirements: 5.2, 5.3, 5.4, 5.6, 5.7, 6.3, 6.8_
   - [x] 5.4 Write `docs/guides/make-a-small-change.md`
     - The Guide shape for the job "make one contained change through the `task-executor` agent", from task 4.5's captures, with a sequence Diagram of `start-task` launching `task-executor` and handing back. "Next" links `tune-a-template.md`. Manual check: as in task 5.1; `make validate` passes
     - _Requirements: 5.2, 5.3, 5.4, 5.6, 5.7, 6.3, 6.8_
-  - [ ] 5.5 Write `docs/guides/tune-a-template.md`
+  - [x] 5.5 Write `docs/guides/tune-a-template.md`
     - The Guide shape for the job "tune a template for one repository", from task 4.5's captures: which templates can be replaced and where each goes, the replacement, and the run that used it. "Next" links the Reference. Manual check: as in task 5.1; `make validate` passes
     - _Requirements: 5.2, 5.3, 5.4, 5.6, 5.7, 6.8_
 
@@ -82,24 +82,44 @@ The first wave lays down what needs nothing else: the capture renderer, the Refe
     - The llmstxt.org shape the design gives: `# ponderly`, a blockquote of the Pitch's first two sentences, a paragraph with the install commands, what the plugin needs, the license and what it runs and sends, then `## Skills`, `## Agents`, `## Rules` and `## Docs`, each line `- [name](absolute URL): when to use it`. Manual check: every skill folder, agent file and rule file under `plugins/ponderly/` has a line; `make validate` passes
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 8. Align the metadata
+- [x] 8. Align the metadata
   - [x] 8.1 Update the manifests and raise the version
-    - Set the `description` of the plugin in `.claude-plugin/marketplace.json` and of `plugins/ponderly/.claude-plugin/plugin.json` to the Pitch's first sentence, at most 350 characters, and `"version": "0.17.0"` in `plugin.json`. Ephemeral check: both files parse as JSON and both descriptions are equal; `make validate` passes, which runs `claude plugin validate`
+    - Set the `description` of the plugin in `.claude-plugin/marketplace.json` and of `plugins/ponderly/.claude-plugin/plugin.json` to the Pitch's first sentence, at most 350 characters, and `"version": "1.2.0"` in `plugin.json`. Ephemeral check: both files parse as JSON and both descriptions are equal; `make validate` passes, which runs `claude plugin validate`
     - _Requirements: 10.1_
-  - [ ] 8.2 Set the GitHub description and topics (the author, by hand)
+  - [x] 8.2 Set the GitHub description and topics (the author, by hand)
     - Shown the exact values, the description from task 8.1 and the topics `claude-code`, `claude-code-plugin`, `claude-skills`, `ai-coding`, `spec-driven-development` and `developer-tools`, with the homepage left empty, the author approves them and they are set with `gh repo edit sabind/ponderly --description "<description>" --add-topic <topic>` for each topic; report `gh repo view sabind/ponderly --json description,repositoryTopics,homepageUrl`
     - _Requirements: 10.1, 10.2, 10.3, 10.4_
 
-- [ ] 9. Keep the pages true to the code
-  - [ ] 9.1 Write the Integrity_Check in `checks/test_docs.py`
+- [x] 9. Keep the pages true to the code
+  - [x] 9.1 Write the Integrity_Check in `checks/test_docs.py`
     - Standard-library `unittest`, Python 3.9 syntax, paths from the file's own location, importing `render_svg` from `docs/captures/render.py` by path. Over `README.md`, `plugins/ponderly/README.md`, `llms.txt` and every `docs/**/*.md`, check what the design's Integrity_Check table lists: relative links and images resolve, with `#anchors` matched to GitHub heading slugs; absolute `github.com/sabind/ponderly/(blob|tree)/main/` links resolve locally; `/ponderly:<skill>` and `ponderly:<agent>` name a skill folder or agent file; `make <target>` names a Makefile rule or an enumerated `eval-skill-`, `eval-rule-` or `eval-agent-` target; backticked paths under `plugins/`, `evals/`, `checks/`, `docs/`, `.github/`, `.claude-plugin/` and `bin/`, and root files, exist, skipping any with `<`, `*` or `{`; every skill folder, agent file and rule file is named in the Listing_Page, has a `###` heading in the Reference and is named in `llms.txt`; every SVG equals its source's re-render, every source has an SVG and every SVG a source; no source holds a credential, token, email address or home-directory path; no image has empty alt text. Every failure message gives the page, the line and the name. Ephemeral check: break one link, one command and one SVG in a scratch copy of the tree and confirm each fails with page and line, and the real tree passes; `make validate` passes
     - _Requirements: 6.6, 6.8, 6.9, 8.5, 9.1, 9.2, 9.3, 9.4, 9.5_
-  - [ ]* 9.2 Write the Integrity_Check's fixture tests
+  - [x]* 9.2 Write the Integrity_Check's fixture tests
     - In `checks/test_docs.py`, against fixture trees built in a temporary directory: a broken link, a missing heading, a missing skill in a command, a missing `make` target, a component missing from each of the three pages, a stale SVG, a source with a token and an image with no alt text each fail with page, line and name, and a clean tree passes
     - **Property 1: Every name a page mentions exists**
     - **Property 2: Every component is named where it must be**
     - **Property 5: A failure names its place**
     - **Validates: Requirements 7.1, 8.2, 8.5, 9.2, 9.3, 9.4, 9.5**
+
+- [x] 10. Bring the pages up to the plugin on main
+  - [x] 10.1 Update `docs/reference.md`
+    - From the current files under `plugins/ponderly/`: add `### readable-code` and `### tighten-tests` under Skills, in the shape of the other skill sections (command and arguments, when it applies, what it asks, what it writes, what it hands off to), and `### tests` under Rules, each with its table-of-contents line; rewrite `### pr` for the explain-and-confirm walkthrough and the ticked-spec short form; rewrite the `workflow`, `code-changes`, `comments`, `collaboration` and `communication` entries to match their rule files; in Agents, name `readable-code` and `tighten-tests` as launching the executor and the wave reviewer, in the intro and in each agent's "Launched by"; make "What the plugin runs and sends" match the Listing_Page's section of the same name; and correct any other skill, agent or hook section the plugin source no longer matches. Change no file under `plugins/`. Manual check: every skill folder, agent file, rule file and hook script has a `###` heading and a working table-of-contents link, each rule entry is compared bullet by bullet with its rule file in the Summary, and the runs-and-sends section is compared with the Listing_Page's; `make validate` passes
+    - _Requirements: 7.1, 7.2, 7.3_
+  - [x] 10.2 Update `llms.txt`
+    - Add `readable-code` and `tighten-tests` under Skills and `tests` under Rules, each line `- [name](absolute URL): when to use it` from the component's own description; bring the summary paragraph's needs and what-it-runs-and-sends in line with the Listing_Page, including `gh` for `tighten-tests` when it files gaps, the project's own tests, synthesis command and coverage tool, and a development dependency only on the author's yes; correct the `pr`, `collaboration` and `communication` lines to the current source. Manual check: every skill folder, agent file and rule file under `plugins/ponderly/` has a line; `make validate` passes
+    - _Requirements: 8.1, 8.2, 8.3_
+  - [x] 10.3 Update `README.md`
+    - Add `readable-code` and `tighten-tests` to the "What it does" flowchart, with the hand-offs their `SKILL.md` files give, and to the prose around it in a sentence; correct "What this does not do" so the sending bullet says those two skills also run the project's own tests and tools and that `tighten-tests` adds a coverage tool only on the author's yes, and the commit bullet holds for them. Ephemeral check: the install commands sit within the first 40 lines; `wc -l README.md` reported against 220; `make validate` passes
+    - _Requirements: 1.2, 1.5, 6.2_
+  - [x] 10.4 Update the Guides
+    - In `docs/guides/build-a-feature.md`, rewrite the `pr` step for a branch built from a ticked spec as the current `pr` skill gives it, in words where the capture predates it, and name `readable-code` and `tighten-tests` as optional steps before it; in `fix-a-bug.md` and `make-a-small-change.md`, correct the `pr` description to the explain-and-confirm walkthrough; correct any other step the current skill source no longer matches. Change no capture. Manual check: each corrected step compared with the skill's `SKILL.md` in the Summary; `make validate` passes
+    - _Requirements: 5.3, 5.4, 5.7_
+  - [x] 10.5 Update `docs/evidence.md`
+    - Say that the four rule runs used version 0.17.0 under the plugin's former name, from this branch's working tree before the rename to `ponderly`, and name the rules changed on main since the run, from `git log` of `plugins/ponderly/rules/`, so the tables read as a snapshot of those rules as they were; leave every table as printed. In Not measured, add the `readable-code` and `tighten-tests` skills and the `tests` rule, which has eval cases with the plugin loaded but no baseline run, and correct the sentence on which components have eval cases. Manual check: every target named has a Makefile target; `make validate` passes
+    - _Requirements: 4.3, 4.4_
+  - [x] 10.6 Name every launcher and complete what the plugin runs
+    - In `plugins/ponderly/agents/task-executor.md` and `wave-reviewer.md`, make the description name every skill that launches the agent: `start-task`, `implement-spec`, `readable-code` and `tighten-tests` for the executor, and `implement-spec`, `readable-code` and `tighten-tests` for the reviewer. In "What the plugin runs and sends" of the Listing_Page and the Reference, and in the summary of `llms.txt` and the sending bullet of `README.md`, add the `git remote get-url origin` that `pr` runs and say that the `task-executor` agent runs the project's own tests. Manual check: the two runs-and-sends sections are identical; `make validate` passes
+    - _Requirements: 7.1, 8.3_
 
 ## Notes
 
@@ -115,7 +135,7 @@ The first wave lays down what needs nothing else: the capture renderer, the Refe
 ```json
 {
   "waves": [
-    { "id": 0, "tasks": ["1.1", "2.1", "3.1", "4.1", "4.2", "4.3", "6.1"] },
+    { "id": 0, "tasks": ["1.1", "2.1", "3.1", "4.1", "4.2", "4.3", "6.1", "10.1", "10.2", "10.3", "10.4", "10.5", "10.6"] },
     { "id": 1, "tasks": ["1.2", "1.3", "4.5", "6.2", "7.2", "7.3", "8.1"] },
     { "id": 2, "tasks": ["4.4"] },
     { "id": 3, "tasks": ["5.1", "5.2", "5.3", "5.4", "5.5", "7.1"] },

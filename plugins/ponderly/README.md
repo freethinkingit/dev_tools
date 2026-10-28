@@ -83,13 +83,14 @@ signed in on your machine; `bugfix` also comments on issues and hands off to
 The `start-task`, `implement-spec`, `bugfix`, `pr`, `readable-code` and
 `tighten-tests` skills and the `wave-reviewer` agent run `git` on the current
 repository (status, diff, log, branch, rev-parse, merge-base, ls-files, show,
-`config --get`, `checkout -b`, and in `pr` add and commit). Only `pr` reaches
-the remote with `git`, with `git fetch` and `git push` to the repository's own
-`origin`; beyond that, the skills reach GitHub only through the `gh` commands
-above.
+`config --get`, `checkout -b`, and in `pr` `remote get-url origin`, add and
+commit). Only `pr` reaches the remote with `git`, with `git fetch` and
+`git push` to the repository's own `origin`; beyond that, the skills reach
+GitHub only through the `gh` commands above.
 
-The `readable-code` and `tighten-tests` skills also run the project's own
-tests, and `readable-code` the project's synthesis command where the branch
+The `task-executor` agent runs the project's own tests for the code it
+changes. The `readable-code` and `tighten-tests` skills also run the project's
+own tests, and `readable-code` the project's synthesis command where the branch
 holds infrastructure code. `tighten-tests` runs the project's coverage tool, and
 copies a source file to a backup folder in the system's temporary directory
 while it breaks that file on purpose and restores it at once. When the project
@@ -107,7 +108,7 @@ plugin's `rules/` folder.
 
 No skill, agent or hook reads a credential, runs a package launcher or sends
 anything anywhere else. The project's own tests, synthesis command, coverage
-tool and package manager, which the skills above run, do whatever they do in
+tool and package manager, which the skills and agent above run, do whatever they do in
 that project.
 
 The source repository's `evals/` and `.ponderly/specs/` folders are its test

@@ -210,9 +210,14 @@ When you are ready, run `pr` with the ticket, if there is one:
 /ponderly:pr #12
 ```
 
-It walks the change with you, drafts the pull request, and asks for your
-approval before it commits, pushes and opens it. [Build a feature](build-a-feature.md#7-open-the-pull-request)
-shows that step.
+It explains the change as you and its users will meet it, and asks you to
+confirm, correct or add to that explanation in your own words. Then it asks
+once, in prose, for anything still missing, and asks the fixed choices,
+such as whether to commit the change, together in one round. It drafts the
+pull request and asks for your approval before it commits, pushes and opens
+it.
+[Fix a bug](fix-a-bug.md#7-open-the-pull-request) describes that walkthrough
+step by step.
 
 ## Next
 

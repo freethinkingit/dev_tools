@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1192" viewBox="0 0 940 1192" role="img">
+<title>Claude runs the strategy skill for linkshort's plan for 2027, names the document linkshort-2027 and asks eight questions in one round: horizon, who it serves, goals with measures and worth, current state, principles and constraints, streams of work, risks, and out of scope. The author pastes one numbered answer per question: a quarterly-reviewed 2027, growth from 40 engineers to 600 people, three ranked goals, a single VM with SQLite, Kubernetes and Postgres with two half-time engineers, a request that Claude propose the streams, three risks with responses, and three exclusions.</title>
+<rect width="940" height="1192" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — strategy</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● Name: `linkshort-2027`. The document will be written to `.ponderly/strategies/linkshort-2027.md`. </text>
+<text x="38" y="91" fill="#e6e6e6" xml:space="preserve">No strategies exist under `.ponderly/strategies/` yet, so this one replaces, extends or leaves </text>
+<text x="38" y="111" fill="#e6e6e6" xml:space="preserve">alone nothing.</text>
+<text x="20" y="131" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="151" fill="#e6e6e6" xml:space="preserve">  Your words give only the subject (linkshort) and the year (2027). Please answer these in one </text>
+<text x="38" y="171" fill="#e6e6e6" xml:space="preserve">reply:</text>
+<text x="20" y="191" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="211" fill="#e6e6e6" xml:space="preserve">  1. **Horizon.** Is it January to December 2027? How often will it be reviewed: quarterly, at the </text>
+<text x="38" y="231" fill="#e6e6e6" xml:space="preserve">half, or something else?</text>
+<text x="20" y="251" fill="#e6e6e6" xml:space="preserve">  2. **Who it serves and what the work is.** Who uses linkshort today, and who should it serve by </text>
+<text x="38" y="271" fill="#e6e6e6" xml:space="preserve">the end of 2027?</text>
+<text x="20" y="291" fill="#e6e6e6" xml:space="preserve">  3. **Goals.** What three to five outcomes must 2027 deliver? For each, what measure will you </text>
+<text x="38" y="311" fill="#e6e6e6" xml:space="preserve">check at the review, and what is it worth? The worth should show which goal wins when two compete </text>
+<text x="38" y="331" fill="#e6e6e6" xml:space="preserve">for the same people.</text>
+<text x="20" y="351" fill="#e6e6e6" xml:space="preserve">  4. **Current state.** Where does linkshort stand today? Give users, traffic and how it is </text>
+<text x="38" y="371" fill="#e6e6e6" xml:space="preserve">deployed and run, with numbers where you have them. Say what works and must be kept, and what </text>
+<text x="38" y="391" fill="#e6e6e6" xml:space="preserve">falls short.</text>
+<text x="20" y="411" fill="#e6e6e6" xml:space="preserve">  5. **Principles and constraints.** What rules must every design respect? Examples: latency or </text>
+<text x="38" y="431" fill="#e6e6e6" xml:space="preserve">privacy rules, the platform or vendors allowed, budget, team size.</text>
+<text x="20" y="451" fill="#e6e6e6" xml:space="preserve">  6. **Streams of work.** How do you see the year breaking into streams? Give each stream's rough </text>
+<text x="38" y="471" fill="#e6e6e6" xml:space="preserve">timing and say which streams depend on others. If you'd rather I propose streams from the goals, </text>
+<text x="38" y="491" fill="#e6e6e6" xml:space="preserve">say so.</text>
+<text x="20" y="511" fill="#e6e6e6" xml:space="preserve">  7. **Risks.** What could stop the plan delivering? For each, how likely is it, how bad would it </text>
+<text x="38" y="531" fill="#e6e6e6" xml:space="preserve">be, and what would you do about it?</text>
+<text x="20" y="551" fill="#e6e6e6" xml:space="preserve">  8. **Out of scope.** What will 2027 deliberately not do, especially things a reader might expect? </text>
+<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">Give the reason or where each belongs instead.</text>
+<text x="20" y="591" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="611" fill="#7fc8f8" xml:space="preserve">&gt; </text>
+<text x="20" y="631" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="20" y="651" fill="#7fc8f8" xml:space="preserve">  &lt;pasted_content id="aeb4"&gt;</text>
+<text x="20" y="671" fill="#7fc8f8" xml:space="preserve">  1. January to December 2027, reviewed each quarter.</text>
+<text x="20" y="691" fill="#7fc8f8" xml:space="preserve">  2. Today about 40 engineers on one team use it for runbook and dashboard links. By the end of </text>
+<text x="38" y="711" fill="#7fc8f8" xml:space="preserve">2027 it should serve the whole company, around 600 people, including support and sales, who share </text>
+<text x="38" y="731" fill="#7fc8f8" xml:space="preserve">links with customers.</text>
+<text x="20" y="751" fill="#7fc8f8" xml:space="preserve">  3. Goals: (a) Company-wide adoption: 400 weekly active creators by Q4; worth the most, it is why </text>
+<text x="38" y="771" fill="#7fc8f8" xml:space="preserve">we fund it. (b) Links never break: 99.9% of redirects succeed each month, measured from server </text>
+<text x="38" y="791" fill="#7fc8f8" xml:space="preserve">logs; second, because a broken link in a customer email costs trust. (c) Owners can see and fix </text>
+<text x="38" y="811" fill="#7fc8f8" xml:space="preserve">their links: every link has an owner and an edit page, measured as zero ownerless links at the Q4 </text>
+<text x="38" y="831" fill="#7fc8f8" xml:space="preserve">review; third.</text>
+<text x="20" y="851" fill="#7fc8f8" xml:space="preserve">  4. Current state: one Python process on a single VM, SQLite file, no auth, no backups, about </text>
+<text x="38" y="871" fill="#7fc8f8" xml:space="preserve">3,000 links and 20,000 redirects a month. The store and redirect work and must be kept; codes are </text>
+<text x="38" y="891" fill="#7fc8f8" xml:space="preserve">random with no collision check, there is no way to edit or delete a link, and the README serve </text>
+<text x="38" y="911" fill="#7fc8f8" xml:space="preserve">command is wrong.</text>
+<text x="20" y="931" fill="#7fc8f8" xml:space="preserve">  5. Principles: redirects stay under 50 ms at p99; links shared with customers must never expose </text>
+<text x="38" y="951" fill="#7fc8f8" xml:space="preserve">internal URLs to people outside the company without an explicit public flag; we run on the </text>
+<text x="38" y="971" fill="#7fc8f8" xml:space="preserve">company Kubernetes platform and Postgres, no new vendors; two engineers, half time.</text>
+<text x="20" y="991" fill="#7fc8f8" xml:space="preserve">  6. Please propose streams from the goals.</text>
+<text x="20" y="1011" fill="#7fc8f8" xml:space="preserve">  7. Risks: SSO integration slips because the identity team is busy (likely, high impact; start the </text>
+<text x="38" y="1031" fill="#7fc8f8" xml:space="preserve">request in Q1 and ship read-only creation behind VPN meanwhile). Migration from SQLite loses </text>
+<text x="38" y="1051" fill="#7fc8f8" xml:space="preserve">links (unlikely, high impact; dual-write and compare for a month). Adoption stalls because people </text>
+<text x="38" y="1071" fill="#7fc8f8" xml:space="preserve">keep using docs bookmarks (medium, medium; browser extension and Slack unfurls).</text>
+<text x="20" y="1091" fill="#7fc8f8" xml:space="preserve">  8. Out of scope: analytics beyond click counts (product analytics owns that), custom vanity </text>
+<text x="38" y="1111" fill="#7fc8f8" xml:space="preserve">domains (next year), a public URL shortener for the internet (not our job).</text>
+<text x="20" y="1131" fill="#7fc8f8" xml:space="preserve">  &lt;/pasted_content id="aeb4"&gt;</text>
+<text x="20" y="1151" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="920" y="1178" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-28 · ponderly v1.1.0</text>
+</g>
+</svg>

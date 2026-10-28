@@ -1,0 +1,60 @@
+title: ponderly — lld
+date: 2026-10-28
+plugin: ponderly v1.1.0
+source: ponderly-demos/plan-a-year (local demo repository), session 0f811516-896e-4671-9e48-b5a845150036
+alt: Claude reports that three of the author's answers contradict the approved platform move design, on the copy order, the SQLite store's add and the rollback copy-back, offers to update that design or revert this one and recommends updating it. It names two points it wrote itself and shows the summary of lld-link-stores-and-migration.md with thirteen review findings still open, two of them blockers. The author answers that this design stands, the platform move design is updated to match on the three points, and the store-interface and linkshort-service changes land in one pull request.
+
+● Three of your answers contradict the platform move design you approved. This design follows your answers, so the two documents now disagree, and the reviewer marks it as a blocker:
+  - **Copy order.** The platform move design says the one-time copy runs "before dual-write begins". You chose dual-write first, then the copy.
+  - **The SQLite store.** The platform move design says "The SQLite store is the existing store, kept as it is". Your answer changes its `add` to take a code. The design also adds `links` and `insert_missing` to it, and opens it read-only after cutover.
+  - **Rollback.** The platform move design's rollback is pointing `go.internal` back at the VM, with SQLite read-only. Your answer adds a copy-back and makes SQLite writable again.
+
+  There are two ways to settle this:
+  - **Update the platform move design to match.** It gets a short revision, then a review, and you approve it again. This design stays as written.
+  - **Revert this design to the platform move design's order and rules.** The platform move design stays as approved.
+
+  I recommend updating the platform move design. Your answers close gaps it left open, such as how a rollback keeps the links created after cutover. Say which you want in the free text.
+
+  I wrote two points myself; your answers didn't state them:
+  - **The order of writes.** The dual-write store writes SQLite first and Postgres second, so a failed Postgres write never fails a create.
+  - **Creation times of existing links.** Copied links get the copy's time as `created_at`, since SQLite holds no creation time.
+
+  ```text
+  .ponderly/designs/linkshort-2027/platform-move/lld-link-stores-and-migration.md
+  You can open the file to read it in full before answering.
+
+  Review: 13 finding(s) still open:
+  - "dual-write goes live before the one-time copy, and the copy skips codes" (Key decisions, also Interfaces and Behaviour): This reverses the platform move design's "before dual-write begins". Should that design be updated, or this one reverted? This is a blocker.
+  - "the existing SQLite store's `add` changes its signature, and its callers" (Key decisions): The platform move design keeps the SQLite store "as it is". Should that design be updated? This is a blocker.
+  - "**Key decision: a rollback copies the links created since cutover back into SQLite and" (Key decisions): This goes beyond the platform move design's rollback. Should that design be updated?
+  - "**The one-time copy** runs off-hours." (Behaviour): Does the month and its seven-night count start when dual-write goes live or when the copy finishes? Does the 02:00 compare run before the copy finishes?
+  - "It walks both stores in code order and finds" (Behaviour): A link created mid-walk can look missing and spoil a clean night. Should the compare skip links created in the last few minutes, or take a snapshot?
+  - "It posts the night's result to the team channel." (Behaviour): Is a night clean if the compare stops because a store is unavailable, or the Slack post fails? And what happens when the webhook fails?
+  - "SQLite is then made writable again, and `go.internal` points back at the VM." (Behaviour): Who points `go.internal` back? After a rollback, does the VM run on the dual-write store or on SQLite alone? Links created on Kubernetes between the copy-back and the switch would be missed.
+  - "The network team opens the VM to the cluster for the month." (Data): A rollback copy-back needs Postgres access during the read-only month. Should the opening last until retirement?
+  - "The cutover time is recorded." (Behaviour): Where is it stored, and which clock sets it? It is compared against Postgres's insert times.
+  - "Rejected: none was put forward. psycopg 3 is the allow-listed driver." (Key decisions): Was any other driver considered, such as psycopg2 or asyncpg?
+  - "**The one-time copy runs long and holds a lock that slows redirects.**" (Risks): How likely is it, and what would it cost? The same goes for the network-opening risk.
+  - "`store-interface`: the store interface, `DuplicateCode`, the SQLite store's `add`" (Tasks): Changing `add` breaks today's `add` command and server until the linkshort service's work lands. Should the two land together?
+  - "a code missing from SQLite has no repair" (Risks): Who fixes a code that is in Postgres but not in SQLite?
+  fixed after round 2, not re-reviewed: 6
+
+  1. Responsibility: The store interface and its three implementations, the Postgres schema, the copy, the nightly compare and its repairs, the cutover steps, the copy-back and retirement. Code generation, endpoints, the deployment and owners are left to others.
+  2. Interfaces: `add(code, url)`, `resolve(code)` and `links(after, limit)` on every store. `insert_missing` on Postgres and SQLite, and `created_since` on Postgres. Five jobs: the copy, the compare, the cutover steps, retirement and the copy-back.
+  3. Data: The Postgres table `links` with code, url and created_at. SQLite stays unchanged. Credentials come from Vault on the VM and from the Kubernetes secret after cutover.
+  4. Behaviour: A sequence diagram of a dual-write create, then the six steps: go-live, copy, nightly compare, cutover, rollback and retirement.
+  5. Key decisions:
+     - "The store takes the code, and the service generates codes and retries."
+     - "Dual-write writes SQLite first and treats a Postgres failure as a logged gap."
+     - "Dual-write goes live before the one-time copy, and the copy skips codes Postgres already has."
+     - "The compare job repairs a code missing from Postgres itself, and a URL that differs is fixed by hand."
+     - "A rollback copies the links created since cutover back into SQLite and makes it writable again."
+     - "The Postgres store uses psycopg 3."
+  6. Testing: The SQLite store with paging boundaries, the Postgres store against a CI container, the dual-write store with a fake, then the copy, the compare, the cutover steps, retirement, the copy-back and store-unavailable failures.
+  7. Risks: The copy holding a lock; the network opening ending before a slipped cutover; no repair for a code missing from SQLite.
+  8. Tasks: `store-interface`, `postgres-schema`, `postgres-ci`, `postgres-store`, `dual-write-store`, `dual-write-go-live`, `one-time-copy`, `nightly-compare`, `cutover-steps`, `rollback-copy-back`, `retirement`, `store-tests`.
+  ```
+
+⏺ AskUserQuestion(questions: [{"question": "Is .ponderly/designs/linkshort-2027/platform-move/lld-link-stores-and-migration.md the design you want? In the free text, say whether to update the platform move design or revert this one, and answer any other open findings.", "header": "Approve", "multiSelect": false, "options": [{"label": "Approved", "description": "This design stands as written, still disagreeing with the platform move design until you settle that."}, {"label": "Changes needed", "description": "Revise it using your answers, then review and show it again."}]}])
+
+  The user answered: "Is .ponderly/designs/linkshort-2027/platform-move/lld-link-stores-and-migration.md the design you want? In the free text, say whether to update the platform move design or revert this one, and answer any other open findings."="This design stands. Update the platform move design to match it on the copy order, the SQLite store add signature and the rollback copy-back. The store-interface and linkshort-service changes to add land together in one pull request.". Read the answers carefully — they may request clarification, changes, or that you not proceed — and follow what they actually say.

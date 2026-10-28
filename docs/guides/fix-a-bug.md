@@ -197,19 +197,42 @@ it yourself with the ticket:
 /ponderly:pr #12
 ```
 
-On the default branch it first asks whether to create a branch. Then, because
-the fix is still uncommitted, it lists the files and stops with the header
-`Commit` and two options:
+`pr` reads the ticket, then explains each change in the branch for you to
+confirm. It puts the changes in one message, in plain prose, as numbered
+groups of files that changed together. For each group it says what changes
+for whoever uses the software, why it was made, what you take on, and only
+then how it was done. It adds what was run for it, or "not seen run", and
+one to three lines quoted from the diff or the commits. A version bump, a
+rename or a one-line configuration change gets one question instead:
+anything a reviewer should know?
+
+It ends the message with one question in prose: confirm, correct or add to
+each group's explanation. Your words replace or join its own in the
+description. Say "ask me the prompts" for a group to get five review
+questions about it instead. Then it asks once, in prose, for what the
+ticket, the diff and your answers do not cover, such as what you ran or
+anything that needs care on deploy.
+
+Then it asks the fixed choices together in one round, each only when it
+applies. On the default branch it offers to create a branch, with the header
+`Branch` and the options `Create <name>` (Recommended) and `Stop`. On
+`Stop`, it stops and says a pull request needs its own branch. Because the fix is still uncommitted, it lists the files and asks,
+with the header `Commit`:
 
 - **Commit after the walkthrough (Recommended)**: the files are committed
-  after the walkthrough, with a message drafted from your words.
+  after you approve the draft, with a message drafted from your words.
 - **Leave them out**: the files are not in the pull request.
 
-It walks the branch's changes with you, drafts the title and description,
-and asks for your approval of the draft, with the header `Approve` and the
-options `Approved` and `Changes needed`. On `Approved`, it commits the files
-if you chose to, pushes the branch, opens the pull request with `gh`, and
-shows you its URL.
+When the ticket is a GitHub issue and the repository's pull request
+template has a `Closes #<number>` convention, it asks, with the header
+`Closes`, whether merging finishes the issue: `Merging finishes it` or
+`Only related`. Last it asks, with the header `Draft`, how the PR opens:
+`Ready for review` or `Draft`.
+
+Then it drafts the title and description and asks for your approval of the
+draft, with the header `Approve` and the options `Approved` and `Changes
+needed`. On `Approved`, it commits the files if you chose to, pushes the
+branch, opens the pull request with `gh`, and shows you its URL.
 
 ## Next
 

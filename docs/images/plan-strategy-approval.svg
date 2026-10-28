@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1252" viewBox="0 0 940 1252" role="img">
+<title>Claude shows the summary of the strategy at .ponderly/strategies/linkshort-2027.md: eight review findings still open, each quoting the line it is about, then one line per section from horizon to the three high level designs platform-move, identity-and-ownership and adoption, and a note that Claude proposed the streams. It asks whether this is the strategy the author wants, with Approved and Changes needed, and the author picks Approved.</title>
+<rect width="940" height="1252" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — strategy</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● ```text</text>
+<text x="20" y="91" fill="#e6e6e6" xml:space="preserve">  .ponderly/strategies/linkshort-2027.md</text>
+<text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  You can open the file to read it in full before answering.</text>
+<text x="20" y="131" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="151" fill="#e6e6e6" xml:space="preserve">  Review: 8 finding(s) still open:</text>
+<text x="20" y="171" fill="#e6e6e6" xml:space="preserve">  - "The store and the redirect work and must be kept." (Current state): Does "the store" mean the </text>
+<text x="38" y="191" fill="#e6e6e6" xml:space="preserve">stored links? The platform move retires the SQLite file, so the sentence contradicts the plan if </text>
+<text x="38" y="211" fill="#e6e6e6" xml:space="preserve">it means the file.</text>
+<text x="20" y="231" fill="#e6e6e6" xml:space="preserve">  - "Worth: third." (Goals): Why does ownership matter? The goal gives its rank but no reason, so a </text>
+<text x="38" y="251" fill="#e6e6e6" xml:space="preserve">reader can't weigh it against the other two.</text>
+<text x="20" y="271" fill="#e6e6e6" xml:space="preserve">  - "99.9% of redirects succeed each month" (Goals): Does a redirect to a deleted link, or one </text>
+<text x="38" y="291" fill="#e6e6e6" xml:space="preserve">refused because the link isn't public, count as a failure?</text>
+<text x="20" y="311" fill="#e6e6e6" xml:space="preserve">  - "20,000 redirects a month" (Current state): Do you have today's figures for redirect success </text>
+<text x="38" y="331" fill="#e6e6e6" xml:space="preserve">rate, p99 latency and weekly creators? Without them a reader can't see the gap each goal closes.</text>
+<text x="20" y="351" fill="#e6e6e6" xml:space="preserve">  - "Meanwhile, read-only creation ships behind the VPN." (Risks): What ships if SSO slips, and </text>
+<text x="38" y="371" fill="#e6e6e6" xml:space="preserve">which stream builds it? "Read-only creation" contradicts itself.</text>
+<text x="20" y="391" fill="#e6e6e6" xml:space="preserve">  - "Q1 to Q2; the other streams build on" (Streams of work): The streams run one after another, so </text>
+<text x="38" y="411" fill="#e6e6e6" xml:space="preserve">an overrun in the platform move delays everything after it, including the Q4 adoption target. </text>
+<text x="38" y="431" fill="#e6e6e6" xml:space="preserve">Should this be a risk? If so, how likely is it and what is the response?</text>
+<text x="20" y="451" fill="#e6e6e6" xml:space="preserve">  - "Analytics beyond click counts: product analytics owns that." (Out of scope): Does linkshort </text>
+<text x="38" y="471" fill="#e6e6e6" xml:space="preserve">count clicks today? Is click counting planned for 2027?</text>
+<text x="20" y="491" fill="#e6e6e6" xml:space="preserve">  - "Custom vanity domains: deferred to next year." (Out of scope): Does "next year" mean 2028?</text>
+<text x="20" y="511" fill="#e6e6e6" xml:space="preserve">  fixed after round 2, not re-reviewed: 1</text>
+<text x="20" y="531" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="551" fill="#e6e6e6" xml:space="preserve">  1. Introduction and horizon: Linkshort grows from about 40 engineers using it for runbook and </text>
+<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">dashboard links to around 600 people company-wide, including support and sales. January to </text>
+<text x="38" y="591" fill="#e6e6e6" xml:space="preserve">December 2027, reviewed quarterly.</text>
+<text x="20" y="611" fill="#e6e6e6" xml:space="preserve">  2. Goals: Company-wide adoption (400 weekly active creators by Q4, ranked first); links never </text>
+<text x="38" y="631" fill="#e6e6e6" xml:space="preserve">break (99.9% of redirects succeed each month); owners can see and fix their links (zero ownerless </text>
+<text x="38" y="651" fill="#e6e6e6" xml:space="preserve">links at Q4).</text>
+<text x="20" y="671" fill="#e6e6e6" xml:space="preserve">  3. Current state: One Python process on a VM with SQLite, no auth, no backups, about 3,000 links </text>
+<text x="38" y="691" fill="#e6e6e6" xml:space="preserve">and 20,000 redirects a month. Five shortfalls are listed: no collision check, no edit or delete, </text>
+<text x="38" y="711" fill="#e6e6e6" xml:space="preserve">no owners, no public flag, and the README's serve command is wrong.</text>
+<text x="20" y="731" fill="#e6e6e6" xml:space="preserve">  4. Principles and constraints: Redirects stay under 50 ms at p99. No internal URL is exposed </text>
+<text x="38" y="751" fill="#e6e6e6" xml:space="preserve">outside the company without the public flag. Linkshort runs on the company Kubernetes platform </text>
+<text x="38" y="771" fill="#e6e6e6" xml:space="preserve">and Postgres, with no new vendors. Two half-time engineers, so streams run one after another.</text>
+<text x="20" y="791" fill="#e6e6e6" xml:space="preserve">  5. Streams of work: Platform move (Q1–Q2), then Identity and ownership (SSO requested in Q1, </text>
+<text x="38" y="811" fill="#e6e6e6" xml:space="preserve">built Q2–Q3), then Adoption (Q3–Q4).</text>
+<text x="20" y="831" fill="#e6e6e6" xml:space="preserve">  6. Risks: The SSO integration slips; the migration from SQLite loses links; adoption stalls </text>
+<text x="38" y="851" fill="#e6e6e6" xml:space="preserve">because people keep using docs bookmarks.</text>
+<text x="20" y="871" fill="#e6e6e6" xml:space="preserve">  7. Out of scope: Analytics beyond click counts, custom vanity domains, and a public URL shortener </text>
+<text x="38" y="891" fill="#e6e6e6" xml:space="preserve">for the internet.</text>
+<text x="20" y="911" fill="#e6e6e6" xml:space="preserve">  8. High level designs: `platform-move`, `identity-and-ownership`, `adoption`.</text>
+<text x="20" y="931" fill="#e6e6e6" xml:space="preserve">  ```</text>
+<text x="20" y="951" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="971" fill="#e6e6e6" xml:space="preserve">  I proposed the three streams from your goals; you didn't name them. Each figure in the document </text>
+<text x="38" y="991" fill="#e6e6e6" xml:space="preserve">is marked as yours, since you gave them in your answers.</text>
+<text x="20" y="1011" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1031" fill="#a6e3a1" xml:space="preserve">⏺ AskUserQuestion(questions: [{"question": "Is .ponderly/strategies/linkshort-2027.md the strategy </text>
+<text x="38" y="1051" fill="#a6e3a1" xml:space="preserve">you want? Put any answers to the open findings, or anything missing or wrong, in the free text.", </text>
+<text x="38" y="1071" fill="#a6e3a1" xml:space="preserve">"header": "Approve", "multiSelect": false, "options": [{"label": "Approved", "description": "The </text>
+<text x="38" y="1091" fill="#a6e3a1" xml:space="preserve">document stands as written; move on to the high level designs."}, {"label": "Changes needed", </text>
+<text x="38" y="1111" fill="#a6e3a1" xml:space="preserve">"description": "Revise the document using your answers or corrections, then review and show it </text>
+<text x="38" y="1131" fill="#a6e3a1" xml:space="preserve">again."}]}])</text>
+<text x="20" y="1151" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="1171" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "Is .ponderly/strategies/linkshort-2027.md the strategy you </text>
+<text x="38" y="1191" fill="#a6e3a1" xml:space="preserve">want? Put any answers to the open findings, or anything missing or wrong, in the free </text>
+<text x="38" y="1211" fill="#a6e3a1" xml:space="preserve">text."="Approved". You can now continue with these answers in mind.</text>
+<text x="920" y="1238" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-28 · ponderly v1.1.0</text>
+</g>
+</svg>

@@ -1,6 +1,6 @@
 ---
 name: task-executor
-description: Builds one well-specified change, from a spec task or a single change you describe, as the smallest change in the project's style, proves it, and returns a fixed-shape summary. Use it directly for a contained task; start-task launches it for one contained change on its executor route, and implement-spec for every leaf task of a spec.
+description: Builds one well-specified change, from a spec task or a single change you describe, as the smallest change in the project's style, proves it, and returns a fixed-shape summary. Use it directly for a contained task; start-task launches it for one contained change on its executor route, implement-spec for every leaf task of a spec, and readable-code and tighten-tests for each group of like files they change.
 tools: Read, Glob, Grep, Edit, Write, Bash, LSP
 model: opus
 effort: medium

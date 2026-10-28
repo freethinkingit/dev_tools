@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1512" viewBox="0 0 940 1512" role="img">
+<title>Claude runs the lld skill for link-stores-and-migration, lists what it takes from the platform move design and what it found in the code, such as LinkStore's add and resolve and the project having no dependencies, then asks ten questions, several of them findings the high level design left open: the Postgres driver, the schema, the store interface and collision retry, the order of the copy and dual-write, repairing a mismatch, rollback, the compare job on the VM, retiring SQLite, testing and risks. The author pastes one numbered answer per question.</title>
+<rect width="940" height="1512" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="36" rx="8" fill="#2a2a3c"/>
+<rect y="28" width="940" height="8" fill="#2a2a3c"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — lld</text>
+<text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● Name: `link-stores-and-migration`. The document will be written to </text>
+<text x="38" y="91" fill="#e6e6e6" xml:space="preserve">`.ponderly/designs/linkshort-2027/platform-move/lld-link-stores-and-migration.md`. It takes the </text>
+<text x="38" y="111" fill="#e6e6e6" xml:space="preserve">platform move design's `link-stores-and-migration` candidate:</text>
+<text x="20" y="131" fill="#e6e6e6" xml:space="preserve">  - the Postgres schema</text>
+<text x="20" y="151" fill="#e6e6e6" xml:space="preserve">  - the store interface with its SQLite, Postgres and dual-write implementations</text>
+<text x="20" y="171" fill="#e6e6e6" xml:space="preserve">  - the one-time copy and the nightly compare job</text>
+<text x="20" y="191" fill="#e6e6e6" xml:space="preserve">  - cutover, rollback, and retiring SQLite and the VM</text>
+<text x="20" y="211" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="231" fill="#e6e6e6" xml:space="preserve">  **From the code:**</text>
+<text x="20" y="251" fill="#e6e6e6" xml:space="preserve">  - `LinkStore` in `linkshort/store.py` has `add(url)`, which returns the code, and </text>
+<text x="38" y="271" fill="#e6e6e6" xml:space="preserve">`resolve(code)`, which returns the URL or `None`.</text>
+<text x="20" y="291" fill="#e6e6e6" xml:space="preserve">  - Its SQLite table is `links (code TEXT PRIMARY KEY, url TEXT NOT NULL)`.</text>
+<text x="20" y="311" fill="#e6e6e6" xml:space="preserve">  - `add` makes one attempt, and a colliding code raises an integrity error.</text>
+<text x="20" y="331" fill="#e6e6e6" xml:space="preserve">  - The project has no dependencies, and its tests use `unittest` against an in-memory SQLite.</text>
+<text x="20" y="351" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="371" fill="#e6e6e6" xml:space="preserve">  **From the high level design:** the dual-write rules, the seven-clean-nights gate at the end of </text>
+<text x="38" y="391" fill="#e6e6e6" xml:space="preserve">the full month, the mismatch definition, the three collision retries, and SQLite kept read-only </text>
+<text x="38" y="411" fill="#e6e6e6" xml:space="preserve">for a month after cutover.</text>
+<text x="20" y="431" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="451" fill="#e6e6e6" xml:space="preserve">  Please answer these in one reply. Several are findings the high level design left open, and they </text>
+<text x="38" y="471" fill="#e6e6e6" xml:space="preserve">land in this design:</text>
+<text x="20" y="491" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="511" fill="#e6e6e6" xml:space="preserve">  1. **Postgres driver.** Linkshort has no dependencies today, and the team rule is to ask before </text>
+<text x="38" y="531" fill="#e6e6e6" xml:space="preserve">adding one. Which driver should the Postgres store use? Is it on the platform allow-list?</text>
+<text x="20" y="551" fill="#e6e6e6" xml:space="preserve">  2. **Schema.** Should Postgres hold exactly `code` and `url`, or also a creation time? The </text>
+<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">identity stream will add owners later; should this design leave room for them, or leave them </text>
+<text x="38" y="591" fill="#e6e6e6" xml:space="preserve">entirely to that stream?</text>
+<text x="20" y="611" fill="#e6e6e6" xml:space="preserve">  3. **The store interface and the collision retry.** Should the store's `add` take a code and fail </text>
+<text x="38" y="631" fill="#e6e6e6" xml:space="preserve">on a duplicate, with the service doing the three retries? Or should the store generate the code </text>
+<text x="38" y="651" fill="#e6e6e6" xml:space="preserve">and retry itself?</text>
+<text x="20" y="671" fill="#e6e6e6" xml:space="preserve">  4. **The copy and the switch of `add`.** Which comes first: dual-write going live, or the </text>
+<text x="38" y="691" fill="#e6e6e6" xml:space="preserve">one-time copy? If dual-write starts first, the copy has to skip codes Postgres already has. If </text>
+<text x="38" y="711" fill="#e6e6e6" xml:space="preserve">the copy goes first, creates must pause between the two.</text>
+<text x="20" y="731" fill="#e6e6e6" xml:space="preserve">  5. **Repairing a mismatch.** Who repairs a code the nightly compare reports, and how? For </text>
+<text x="38" y="751" fill="#e6e6e6" xml:space="preserve">example, the compare job could copy a code missing from Postgres from SQLite automatically, or a </text>
+<text x="38" y="771" fill="#e6e6e6" xml:space="preserve">person could fix it by hand. Does a repaired mismatch still count against the seven clean nights?</text>
+<text x="20" y="791" fill="#e6e6e6" xml:space="preserve">  6. **Rollback.** If you roll back after cutover, should the links created in Postgres since </text>
+<text x="38" y="811" fill="#e6e6e6" xml:space="preserve">cutover be copied back into SQLite, with SQLite made writable again? Or is losing them accepted?</text>
+<text x="20" y="831" fill="#e6e6e6" xml:space="preserve">  7. **The compare job on the VM.**</text>
+<text x="20" y="851" fill="#e6e6e6" xml:space="preserve">     - How does it run: cron on the VM?</text>
+<text x="20" y="871" fill="#e6e6e6" xml:space="preserve">     - How does it post to the team channel, for example through a Slack webhook?</text>
+<text x="20" y="891" fill="#e6e6e6" xml:space="preserve">     - How do the VM's service, the copy and the compare job get the Postgres credentials and </text>
+<text x="38" y="911" fill="#e6e6e6" xml:space="preserve">network access?</text>
+<text x="20" y="931" fill="#e6e6e6" xml:space="preserve">  8. **Retiring SQLite.** At the end of the read-only month, what happens to the SQLite file and </text>
+<text x="38" y="951" fill="#e6e6e6" xml:space="preserve">the VM: archived, deleted, or handed back?</text>
+<text x="20" y="971" fill="#e6e6e6" xml:space="preserve">  9. **Testing.** Should the Postgres store be tested against a real Postgres, in a container or a </text>
+<text x="38" y="991" fill="#e6e6e6" xml:space="preserve">test database, or against a fake? Is there one available to CI?</text>
+<text x="20" y="1011" fill="#e6e6e6" xml:space="preserve">  10. **Risks.** Anything you foresee for the stores or the migration beyond what the high level </text>
+<text x="38" y="1031" fill="#e6e6e6" xml:space="preserve">design names?</text>
+<text x="20" y="1051" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1071" fill="#7fc8f8" xml:space="preserve">&gt; </text>
+<text x="20" y="1091" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="20" y="1111" fill="#7fc8f8" xml:space="preserve">  &lt;pasted_content id="aeb4"&gt;</text>
+<text x="20" y="1131" fill="#7fc8f8" xml:space="preserve">  1. psycopg 3; it is on the platform allow-list. Adding it is approved.</text>
+<text x="20" y="1151" fill="#7fc8f8" xml:space="preserve">  2. code, url and a created_at timestamp. Leave owners entirely to the identity stream.</text>
+<text x="20" y="1171" fill="#7fc8f8" xml:space="preserve">  3. The store add takes a code and raises on a duplicate; the service generates codes and does the </text>
+<text x="38" y="1191" fill="#7fc8f8" xml:space="preserve">three retries.</text>
+<text x="20" y="1211" fill="#7fc8f8" xml:space="preserve">  4. Dual-write goes live first, then the one-time copy, which skips codes Postgres already has.</text>
+<text x="20" y="1231" fill="#7fc8f8" xml:space="preserve">  5. The compare job copies a code missing from Postgres from SQLite automatically and reports it; </text>
+<text x="38" y="1251" fill="#7fc8f8" xml:space="preserve">a URL that differs is fixed by hand by whoever is on call. A night with any repair is not clean.</text>
+<text x="20" y="1271" fill="#7fc8f8" xml:space="preserve">  6. Copy the links created since cutover back into SQLite and make it writable again.</text>
+<text x="20" y="1291" fill="#7fc8f8" xml:space="preserve">  7. Cron on the VM at 02:00; it posts through the team Slack webhook. The VM gets the Postgres </text>
+<text x="38" y="1311" fill="#7fc8f8" xml:space="preserve">credentials from the company Vault agent already on it, and the network team opens the VM to the </text>
+<text x="38" y="1331" fill="#7fc8f8" xml:space="preserve">cluster for the month.</text>
+<text x="20" y="1351" fill="#7fc8f8" xml:space="preserve">  8. Archive the SQLite file to the backup bucket for a year, then hand the VM back.</text>
+<text x="20" y="1371" fill="#7fc8f8" xml:space="preserve">  9. A real Postgres in a container in CI, which the platform CI already offers; the SQLite store </text>
+<text x="38" y="1391" fill="#7fc8f8" xml:space="preserve">keeps its in-memory tests.</text>
+<text x="20" y="1411" fill="#7fc8f8" xml:space="preserve">  10. The one-time copy could run long and hold a lock that slows redirects; run it in batches of </text>
+<text x="38" y="1431" fill="#7fc8f8" xml:space="preserve">500 off-hours.</text>
+<text x="20" y="1451" fill="#7fc8f8" xml:space="preserve">  &lt;/pasted_content id="aeb4"&gt;</text>
+<text x="20" y="1471" fill="#7fc8f8" xml:space="preserve"></text>
+<text x="920" y="1498" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-28 · ponderly v1.1.0</text>
+</g>
+</svg>
