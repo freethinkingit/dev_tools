@@ -9,7 +9,7 @@ skill in its handback shape: Problems first, or `No problems.`, then Done.
 ## What the scaffold builds
 
 A small Python package on branch `calc-subtract` with a committed spec under
-`.freethinking/specs/calc-subtract/`: two tasks in two waves (add `subtract`, then
+`.ponderly/specs/calc-subtract/`: two tasks in two waves (add `subtract`, then
 test it). The package is `evals/fixtures/calc/`, built by
 `evals/fixtures/setup.sh`; the spec is this case's `files/` folder, copied in
 before that script's one commit. Tests run with `python3 -m unittest`. `bin/`
@@ -19,7 +19,7 @@ puts `bin` on the PATH and grants Bash, Write and Edit.
 
 The prompt gives the start answers up front (wave cadence, no optional tests,
 already on a branch), since nothing can answer mid-run. implement-spec's step 6
-writes the hand-back by invoking the Skill tool with `freethinking:report` and
+writes the hand-back by invoking the Skill tool with `ponderly:report` and
 `handback` in the session itself, which is what the `invokes-report` and
 `problems-first` graders read.
 
@@ -31,7 +31,7 @@ writes the hand-back by invoking the Skill tool with `freethinking:report` and
 - `adds-subtract`: `calc/ops.py` contains the function task 1 describes.
 - `leaves-wave-1`: `tests/test_ops.py` gained no `test_subtract`, so wave 1 was
   not started.
-- `ticks-task-1`: `.freethinking/specs/calc-subtract/tasks.md` has `- [x] 1.`,
+- `ticks-task-1`: `.ponderly/specs/calc-subtract/tasks.md` has `- [x] 1.`,
   so the tick landed after the wave review.
 - `leaves-task-2-unticked`: the same file still has `- [ ] 2.`, so wave 1 was
   not ticked either.

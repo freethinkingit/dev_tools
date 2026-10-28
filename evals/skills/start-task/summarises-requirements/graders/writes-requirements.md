@@ -1,5 +1,5 @@
 ---
 type: file_exists
-path: '.freethinking/specs/*/requirements.md'
+path: '.ponderly/specs/*/requirements.md'
 exists: true
 ---

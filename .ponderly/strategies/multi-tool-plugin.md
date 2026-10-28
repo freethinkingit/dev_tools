@@ -2,7 +2,7 @@
 
 ## Introduction and horizon
 
-The freethinking plugin gives engineers a disciplined way to work: specs approved before code, bugs reproduced before fixes, tests with each change, and team rules in every session. Today it runs only in Claude Code. This strategy takes it to every coding agent its author and the engineers who use it work in, starting with Cursor and Codex, from one canonical source compiled into each agent's own format, rather than a copy per tool. It serves three people named in the spike, freethinkingit/dev_tools#61:
+The ponderly plugin gives engineers a disciplined way to work: specs approved before code, bugs reproduced before fixes, tests with each change, and team rules in every session. Today it runs only in Claude Code. This strategy takes it to every coding agent its author and the engineers who use it work in, starting with Cursor and Codex, from one canonical source compiled into each agent's own format, rather than a copy per tool. It serves three people named in the spike, sabind/ponderly#61:
 - the operator, an engineer who moves between agents;
 - the user, who uses the software the operator builds;
 - the owner, who maintains the plugin.
@@ -28,7 +28,7 @@ Other gaps, such as a question tool that does not block, are recorded and do not
 
 ## Current state
 
-The plugin is at version 0.16.0. It holds, in `plugins/freethinking/`:
+The plugin is at version 0.16.0. It holds, in `plugins/ponderly/`:
 - eight skills;
 - three agents, `task-executor`, `wave-reviewer` and `document-reviewer`;
 - five rule files, loaded into every session and sub-agent by a session-start hook and a sub-agent-start hook;
@@ -54,7 +54,7 @@ AWS's [agent-toolkit-for-aws](https://github.com/aws/agent-toolkit-for-aws) is t
 
 It keeps hooks and agents Claude-only, leaves Claude-only syntax in its shared skill text, and gives Kiro a skills-only install. It also ships a Devin manifest, so Devin has a plugin format too, and it serves skills on demand from an MCP server through a `retrieve_skill` tool.
 
-The author's dansabin project, a separate repository of theirs, has a Gherkin harness, `@freethinkingit/gherkin-harness`: it runs Cucumber Features through a library of ready-made steps for HTTP, browser, command and data checks, and records what each step did. It is TypeScript on Node, and it has no steps for driving a coding agent or reading its output.
+The author's dansabin project, a separate repository of theirs, has a Gherkin harness, `@sabind/gherkin-harness`: it runs Cucumber Features through a library of ready-made steps for HTTP, browser, command and data checks, and records what each step did. It is TypeScript on Node, and it has no steps for driving a coding agent or reading its output.
 
 ## Principles and constraints
 
@@ -69,7 +69,7 @@ The author's dansabin project, a separate repository of theirs, has a Gherkin ha
 
 ## Streams of work
 
-1. **Canonical source and the Claude Code target.** Moves the skills, rules and agents into the canonical folder, defines the neutral markers, and builds the compiler with its freshness and completeness check. Its first target is Claude Code: the generated output must match today's `plugins/freethinking/` byte for byte, so the migration changes no behaviour. Serves goals 1, 2 and 3. First; every stream but the format watch builds on it.
+1. **Canonical source and the Claude Code target.** Moves the skills, rules and agents into the canonical folder, defines the neutral markers, and builds the compiler with its freshness and completeness check. Its first target is Claude Code: the generated output must match today's `plugins/ponderly/` byte for byte, so the migration changes no behaviour. Serves goals 1, 2 and 3. First; every stream but the format watch builds on it.
 2. **Agent targets.** Adds one target folder per agent, one at a time. Each holds that agent's generator, manifest, hook format and install path. Cursor and Codex come first, then Kiro, then other agents as they gain a format, Devin among them, since it already has one. Serves goals 1, 2 and 3. Starts once the Claude Code target reproduces today's plugin.
 3. **Cross-agent evals.** The shared scenarios and one harness that runs them against every agent, checking the final result and the events along the way, scored against Claude Code's results. It weighs the author's Gherkin harness against extending this repository's own tooling. An agent target is done when its scenarios show the plugin's skills, sub-agents and rules working in that agent. Serves goals 1 and 2. Runs alongside the agent targets stream: the scenarios for a target are written before or with that target.
 4. **Format watch.** Rebuilds the spike's test plugin in the repository from its description in #61's result comment. Then a weekly automation re-runs its three probe prompts in every installed agent and reports what each supports and what changed since the week before. The automation runs in Superset, the author's agent workspace, which schedules agent tasks. Serves goals 2 and 4. Can start now.
@@ -86,7 +86,7 @@ The author's dansabin project, a separate repository of theirs, has a Gherkin ha
 - **A format changes under a shipped destination.** Likely: Cursor's CLI started running plugin hooks in August 2026, according to its changelog. Kiro moved its powers, its package format, to the open Agent Plugins format in August 2026, according to Kiro's blog; a power still carries only skills and MCP servers. Kiro's changelog says its V3 engine becomes the default at the end of October 2026. Costly when an operator meets it first. The weekly format watch is there to see it first.
 - **The markers grow into a programming language.** Each agent's difference tempts a new marker, until the canonical source is harder to read than any one agent's text. Moderate likelihood, costly to unwind. Markers are added only for a difference the spike or the weekly report has measured, and the canonical source design sets how few markers there are.
 - **Every change goes through a build.** Editing a skill means editing the canonical source and building, even for Claude Code. Certain, and a small cost on every edit. The freshness check in CI catches a forgotten build, and `make build` is one command.
-- **The migration changes Claude Code's behaviour.** Moving the plugin into the canonical source could alter the text Claude Code reads. Possible, and costly to the benchmark. The Claude Code target must reproduce today's `plugins/freethinking/` byte for byte before any other target is added.
+- **The migration changes Claude Code's behaviour.** Moving the plugin into the canonical source could alter the text Claude Code reads. Possible, and costly to the benchmark. The Claude Code target must reproduce today's `plugins/ponderly/` byte for byte before any other target is added.
 - **The plugin's approval gates do not hold in some tools.** None of the three has a blocking question tool in its normal mode. Cursor's does not block, so a skill can carry on before the author approves. Codex's question tool exists only in its plan mode, which the plugin's skills do not run in. Kiro has none. Certain today. A gate that does not hold is recorded as a gap in that tool's evals, not hidden by glue, because no glue can make a tool wait for an answer it does not wait for.
 - **Eval costs multiply by the number of tools.** Each destination adds its own runs and a paid account for that tool, and the weekly format watch spends tokens in every installed agent each week. Certain, and a moderate cost. The shared cases start from the spike's three probe prompts; the cross-agent evals issue, #65, settles which of the existing cases under `evals/` join them. A tool's own cases are added only when a problem in that tool needs one.
 - **The MCP server becomes a service to run.** An AWS-hosted server needs authentication and uptime, and every session depends on the network. A single maintainer then carries that alone. Moderate likelihood if hosting is chosen. The MCP design weighs a local server against a hosted one before anything is built.

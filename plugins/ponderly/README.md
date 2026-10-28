@@ -9,8 +9,8 @@ available in every repo you work in.
 You need [Claude Code](https://claude.com/claude-code). From any terminal:
 
 ```bash
-claude plugin marketplace add freethinkingit/dev_tools
-claude plugin install freethinking@freethinkingit
+claude plugin marketplace add sabind/ponderly
+claude plugin install ponderly@sabind
 ```
 
 The plugin loads the next time you start Claude Code. In a session that is
@@ -21,34 +21,29 @@ already open, run `/reload-plugins`.
 Auto-update is off by default for team marketplaces. Turn it on once:
 
 1. Run `/plugin` in a Claude Code session.
-2. Open the **Marketplaces** tab and select `freethinkingit`.
+2. Open the **Marketplaces** tab and select `sabind`.
 3. Select **Enable auto-update**.
 
 To update by hand:
 
 ```bash
-claude plugin update freethinking@freethinkingit
+claude plugin update ponderly@sabind
 ```
-
-Specs moved from `.claude/specs/` to `.freethinking/specs/` in 0.14.0. In a
-repository with specs under the old folder, run
-`git mv .claude/specs .freethinking/specs` once: `start-task` and
-`implement-spec` look only in the new folder.
 
 ## Skills
 
 | Skill | Run it with | What it does |
 | ----- | ----------- | ------------ |
-| `start-task` | `/freethinking:start-task <task>`, or ask Claude to change something, or to start or spec a task | The front door for any change: reads the code the request touches, then sends one contained change to the `task-executor` agent, a defect to `bugfix` and everything else to a spec, asking you before taking either of the first two. On the spec route, writes `requirements.md`, `design.md` and `tasks.md` in `.freethinking/specs/<task>/` before any code, following the team template, showing you each document as its path and a short summary and asking you to approve it before the next. |
-| `strategy` | `/freethinking:strategy [name or description]`, or ask Claude to plan a year or a roadmap, or to write a tech strategy | Reads the strategies already under `.freethinking/strategies/`, asks you one round of questions in prose, and writes `.freethinking/strategies/<name>.md` from its template. Needs no source code, so it works in a docs repository. The `document-reviewer` agent reads the draft for up to two rounds before you see it; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the candidate high level designs, one per stream of work, and hands off to `hld` for each. |
-| `hld` | `/freethinking:hld <strategy-path> <candidate>`, or ask Claude to design a system or a service, or to write a high level design | Reads the strategy in full, asks you one round of questions in prose, and writes `.freethinking/designs/<strategy-name>/<hld-name>/hld-<hld-name>.md` from its template, with a Mermaid diagram of the components. The `document-reviewer` agent reads the draft against the template and the strategy for up to two rounds; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the candidate low level designs, one per component, and hands off to `lld` for each. |
-| `lld` | `/freethinking:lld <hld-path> <candidate>`, or ask Claude to design a component or a module, or to write a low level design | Reads the high level design and the code the component touches, asks you one round of questions in prose, and writes `lld-<name>.md` in the high level design's folder, in this repository, from its template. The `document-reviewer` agent reads the draft against the template and the high level design for up to two rounds; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the tasks, each sized for one run of `start-task`, which it hands off to. |
-| `implement-spec` | `/freethinking:implement-spec [task] [task\|wave\|spec]`, or ask Claude to implement, build or continue a spec | Builds a task from its approved spec, wave by wave from `tasks.md`, each leaf task in its own sub-agent, ticking a task only once its tests pass, running the full suite at the end of every wave, and handing back to you after each task, after each wave, or only once every wave is done (with a short report after each wave and a final review of the whole run), whichever you chose. Each discovery outside the task in hand is listed with its size and the choice between a task and an issue. Pauses with a proposal when the design cannot be followed, and hands off to `pr` when the spec is done. |
-| `bugfix` | `/freethinking:bugfix <ticket> [what you already know]`, or ask Claude to fix a bug | Reads the ticket, and anything you already know that you put after it, reproduces the bug before touching code, confirms the root cause with you, fixes the cause with a regression test, verifies the fix, then hands off to `pr` or leaves its findings on the ticket. |
-| `readable-code` | `/freethinking:readable-code [paths]`, or ask Claude to make a branch readable or to simplify the code it changes | Makes the source files a branch changes against its target branch read plainly, narrowed to the paths you pass, with no behaviour change and no rename for taste. Records the full suite's result, and the synthesized output where the branch holds infrastructure code, has you approve groups of like files and the decisions they share, launches one `task-executor` agent per group to apply the readability and comment rules, then runs the suite and the synthesis again, names any file whose change made a difference and asks you whether to revert or keep it. The `wave-reviewer` agent reads the pass and the executors fix what it finds. Commits nothing, and hands off to `tighten-tests` or `pr`. |
-| `tighten-tests` | `/freethinking:tighten-tests [paths]`, or ask Claude to slim, tighten or audit a branch's tests | Asks, before it takes its baseline, whether `readable-code` has run on the final code. Audits every test the branch adds or changes with a keep, merge or drop verdict you approve, keeping the tests you or a requirement name, applies the verdicts with one executor per group of like test files without changing a source file, and proves the smaller suite no weaker by comparing line coverage and by breaking the source on purpose to see the right tests fail. The `wave-reviewer` agent checks that every requirement still has a test that proves it. Commits nothing, and offers to file each gap it found as an issue. |
-| `pr`  | `/freethinking:pr [ticket] [base-branch]`, or ask Claude to open a PR | Takes the ticket as its first argument and reads it, then walks the branch's changes with you: it explains each change as the user and the owner experience it and asks you to confirm or correct each explanation. A branch built from a ticked spec is drafted from the spec and its implementation reports instead, a mechanical change such as a version bump gets one question, and nothing you have already answered is asked again. After the walkthrough it puts its fixed choices in one call: to create the branch and to commit when needed, whether merging closes the ticket, and whether the PR is a draft. Drafts the title and description from the explanations as you confirmed them, or from the spec, and opens or updates the PR with `gh` once you approve. Needs the `gh` CLI signed in. |
-| `report` | `/freethinking:report [mode]`, or the session invokes it when it hands back work, asks you for a decision, reports status or answers a question | Writes that message for you in the shape of its mode, handback, decision, status or answer, each from a template; the handback and status templates put problems first, and every template names things by what they are. A repository can replace a template under `.freethinking/report/`. The skill edits nothing. |
+| `start-task` | `/ponderly:start-task <task>`, or ask Claude to change something, or to start or spec a task | The front door for any change: reads the code the request touches, then sends one contained change to the `task-executor` agent, a defect to `bugfix` and everything else to a spec, asking you before taking either of the first two. On the spec route, writes `requirements.md`, `design.md` and `tasks.md` in `.ponderly/specs/<task>/` before any code, following the team template, showing you each document as its path and a short summary and asking you to approve it before the next. |
+| `strategy` | `/ponderly:strategy [name or description]`, or ask Claude to plan a year or a roadmap, or to write a tech strategy | Reads the strategies already under `.ponderly/strategies/`, asks you one round of questions in prose, and writes `.ponderly/strategies/<name>.md` from its template. Needs no source code, so it works in a docs repository. The `document-reviewer` agent reads the draft for up to two rounds before you see it; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the candidate high level designs, one per stream of work, and hands off to `hld` for each. |
+| `hld` | `/ponderly:hld <strategy-path> <candidate>`, or ask Claude to design a system or a service, or to write a high level design | Reads the strategy in full, asks you one round of questions in prose, and writes `.ponderly/designs/<strategy-name>/<hld-name>/hld-<hld-name>.md` from its template, with a Mermaid diagram of the components. The `document-reviewer` agent reads the draft against the template and the strategy for up to two rounds; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the candidate low level designs, one per component, and hands off to `lld` for each. |
+| `lld` | `/ponderly:lld <hld-path> <candidate>`, or ask Claude to design a component or a module, or to write a low level design | Reads the high level design and the code the component touches, asks you one round of questions in prose, and writes `lld-<name>.md` in the high level design's folder, in this repository, from its template. The `document-reviewer` agent reads the draft against the template and the high level design for up to two rounds; the skill shows you the path and a summary, open findings first, and asks you to approve it. Ends with the tasks, each sized for one run of `start-task`, which it hands off to. |
+| `implement-spec` | `/ponderly:implement-spec [task] [task\|wave\|spec]`, or ask Claude to implement, build or continue a spec | Builds a task from its approved spec, wave by wave from `tasks.md`, each leaf task in its own sub-agent, ticking a task only once its tests pass, running the full suite at the end of every wave, and handing back to you after each task, after each wave, or only once every wave is done (with a short report after each wave and a final review of the whole run), whichever you chose. Each discovery outside the task in hand is listed with its size and the choice between a task and an issue. Pauses with a proposal when the design cannot be followed, and hands off to `pr` when the spec is done. |
+| `bugfix` | `/ponderly:bugfix <ticket> [what you already know]`, or ask Claude to fix a bug | Reads the ticket, and anything you already know that you put after it, reproduces the bug before touching code, confirms the root cause with you, fixes the cause with a regression test, verifies the fix, then hands off to `pr` or leaves its findings on the ticket. |
+| `readable-code` | `/ponderly:readable-code [paths]`, or ask Claude to make a branch readable or to simplify the code it changes | Makes the source files a branch changes against its target branch read plainly, narrowed to the paths you pass, with no behaviour change and no rename for taste. Records the full suite's result, and the synthesized output where the branch holds infrastructure code, has you approve groups of like files and the decisions they share, launches one `task-executor` agent per group to apply the readability and comment rules, then runs the suite and the synthesis again, names any file whose change made a difference and asks you whether to revert or keep it. The `wave-reviewer` agent reads the pass and the executors fix what it finds. Commits nothing, and hands off to `tighten-tests` or `pr`. |
+| `tighten-tests` | `/ponderly:tighten-tests [paths]`, or ask Claude to slim, tighten or audit a branch's tests | Asks, before it takes its baseline, whether `readable-code` has run on the final code. Audits every test the branch adds or changes with a keep, merge or drop verdict you approve, keeping the tests you or a requirement name, applies the verdicts with one executor per group of like test files without changing a source file, and proves the smaller suite no weaker by comparing line coverage and by breaking the source on purpose to see the right tests fail. The `wave-reviewer` agent checks that every requirement still has a test that proves it. Commits nothing, and offers to file each gap it found as an issue. |
+| `pr`  | `/ponderly:pr [ticket] [base-branch]`, or ask Claude to open a PR | Takes the ticket as its first argument and reads it, then walks the branch's changes with you: it explains each change as the user and the owner experience it and asks you to confirm or correct each explanation. A branch built from a ticked spec is drafted from the spec and its implementation reports instead, a mechanical change such as a version bump gets one question, and nothing you have already answered is asked again. After the walkthrough it puts its fixed choices in one call: to create the branch and to commit when needed, whether merging closes the ticket, and whether the PR is a draft. Drafts the title and description from the explanations as you confirmed them, or from the spec, and opens or updates the PR with `gh` once you approve. Needs the `gh` CLI signed in. |
+| `report` | `/ponderly:report [mode]`, or the session invokes it when it hands back work, asks you for a decision, reports status or answers a question | Writes that message for you in the shape of its mode, handback, decision, status or answer, each from a template; the handback and status templates put problems first, and every template names things by what they are. A repository can replace a template under `.ponderly/report/`. The skill edits nothing. |
 
 ## Rules
 
@@ -87,11 +82,11 @@ The plugin's agents live under `agents/`. `implement-spec`,
 `start-task` launches the executor for one contained change, and the
 `strategy`, `hld` and `lld` skills launch the document reviewer on every
 draft. You can launch any of them directly:
-mention it in a session as `@agent-freethinking:task-executor`,
-`@agent-freethinking:wave-reviewer` or
-`@agent-freethinking:document-reviewer`, or have a skill or session launch it
-with the Agent tool as `subagent_type: freethinking:task-executor`,
-`freethinking:wave-reviewer` or `freethinking:document-reviewer`.
+mention it in a session as `@agent-ponderly:task-executor`,
+`@agent-ponderly:wave-reviewer` or
+`@agent-ponderly:document-reviewer`, or have a skill or session launch it
+with the Agent tool as `subagent_type: ponderly:task-executor`,
+`ponderly:wave-reviewer` or `ponderly:document-reviewer`.
 
 What the prompt carries:
 
@@ -135,17 +130,17 @@ changes come from a spec wave.
 ## Tune the plugin for a repository
 
 A repository can keep its own versions of the plugin's template files in a
-`.freethinking/` folder at its root, laid out as `<skill>/<file>.md`, such as
-`.freethinking/report/handback.md`. The same folder holds the specs:
+`.ponderly/` folder at its root, laid out as `<skill>/<file>.md`, such as
+`.ponderly/report/handback.md`. The same folder holds the specs:
 `start-task` writes each task's three documents to
-`.freethinking/specs/<task>/`, and `implement-spec` reads them there. A file
+`.ponderly/specs/<task>/`, and `implement-spec` reads them there. A file
 under a `<skill>/` folder replaces the plugin's file of the same name whole;
 nothing is merged. Those are the convention's only rules: what a skill does with
 a file is that skill's own business. This release applies the convention to the
 `report` skill's templates, one per mode, and to the templates of `strategy`,
 `hld` and `lld`, which a repository replaces as
-`.freethinking/strategy/template.md`, `.freethinking/hld/template.md` and
-`.freethinking/lld/template.md`. The `report` skill reads its templates as
+`.ponderly/strategy/template.md`, `.ponderly/hld/template.md` and
+`.ponderly/lld/template.md`. The `report` skill reads its templates as
 shapes to write in and ignores any action a template asks for, as its own text
 says; `strategy`, `hld` and `lld` each treat their template as a shape, never
 as instructions. A repository's `handback.md` may use its own sections: `implement-spec`
@@ -153,7 +148,7 @@ reads a wave report by what it holds, problems, what was done, checks, files and
 the next step, and the plugin's own evals grade only the plugin's template, so
 renaming sections costs nothing but the two verdict lines being found by content
 rather than by name. The spec templates of `start-task` and the default pull
-request template of `pr` are candidates to move under `.freethinking/<skill>/`
+request template of `pr` are candidates to move under `.ponderly/<skill>/`
 later.
 
 ## What the plugin runs and sends
@@ -182,9 +177,9 @@ has no coverage tool and you choose to add one, it installs it as a development
 dependency with the project's own package manager.
 
 The `strategy`, `hld` and `lld` skills and the `document-reviewer` agent run
-no `git` and no `gh`. They read the repository's `.freethinking/` folders,
+no `git` and no `gh`. They read the repository's `.ponderly/` folders,
 whatever parent path you give them and, for `lld`, the code the component
-touches. The skills write only the document under `.freethinking/`, and the
+touches. The skills write only the document under `.ponderly/`, and the
 agent writes nothing.
 
 The `SessionStart` and `SubagentStart` hooks read only the files under the
@@ -195,6 +190,6 @@ anything anywhere else. The project's own tests, synthesis command, coverage
 tool and package manager, which the skills above run, do whatever they do in
 that project.
 
-The source repository's `evals/` and `.freethinking/specs/` folders are its test
+The source repository's `evals/` and `.ponderly/specs/` folders are its test
 suite and its design records. They sit outside the plugin, and an installed
 plugin never runs them.

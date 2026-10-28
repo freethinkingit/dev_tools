@@ -40,7 +40,7 @@ sequenceDiagram
     participant S as tighten-tests
     participant E as task-executor (one per test file)
     participant R as wave-reviewer
-    A->>S: /freethinking:tighten-tests [paths]
+    A->>S: /ponderly:tighten-tests [paths]
     S->>A: Scope; has readable-code run on the final code?
     A-->>S: yes
     S->>S: Baseline: counts, per-line coverage

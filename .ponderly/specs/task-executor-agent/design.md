@@ -15,9 +15,9 @@ sequenceDiagram
     participant CC as Claude Code
     participant H as SubagentStart hook
     participant X as task-executor (opus, medium)
-    A->>S: /freethinking:implement-spec <task> wave
-    S->>CC: Agent(subagent_type: freethinking:task-executor, prompt: task + spec excerpts + "leaf task from a spec")
-    CC->>H: SubagentStart {agent_type: freethinking:task-executor}
+    A->>S: /ponderly:implement-spec <task> wave
+    S->>CC: Agent(subagent_type: ponderly:task-executor, prompt: task + spec excerpts + "leaf task from a spec")
+    CC->>H: SubagentStart {agent_type: ponderly:task-executor}
     H-->>CC: {additionalContext: rules text}
     CC->>X: system prompt (agent body) + rules + git status, then the launch prompt
     X->>X: gather context, implement, prove, clean up
@@ -57,7 +57,7 @@ flowchart TD
 | `hooks/hooks.json` | Register `SubagentStart` with no matcher, running the subagent rules script | 1.1 |
 | `hooks/load-rules-subagent.sh` | Print the rules as `SubagentStart` JSON `additionalContext`, from `load-rules.sh`; with `-`, encode stdin | 1.2, 1.3, 1.5 |
 | `checks/test_hook_encoder.py` (run by `make validate`) | Fixed-table, seeded-fuzz and real-run checks of the encoder, free, in CI | 1.2 |
-| `checks/test_agents.py` (run by `make validate`) | Agent frontmatter: `name` equals the file stem, `description` present, `tools`, `model` and `effort` from their known sets; every `freethinking:<name>` the skills reference exists | 2.1, 4.1, 6.1 |
+| `checks/test_agents.py` (run by `make validate`) | Agent frontmatter: `name` equals the file stem, `description` present, `tools`, `model` and `effort` from their known sets; every `ponderly:<name>` the skills reference exists | 2.1, 4.1, 6.1 |
 | `agents/task-executor.md` | The Agent: frontmatter and procedure | 2.1 to 2.12, 3.1 to 3.3 |
 | `skills/implement-spec/SKILL.md` step 5 | Launch the Agent by scoped name with the reduced prompt; treat `stopped` as Drift; review each wave with the Reviewer before ticking | 4.1 to 4.7 |
 | `agents/wave-reviewer.md` | The Reviewer: read-only, gathers the diff itself, judges each change by what it is, returns Findings | 6.1 to 6.8 |
@@ -127,7 +127,7 @@ stopped because:
 
 ### `implement-spec` step 5, launch bullets after the change
 
-- `subagent_type: freethinking:task-executor`.
+- `subagent_type: ponderly:task-executor`.
 - The sentence "This task is a leaf task from a spec; tests are tasks of their own."
 - The task text and its cited requirements, quoted.
 - The design sections the task touches, quoted.
@@ -212,13 +212,13 @@ The Summary fields and order are given above; `status` is the only field a Launc
 ## Testing Strategy
 
 - `make validate` after every change to the agent file, the hook config, the skill or the manifest. The validator reads `agents/`. `validate` also runs `python3 -m unittest discover -s checks`: standard-library Python 3.9 files under `checks/`, with no venv, pip or requirements file and no model call. `test_hook_encoder.py` holds three checks of the encoder: a fixed table of the known-hard inputs (empty, lone quote, lone backslash, backslash before quote, every ASCII control character alone and inside a line, non-ASCII, no trailing newline, CRLF); a seeded fuzz of 500 random strings up to 2,000 characters from a pool that over-represents quotes, backslashes, control characters, non-ASCII and newlines; and the real run, whose `hookEventName` must be `SubagentStart` and whose `additionalContext` must equal the current `load-rules.sh` output. Each input goes through `load-rules-subagent.sh -`, the output is parsed, and the decoded text is compared byte for byte; the first mismatch prints the input as a literal. NUL is excluded, since it cannot cross a shell pipeline as text and never appears in a rule. The fixed seed makes a failure reproducible in CI. python3 is a developer-side dependency, shipped with the same Command Line Tools as make and git on macOS and present on ubuntu-latest; using the plugin needs only Claude Code.
-- `checks/test_agents.py`: for each `agents/*.md`, a frontmatter block, `name` equal to the file stem, a non-empty `description`, `tools` a subset of the known tool names, `model` and `effort` in their sets; and every `freethinking:<name>` referenced under `skills/` names an existing agent or skill. Flat `key: value` parse, no PyYAML; free, in CI. Requirements 2.1, 4.1, 6.1.
+- `checks/test_agents.py`: for each `agents/*.md`, a frontmatter block, `name` equal to the file stem, a non-empty `description`, `tools` a subset of the known tool names, `model` and `effort` in their sets; and every `ponderly:<name>` referenced under `skills/` names an existing agent or skill. Flat `key: value` parse, no PyYAML; free, in CI. Requirements 2.1, 4.1, 6.1.
 - Hook: `evals/hook/subagent-rules-loaded/`, a case with `Agent` in `allowed_tools` whose prompt launches a general-purpose sub-agent and asks it to report the rule headings it sees without tools; graders are regexes for `Code changes` and `Workflow` and the absence of `NO RULES`. Property 1.
-- Agent, Spec_Mode: `evals/agents/task-executor/spec-mode/`, the calc fixture from the implement-spec work-loop case, a prompt that launches `freethinking:task-executor` with the mode sentence and task 1; graders: `calc/ops.py` contains `subtract`, `tests/test_ops.py` unchanged (no `subtract`), the final message contains `status: done`, `checks run:` and `ephemeral check:`. Properties 2, 3, 5.
+- Agent, Spec_Mode: `evals/agents/task-executor/spec-mode/`, the calc fixture from the implement-spec work-loop case, a prompt that launches `ponderly:task-executor` with the mode sentence and task 1; graders: `calc/ops.py` contains `subtract`, `tests/test_ops.py` unchanged (no `subtract`), the final message contains `status: done`, `checks run:` and `ephemeral check:`. Properties 2, 3, 5.
 - Agent, Standalone_Mode: `evals/agents/task-executor/standalone-mode/`, same fixture, same task text without the mode sentence; graders: `subtract` in `calc/ops.py` and `test_subtract` in `tests/test_ops.py`, `status: done`. Properties 2, 3.
 - Agent, stop: an optional case whose task names a module that does not exist; graders: `status: stopped` in the final message and no file created. Property 4.
 - `effort`: one kept run of the Spec_Mode case, reading the sub-agent's trace for the model and effort it ran with; recorded in the PR, since no grader can see it.
-- Reviewer: `evals/agents/wave-reviewer/finds-the-contradiction/`, the calc fixture plus a scaffold-written uncommitted diff that adds `subtract` returning `b - a` while the launch's cited requirement says a minus b; the prompt launches `freethinking:wave-reviewer` with the file list and the requirement text; graders: `verdict: findings`, `ops.py` and `subtract` in the final message. `evals/agents/wave-reviewer/passes-a-clean-diff/`, the same fixture with a correct `subtract`; grader: `verdict: holds`. Both need the `eval-agent-wave-reviewer` target: Bash and the scaffold, with `bin` on the PATH for the git wrapper. Requirement 5.6, Property 6.
+- Reviewer: `evals/agents/wave-reviewer/finds-the-contradiction/`, the calc fixture plus a scaffold-written uncommitted diff that adds `subtract` returning `b - a` while the launch's cited requirement says a minus b; the prompt launches `ponderly:wave-reviewer` with the file list and the requirement text; graders: `verdict: findings`, `ops.py` and `subtract` in the final message. `evals/agents/wave-reviewer/passes-a-clean-diff/`, the same fixture with a correct `subtract`; grader: `verdict: holds`. Both need the `eval-agent-wave-reviewer` target: Bash and the scaffold, with `bin` on the PATH for the git wrapper. Requirement 5.6, Property 6.
 - implement-spec: `make eval-skill-implement-spec` passes with the Agent as executor, the work-loop case included. Requirement 5.4.
 - Makefile: `eval-agent-task-executor: CASE_ARGS += --allow-tools Bash Write Edit --scaffold` and the `bin` PATH entry, same as the pr and implement-spec targets.
 - Fixtures: every project a case builds lives once as real files under `evals/fixtures/<tree>/`, copied into the workspace by `evals/fixtures/setup.sh <tree> <branch> [wrappers]`, which inits git with one commit, checks out the branch and writes the bin wrappers when asked. Each case's `scaffold.sh` is its own file that calls the setup script and adds only what the case needs; no scaffold is a symlink. Requirements 5.2, 5.4, 5.6.

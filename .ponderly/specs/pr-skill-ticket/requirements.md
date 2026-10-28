@@ -6,7 +6,7 @@ The pr skill opens a pull request for the current branch after walking its chang
 
 ## Glossary
 
-- **Skill**: The pr skill, `skills/pr/SKILL.md`, as invoked by `/freethinking:pr` or by another skill through the Skill tool.
+- **Skill**: The pr skill, `skills/pr/SKILL.md`, as invoked by `/ponderly:pr` or by another skill through the Skill tool.
 - **Author**: The person running the Skill, who is accountable for every change in the branch.
 - **Ticket_Reference**: A reference to a ticket in any form: an issue number such as `#12`, a ticket URL, or a tracker key such as `ENG-1234`.
 - **Ticket_Context**: The ticket's title and body together with its comments, or whatever of those the tracker exposes.
@@ -93,7 +93,7 @@ The pr skill opens a pull request for the current branch after walking its chang
 6. WHEN the Author declines the commit offer, THE Skill SHALL carry on and say that those files will not be in the pull request.
 7. THE Skill SHALL keep the no-origin, not-GitHub and not-signed-in checks as hard stops, since it cannot fix them.
 8. THE Skill SHALL never commit, create a branch or push without the Author's yes to the offer or the approval that names it; the approval of the draft is the yes to push.
-9. WHEN the Skill's starting checks become offers, THE start-task skill's hand-off after a done executor Summary SHALL say to run `/freethinking:pr`, which will offer to branch and commit, in place of the three git commands it lists today.
+9. WHEN the Skill's starting checks become offers, THE start-task skill's hand-off after a done executor Summary SHALL say to run `/ponderly:pr`, which will offer to branch and commit, in place of the three git commands it lists today.
 
 ### Requirement 6: The skill carries a CX block
 

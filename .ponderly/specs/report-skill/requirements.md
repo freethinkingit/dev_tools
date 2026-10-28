@@ -6,7 +6,7 @@ The plugin's skills and agents write to the author in a way that hides what matt
 
 ## Glossary
 
-- **Skill**: The report skill, `skills/report/SKILL.md`, invoked as `/freethinking:report [mode]` by the Author or through the Skill tool by the session or by another skill.
+- **Skill**: The report skill, `skills/report/SKILL.md`, invoked as `/ponderly:report [mode]` by the Author or through the Skill tool by the session or by another skill.
 - **Rule**: The communication rule, `rules/communication.md`, which the plugin's two hooks put into every session and every sub-agent.
 - **Author**: The person the session is working with, who sees only the messages written to them, never the tool calls.
 - **Message**: Any text the session writes to the Author, in a skill or outside one.
@@ -20,7 +20,7 @@ The plugin's skills and agents write to the author in a way that hides what matt
 - **Narration**: Text that says what the session is doing or about to do with its tools, or what is still pending, rather than what it found.
 - **Worked_Example**: A pair of texts in a Template, a Message as it was written in a real session and the same Message in the Mode's shape, with paths and names generalised.
 - **Template**: A Markdown file holding one Mode's shape, its sections in order with a sentence on what each holds, and its Worked_Example; the Skill ships one per Mode under `skills/report/templates/<mode>.md`.
-- **Override_Directory**: The folder `.freethinking/` at the root of the repository the session works in, where that repository keeps its own versions of the plugin's template files, under the skill's name, such as `.freethinking/report/handback.md`.
+- **Override_Directory**: The folder `.ponderly/` at the root of the repository the session works in, where that repository keeps its own versions of the plugin's template files, under the skill's name, such as `.ponderly/report/handback.md`.
 - **Agent_Report**: The fixed-shape text an agent returns to the session that launched it: today the task-executor's Summary and the wave-reviewer's Findings.
 - **Agent_Protocol**: The rules every Agent_Report follows: a status word on its first line, one field for each thing the launcher must act on, an `unsure` field that is always present, exact quotes for anything quoted, and nothing after the shape.
 - **Reporting_Skills**: The skills whose steps report work to the Author: `implement-spec` at its hand-back and its final report, `bugfix` at its summary, and `start-task` when the executor's Summary comes back.
@@ -128,7 +128,7 @@ The plugin's skills and agents write to the author in a way that hides what matt
 
 ### Requirement 9: A repository can tune the templates
 
-**User Story:** As a plugin user, I want to put my own version of a template under `.freethinking/` in my repository, so that the plugin's messages fit that repository without my forking the plugin.
+**User Story:** As a plugin user, I want to put my own version of a template under `.ponderly/` in my repository, so that the plugin's messages fit that repository without my forking the plugin.
 
 #### Acceptance Criteria
 

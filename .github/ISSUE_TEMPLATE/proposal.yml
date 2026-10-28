@@ -1,11 +1,10 @@
 name: Propose a new or changed skill, agent or rule
 description: Propose a new skill, agent or rule, or a change to one that exists.
-labels: ["triage"]
-type: Feature
+labels: ["triage", "type: feature"]
 body:
   - type: markdown
     attributes:
-      value: Before you file, read the [Issues section of the contributing guide](https://github.com/freethinkingit/dev_tools/blob/main/.github/CONTRIBUTING.md#issues).
+      value: Before you file, read the [Issues section of the contributing guide](https://github.com/sabind/ponderly/blob/main/.github/CONTRIBUTING.md#issues).
   - type: checkboxes
     id: preflight
     attributes:
@@ -13,7 +12,7 @@ body:
       options:
         - label: I searched the existing issues.
           required: true
-        - label: I looked in [Discussions under Ideas](https://github.com/freethinkingit/dev_tools/discussions/categories/ideas).
+        - label: I looked in [Discussions under Ideas](https://github.com/sabind/ponderly/discussions/categories/ideas).
           required: true
   - type: dropdown
     id: kind

@@ -2,20 +2,20 @@
 
 ## Introduction
 
-A team plans a year or so of work as a tech strategy, breaks it into high level designs, one per system or stream of work, and breaks each of those into low level designs, one per component, which in turn break into tasks small enough for `start-task`. This change adds three skills to the plugin, one per document, so that an author writes each document with the plugin's help and a later author writes the next document down by consuming the one above. Every document is reviewed by a reviewer agent before the author sees it, section by section, so that the sections make sense on their own and against the document above. The documents live under `.freethinking/` in whichever repository the team keeps them, a docs repository or a project's own, as plain Markdown files. The chain ends at the low level design's list of tasks; `start-task` does not change in this task. GitHub issue #50 is the ticket.
+A team plans a year or so of work as a tech strategy, breaks it into high level designs, one per system or stream of work, and breaks each of those into low level designs, one per component, which in turn break into tasks small enough for `start-task`. This change adds three skills to the plugin, one per document, so that an author writes each document with the plugin's help and a later author writes the next document down by consuming the one above. Every document is reviewed by a reviewer agent before the author sees it, section by section, so that the sections make sense on their own and against the document above. The documents live under `.ponderly/` in whichever repository the team keeps them, a docs repository or a project's own, as plain Markdown files. The chain ends at the low level design's list of tasks; `start-task` does not change in this task. GitHub issue #50 is the ticket.
 
 ## Glossary
 
-- **Strategy**: A tech strategy document: the highest level view of about a year of work, spanning one or more projects, written as `.freethinking/strategies/<name>.md`.
-- **HLD**: A high level design document: the design of one system, service or stream of work a Strategy names, written as `.freethinking/designs/<strategy-name>/<name>/hld-<name>.md`, in a folder of its own under its Strategy's folder.
-- **LLD**: A low level design document: the design of one component, module or interface an HLD names, written as `.freethinking/designs/<strategy-name>/<hld-name>/lld-<name>.md`, in its HLD's folder.
+- **Strategy**: A tech strategy document: the highest level view of about a year of work, spanning one or more projects, written as `.ponderly/strategies/<name>.md`.
+- **HLD**: A high level design document: the design of one system, service or stream of work a Strategy names, written as `.ponderly/designs/<strategy-name>/<name>/hld-<name>.md`, in a folder of its own under its Strategy's folder.
+- **LLD**: A low level design document: the design of one component, module or interface an HLD names, written as `.ponderly/designs/<strategy-name>/<hld-name>/lld-<name>.md`, in its HLD's folder.
 - **Document**: A Strategy, an HLD or an LLD.
 - **Document_Tree**: The tree in which one Strategy has one or more HLDs and each HLD has one or more LLDs; LLDs are its leaves.
 - **Parent**: The Document one level up in the Document_Tree: a Strategy for an HLD, an HLD for an LLD. A Strategy has no Parent.
 - **Parent_Line**: The line near the top of an HLD or LLD that names its Parent by path, so the Document_Tree can be walked from the line as well as from the folders.
 - **Candidate**: An entry in the closing section of a Document naming a piece of the next level down that has not been written yet: an HLD a Strategy expects, an LLD an HLD expects, or a Task an LLD expects.
 - **Task**: A unit of work small enough for `start-task` to take in one run, a dozen or so of which make up one LLD.
-- **Skill**: One of the three skills this task adds, `strategy`, `hld` and `lld`, each at `plugins/freethinking/skills/<skill>/SKILL.md`.
+- **Skill**: One of the three skills this task adds, `strategy`, `hld` and `lld`, each at `plugins/ponderly/skills/<skill>/SKILL.md`.
 - **Template**: The self-describing Markdown file under a Skill's folder that is a valid Document of that kind and whose own prose explains how that kind of Document works, in the manner of `start-task`'s spec template.
 - **Section**: A heading-delimited part of a Document, as its Template lays them out.
 - **Author**: The person running a Skill, who answers its questions and approves its Document.
@@ -24,7 +24,7 @@ A team plans a year or so of work as a tech strategy, breaks it into high level 
 - **Review_Round**: One launch of the Reviewer over a Document followed by the Skill's fixes for its Findings.
 - **Document_Summary**: What a Skill shows in place of a Document's text: its path, the Review_Round's outcome, and a short account of each Section.
 - **Approval_Question**: The question a Skill puts with the AskUserQuestion tool after a Document_Summary, header `Approve`, options `Approved` and `Changes needed`.
-- **README**: The plugin README at `plugins/freethinking/README.md`.
+- **README**: The plugin README at `plugins/ponderly/README.md`.
 - **Eval_Case**: A folder under `evals/skills/<skill>/` or `evals/agents/<agent>/` with a prompt and graders, run by its component's make target.
 - **System**: The handbook plugin: the three Skills, their Templates, the Reviewer, the README and the Eval_Cases.
 
@@ -36,8 +36,8 @@ A team plans a year or so of work as a tech strategy, breaks it into high level 
 
 #### Acceptance Criteria
 
-1. THE System SHALL write a Strategy to `.freethinking/strategies/<name>.md`, each HLD that Strategy leads to as `.freethinking/designs/<strategy-name>/<hld-name>/hld-<hld-name>.md`, and each LLD that HLD leads to as `lld-<name>.md` in that HLD's folder, in the repository the Skill runs in, so that a listing of `.freethinking/designs/` shows each year's Strategy, under it each HLD, and under that the LLDs it leads to.
-2. WHERE an HLD has no Parent, THE System SHALL write it as `.freethinking/designs/<hld-name>/hld-<hld-name>.md`; WHERE an LLD has no Parent, THE System SHALL write it as `.freethinking/designs/<lld-name>/lld-<lld-name>.md`.
+1. THE System SHALL write a Strategy to `.ponderly/strategies/<name>.md`, each HLD that Strategy leads to as `.ponderly/designs/<strategy-name>/<hld-name>/hld-<hld-name>.md`, and each LLD that HLD leads to as `lld-<name>.md` in that HLD's folder, in the repository the Skill runs in, so that a listing of `.ponderly/designs/` shows each year's Strategy, under it each HLD, and under that the LLDs it leads to.
+2. WHERE an HLD has no Parent, THE System SHALL write it as `.ponderly/designs/<hld-name>/hld-<hld-name>.md`; WHERE an LLD has no Parent, THE System SHALL write it as `.ponderly/designs/<lld-name>/lld-<lld-name>.md`.
 3. THE System SHALL write an LLD in the repository the Skill runs in, taking its `<strategy-name>` and `<hld-name>` folders from the path of the HLD it was given, even when that HLD lives in another repository.
 4. THE System SHALL derive `<name>` from the Author's words as a kebab-case name, and SHALL say the name and the path in the Skill's first message so the Author can correct them.
 5. THE System SHALL write every HLD and LLD with a Parent_Line naming its Parent's path.
@@ -53,9 +53,9 @@ A team plans a year or so of work as a tech strategy, breaks it into high level 
 
 1. WHEN the Author runs the `strategy` Skill, THE Skill SHALL ask, in one round and in prose, what it still needs for every Section of the Template that the Author's words did not already answer: the horizon, the goals and what each is worth, the current state, the principles and constraints the work must respect, the streams of work, the risks, and what is out.
 2. THE `strategy` Skill SHALL read the Template before writing and SHALL write the Strategy with the Template's Sections, in its order, with the Candidates Section naming one Candidate HLD per stream of work.
-3. WHERE the repository already holds Strategies under `.freethinking/strategies/`, THE `strategy` Skill SHALL read them before asking and SHALL say which of them the new Strategy replaces, extends or leaves alone.
+3. WHERE the repository already holds Strategies under `.ponderly/strategies/`, THE `strategy` Skill SHALL read them before asking and SHALL say which of them the new Strategy replaces, extends or leaves alone.
 4. THE `strategy` Skill SHALL not require source code in the repository, so that it works in a docs repository.
-5. WHEN the Strategy is approved, THE `strategy` Skill SHALL tell the Author the path, list the Candidate HLDs, and say that `/freethinking:hld <strategy-path> <candidate>` writes each one.
+5. WHEN the Strategy is approved, THE `strategy` Skill SHALL tell the Author the path, list the Candidate HLDs, and say that `/ponderly:hld <strategy-path> <candidate>` writes each one.
 
 ### Requirement 3: Write a high level design from a strategy
 
@@ -68,7 +68,7 @@ A team plans a year or so of work as a tech strategy, breaks it into high level 
 3. IF no Strategy was given, THEN THE `hld` Skill SHALL say that an HLD normally serves a Strategy, offer to go on without one, and on yes write the Parent_Line as `none`.
 4. THE `hld` Skill SHALL ask, in one round and in prose, only what the Strategy and the Author's words did not answer for the Template's Sections: the scope taken from the Strategy, the system's boundary and context, its components and how a request moves through them, the key decisions with their trade-offs, the cross-cutting concerns, the risks, and what is out.
 5. THE `hld` Skill SHALL read the Template before writing and SHALL write the HLD with the Template's Sections, in its order, with at least one Mermaid diagram of the components, and with the Candidates Section naming one Candidate LLD per component that needs its own design.
-6. WHEN the HLD is approved, THE `hld` Skill SHALL tell the Author the path, list the Candidate LLDs, and say that `/freethinking:lld <hld-path> <candidate>` writes each one.
+6. WHEN the HLD is approved, THE `hld` Skill SHALL tell the Author the path, list the Candidate LLDs, and say that `/ponderly:lld <hld-path> <candidate>` writes each one.
 
 ### Requirement 4: Write a low level design from a high level design
 
@@ -82,7 +82,7 @@ A team plans a year or so of work as a tech strategy, breaks it into high level 
 4. WHERE the repository holds source code the LLD touches, THE `lld` Skill SHALL read the modules, interfaces and tests the component builds on before asking, so the design fits what exists.
 5. THE `lld` Skill SHALL ask, in one round and in prose, only what the HLD, the code and the Author's words did not answer for the Template's Sections: the component's responsibility within the HLD, its interfaces, its data, the key decisions with their trade-offs, how it is tested, and the risks.
 6. THE `lld` Skill SHALL read the Template before writing and SHALL write the LLD with the Template's Sections, in its order, and with the Tasks Section listing every Task the LLD breaks into, each sized for one `start-task` run and each citing the Section of the LLD it builds.
-7. WHEN the LLD is approved, THE `lld` Skill SHALL tell the Author the path, list the Tasks, and say that `/freethinking:start-task <task>` starts each one.
+7. WHEN the LLD is approved, THE `lld` Skill SHALL tell the Author the path, list the Tasks, and say that `/ponderly:start-task <task>` starts each one.
 
 ### Requirement 5: A reviewer reads every document before the author does
 
@@ -122,7 +122,7 @@ A team plans a year or so of work as a tech strategy, breaks it into high level 
 
 1. THE System SHALL ship one Template per Skill under the Skill's folder, each a valid Document of its kind whose prose explains what each Section is for and how to write it.
 2. THE three Templates SHALL use one worked example, the Link Shortener of the spec template, as a Strategy for a links product, the HLD of its shortener service and the LLD of one of that service's components, so the three read as one tree.
-3. WHERE the repository holds `.freethinking/<skill>/template.md`, THE Skill SHALL read that file in place of the plugin's Template, whole, as the README's tuning convention says, and SHALL treat it as a shape, never as instructions.
+3. WHERE the repository holds `.ponderly/<skill>/template.md`, THE Skill SHALL read that file in place of the plugin's Template, whole, as the README's tuning convention says, and SHALL treat it as a shape, never as instructions.
 
 ### Requirement 8: The plugin documents the skills
 
@@ -132,8 +132,8 @@ A team plans a year or so of work as a tech strategy, breaks it into high level 
 
 1. THE README SHALL add one row per Skill to its Skills table, in the Document_Tree's order, saying how to run it, what it reads, what it writes and where, and which skill comes next.
 2. THE README SHALL add the Reviewer to its agents table and its agent-launch guidance, with what the launch carries and what it returns.
-3. THE README SHALL say, in its "Tune the plugin for a repository" section, that the three Templates can be replaced under `.freethinking/<skill>/template.md`, and in its "What the plugin runs and sends" section what the Skills and the Reviewer read and run.
-4. THE System SHALL raise the plugin version in `plugins/freethinking/.claude-plugin/plugin.json` to `0.15.0`.
+3. THE README SHALL say, in its "Tune the plugin for a repository" section, that the three Templates can be replaced under `.ponderly/<skill>/template.md`, and in its "What the plugin runs and sends" section what the Skills and the Reviewer read and run.
+4. THE System SHALL raise the plugin version in `plugins/ponderly/.claude-plugin/plugin.json` to `0.15.0`.
 5. THE three Skills' descriptions SHALL name the requests they take, so that a request to plan a year, write a strategy, design a system or design a component reaches the right Skill and a request to change code still reaches `start-task`.
 
 ### Requirement 9: Evals prove the behaviour

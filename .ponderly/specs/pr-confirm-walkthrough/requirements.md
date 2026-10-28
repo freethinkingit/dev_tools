@@ -6,11 +6,11 @@ The pr skill walks every group of changes with five review prompts and forbids i
 
 ## Glossary
 
-- **Skill**: The pr skill, `skills/pr/SKILL.md`, invoked as `/freethinking:pr [ticket] [base]`.
+- **Skill**: The pr skill, `skills/pr/SKILL.md`, invoked as `/ponderly:pr [ticket] [base]`.
 - **Author**: The person running the Skill, accountable for every change in the Branch.
 - **Branch**: The current git branch, compared against its base to give the changes.
 - **Group**: A set of source changes made together for one purpose, as the Skill's step 5 groups them today.
-- **Spec**: The three files under `.freethinking/specs/<task>/`: `requirements.md`, `design.md` and `tasks.md`.
+- **Spec**: The three files under `.ponderly/specs/<task>/`: `requirements.md`, `design.md` and `tasks.md`.
 - **Ticked_Spec**: A Spec whose `tasks.md` has every non-optional leaf task ticked and whose task names cover the Branch's source changes.
 - **Reports**: The wave and final hand-back messages written by `implement-spec` for a Ticked_Spec, present in the conversation, each with Problems, Done, Checks, Files and Next.
 - **Spec_Form**: The walkthrough the Skill takes on a Branch with a Ticked_Spec: Groups by spec task, drafted from the Spec and the Reports, one prose round, the Fixed_Choices, the draft.
@@ -121,5 +121,5 @@ The pr skill walks every group of changes with five review prompts and forbids i
 
 1. THE Skill's description SHALL say that it explains each change and asks the Author to confirm, that a ticked spec is drafted from the spec and its reports, and SHALL stay under 1,024 characters.
 2. THE System SHALL update the README row for `pr` to say what it now does, in the row's existing shape.
-3. THE System SHALL bump the plugin version in `plugins/freethinking/.claude-plugin/plugin.json` to the next minor version above the one on `main` when the branch is merged.
+3. THE System SHALL bump the plugin version in `plugins/ponderly/.claude-plugin/plugin.json` to the next minor version above the one on `main` when the branch is merged.
 4. THE System SHALL keep `make validate` passing.

@@ -4,4 +4,4 @@ tags: [skill, pr]
 max_turns: 5
 expected_outcome: Claude names a step-1 failure (no origin, not a GitHub repo, or gh not signed in), tells the author what to do, and never reaches the walkthrough or the PR draft.
 ---
-/freethinking:pr
+/ponderly:pr

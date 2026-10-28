@@ -2,7 +2,7 @@
 
 ## Overview
 
-The start-task skill gains one short section, "Showing a document", that holds the shape every spec document is shown in for approval: its path first, one sentence that the author can open the file, then the document's content in a fixed shape per document, quoting only what that shape names and summarising the rest, in the same message as the approval question and never the whole document; and the shape of a revision, the path plus what changed, section by section, in the same message as the question. The three writing steps, the resume sentence in step 1 and the Hand-backs bullet refer to that section instead of saying "show the author the document", and each writing step sets its shape: each requirement's user story quoted for the requirements, each key decision quoted then the rest summarised for the design, a table of leaf tasks by wave for the task list. The README's start-task row says the same in a clause. One new eval case answers the spec questions inside the request so the run reaches a written `requirements.md`, and grades the hand-back on naming the path, quoting a user story, giving one entry per requirement and containing no criterion. Beyond those, the spec folder moves from `.claude/specs/` to `.freethinking/specs/` in the plugin text, the evals and this repository's records, because the eval sandbox refuses every write under `.claude/` and the folder should name the plugin, not one tool.
+The start-task skill gains one short section, "Showing a document", that holds the shape every spec document is shown in for approval: its path first, one sentence that the author can open the file, then the document's content in a fixed shape per document, quoting only what that shape names and summarising the rest, in the same message as the approval question and never the whole document; and the shape of a revision, the path plus what changed, section by section, in the same message as the question. The three writing steps, the resume sentence in step 1 and the Hand-backs bullet refer to that section instead of saying "show the author the document", and each writing step sets its shape: each requirement's user story quoted for the requirements, each key decision quoted then the rest summarised for the design, a table of leaf tasks by wave for the task list. The README's start-task row says the same in a clause. One new eval case answers the spec questions inside the request so the run reaches a written `requirements.md`, and grades the hand-back on naming the path, quoting a user story, giving one entry per requirement and containing no criterion. Beyond those, the spec folder moves from `.claude/specs/` to `.ponderly/specs/` in the plugin text, the evals and this repository's records, because the eval sandbox refuses every write under `.claude/` and the folder should name the plugin, not one tool.
 
 ## Architecture
 
@@ -26,11 +26,11 @@ flowchart LR
 
 **Key decision: deterministic graders for "not reprinted", "quotes a user story" and "no criterion reproduced", a literal llm grader for "every entry quotes a story".** `match: not_contains` on the document's own section headings, anchored to the start of a line so the words in prose are allowed, catches a reprinted document; a regex on `As an? .+, I want` proves a user story was quoted; and `match: not_contains` on `\bSHALL\b` proves no criterion was reproduced, since every criterion carries the word and no summary does. What is left for a judge is whether every list item quotes a story and no section is printed, two literal checks with an allowed-list, after two earlier wordings failed correct replies three votes to none (Requirement 7.2). A judge that sees only the reply cannot count the document's requirements, so the grader is named `every-entry-quotes-a-story` for what it proves, and the one-entry-per-requirement count is read by the wave reviewer and the first real spec. The case confirms at three runs.
 
-**Key decision: specs move to `.freethinking/specs/`, out of `.claude/`.** Two probe runs showed the sandbox refusing the Write of `requirements.md` under `.claude/specs/`, with Write granted and with a path-scoped `Write(.claude/**)` grant, and a third showed a committed `CLAUDE.md` is not loaded, so no per-repository instruction can redirect the skill there. The folder moves to the plugin's own `.freethinking/`, which already holds repository overrides: it names the plugin rather than one tool, so a fork for Cursor or Codex keeps the same path, and the sandbox lets a skill write there (Requirement 8). Rejected: `specs/` at the root, which does not say who writes it; a `.freethinking/` setting file naming the folder, which would widen three components to serve one eval; and grading the resume path from a committed unapproved document, which leaves the write unproven.
+**Key decision: specs move to `.ponderly/specs/`, out of `.claude/`.** Two probe runs showed the sandbox refusing the Write of `requirements.md` under `.claude/specs/`, with Write granted and with a path-scoped `Write(.claude/**)` grant, and a third showed a committed `CLAUDE.md` is not loaded, so no per-repository instruction can redirect the skill there. The folder moves to the plugin's own `.ponderly/`, which already holds repository overrides: it names the plugin rather than one tool, so a fork for Cursor or Codex keeps the same path, and the sandbox lets a skill write there (Requirement 8). Rejected: `specs/` at the root, which does not say who writes it; a `.ponderly/` setting file naming the folder, which would widen three components to serve one eval; and grading the resume path from a committed unapproved document, which leaves the write unproven.
 
 ## Components and Interfaces
 
-### plugins/freethinking/skills/start-task/SKILL.md
+### plugins/ponderly/skills/start-task/SKILL.md
 
 Five edits, each quoted as it will read.
 
@@ -67,7 +67,7 @@ After `Changes needed`, revise the file, then show it again as its path and one 
 | Show a document | a written Spec_Document and its step's shape | path, open-the-file sentence, the step's shape, then the Approval_Question, in one message | 1.1 to 1.6, 2, 3, 4 |
 | Show a revision | the revised Spec_Document and the change request | path, one line per changed section with a changed user story or key decision quoted, unapplied parts with reasons, then the Approval_Question, in one message | 5.1 to 5.4 |
 
-### plugins/freethinking/README.md
+### plugins/ponderly/README.md
 
 The start-task row's last sentence (Requirement 6.3), today: "..., following the team template, with you approving each document before the next." After: "..., following the team template, showing you each document as its path and a short summary and asking you to approve it before the next."
 
@@ -79,7 +79,7 @@ A new case on the calc fixture (Requirement 7).
 - `scaffold.sh`: a regular executable file, the same as `names-task-and-asks/scaffold.sh`: finds the repository root and runs `evals/fixtures/setup.sh calc main`.
 - `prompt.md` frontmatter: `description`, that with the spec questions answered in the request start-task writes `requirements.md` for the calc fixture and hands it back as its path and one entry per requirement with its user story quoted, not the text, then asks for approval; `tags: [skill, start-task]`; `max_turns: 12`, since the run reads the fixture, the template and writes a file; `allowed_tools: [Read, Glob, Grep, Write, Edit, Agent, Skill]`; `expected_outcome` in the same words as the description, with the path named, one entry per requirement with its user story quoted, anything the skill decided listed as an open question, no criterion quoted, no section of the document reprinted, `Approved` and `Changes needed` offered, and no code written. Prompt:
 
-  "/freethinking:start-task Keep a history of every calculation: record each operation with its operands and result as it runs, and add a way to list the history. Answers to the spec questions: it is for a developer using the calc package from a script, so they can see afterwards what was computed and in what order; out of scope is keeping the history beyond the process or sharing it between processes, and clearing the history; no constraints beyond the standard library and the existing tests passing; keep it in a new module that wraps the operations, so only calls made through it are recorded, and record a call that raises as an entry holding the error instead of a result. I will not answer further questions in this run: decide anything else yourself and list it as an open question in the hand-back."
+  "/ponderly:start-task Keep a history of every calculation: record each operation with its operands and result as it runs, and add a way to list the history. Answers to the spec questions: it is for a developer using the calc package from a script, so they can see afterwards what was computed and in what order; out of scope is keeping the history beyond the process or sharing it between processes, and clearing the history; no constraints beyond the standard library and the existing tests passing; keep it in a new module that wraps the operations, so only calls made through it are recorded, and record a call that raises as an entry holding the error instead of a result. I will not answer further questions in this run: decide anything else yourself and list it as an open question in the hand-back."
 
   The last sentence stops the skill from waiting on a further question, which the first probe showed it asks when the answers leave a gap, and exercises Requirement 2.3, the open questions after the entries. The description and expected_outcome say that anything the skill decided is listed as an open question.
 
@@ -87,25 +87,25 @@ A new case on the calc fixture (Requirement 7).
 
 | Grader | Type | Checks |
 |--------|------|--------|
-| `writes-requirements` | `file_exists`, path `.freethinking/specs/*/requirements.md`, `exists: true` | the document was written during the run, in the Spec_Folder |
-| `names-the-path` | `regex`, pattern `\.freethinking/specs/[a-z0-9-]+/requirements\.md` | the final message names the file |
+| `writes-requirements` | `file_exists`, path `.ponderly/specs/*/requirements.md`, `exists: true` | the document was written during the run, in the Spec_Folder |
+| `names-the-path` | `regex`, pattern `\.ponderly/specs/[a-z0-9-]+/requirements\.md` | the final message names the file |
 | `not-reprinted` | `regex`, pattern `^#+\s*Acceptance Criteria\|^## Glossary`, flags `m`, `match: not_contains` | no heading of the document is in the final message; the words in prose are allowed |
 | `offers-approval` | `regex`, pattern `^\s*(?:[-*•]\|\d+[.)])\s*[*_\x60]*Approved\b`, flags `im` | the approval question is put, its option on its own line as the sibling cases grade |
 | `quotes-a-user-story` | `regex`, pattern `As an? .+, I want` | at least one requirement's user story is quoted in the final message |
 | `no-criteria-reproduced` | `regex`, pattern `\bSHALL\b`, `match: not_contains` | no acceptance criterion is reproduced: every criterion carries SHALL and no summary does |
 | `every-entry-quotes-a-story` | `llm`, judging the reply alone | checks only two things: before the approval options, a list in which every item quotes a user story that begins "As a" and contains "I want" and "so that"; and no section of the document printed. PASS when both hold, FAIL when either does not. It says what is allowed and never a reason to fail: a summary sentence after a quote, a bracketed reference such as (2.2), a list of decisions or open questions after the items, bold or backticks, options in plain text. It does not prove one entry per requirement, which the judge cannot count from the reply |
 
-The `no-code-written` grader of the siblings is not carried: this case writes a file on purpose, and `file_exists` counts only files created during the run, so a grader on `**/*.py` with `exists: false` is added instead as `no-code-written` to keep the "writes no code" promise: no Python file is created anywhere in the workspace, since the skill writes only Markdown under `.freethinking/specs/`. That makes eight graders. The Makefile's start-task target already grants Write and Edit and runs scaffolds, so no Makefile change.
+The `no-code-written` grader of the siblings is not carried: this case writes a file on purpose, and `file_exists` counts only files created during the run, so a grader on `**/*.py` with `exists: false` is added instead as `no-code-written` to keep the "writes no code" promise: no Python file is created anywhere in the workspace, since the skill writes only Markdown under `.ponderly/specs/`. That makes eight graders. The Makefile's start-task target already grants Write and Edit and runs scaffolds, so no Makefile change.
 
 ### The spec folder move
 
-One replacement, `.claude/specs` to `.freethinking/specs`, in three groups of files, each its own task (Requirement 8).
+One replacement, `.claude/specs` to `.ponderly/specs`, in three groups of files, each its own task (Requirement 8).
 
 | Group | Files | Beyond the replacement |
 |-------|-------|------------------------|
-| Plugin text and READMEs | `skills/start-task/SKILL.md`, `skills/implement-spec/SKILL.md`, `agents/task-executor.md`, `rules/workflow.md`, the plugin README, the root README | the plugin README's "Tune the plugin for a repository" section gains, after its first sentence: "The same folder holds the specs: `start-task` writes each task's three documents to `.freethinking/specs/<task>/`, and `implement-spec` reads them there." |
-| Evals | the four `files/.claude/specs` fixture folders under `evals/skills/implement-spec/` (three) and `evals/rules/workflow/closed-spec-is-a-record/` (one), moved with `git mv`; every prompt, grader, scaffold and case README under `evals/` that names the path, the new case's `prompt.md` and graders included; `evals/README.md` | the sandbox note becomes: "Writes and edits under `.claude/` in the workspace are refused even when Write or Edit is granted, and so is a shell fallback; a path-scoped grant such as `Write(.claude/**)` does not lift it, and a committed `CLAUDE.md` is not loaded. Specs live under `.freethinking/specs/`, which the sandbox lets a skill write, so a spec being written or ticked can be graded there." |
-| Records | `git mv .claude/specs .freethinking/specs`, the eleven folders, this spec's included | content untouched; `.claude/settings.json` stays |
+| Plugin text and READMEs | `skills/start-task/SKILL.md`, `skills/implement-spec/SKILL.md`, `agents/task-executor.md`, `rules/workflow.md`, the plugin README, the root README | the plugin README's "Tune the plugin for a repository" section gains, after its first sentence: "The same folder holds the specs: `start-task` writes each task's three documents to `.ponderly/specs/<task>/`, and `implement-spec` reads them there." |
+| Evals | the four `files/.claude/specs` fixture folders under `evals/skills/implement-spec/` (three) and `evals/rules/workflow/closed-spec-is-a-record/` (one), moved with `git mv`; every prompt, grader, scaffold and case README under `evals/` that names the path, the new case's `prompt.md` and graders included; `evals/README.md` | the sandbox note becomes: "Writes and edits under `.claude/` in the workspace are refused even when Write or Edit is granted, and so is a shell fallback; a path-scoped grant such as `Write(.claude/**)` does not lift it, and a committed `CLAUDE.md` is not loaded. Specs live under `.ponderly/specs/`, which the sandbox lets a skill write, so a spec being written or ticked can be graded there." |
+| Records | `git mv .claude/specs .ponderly/specs`, the eleven folders, this spec's included | content untouched; `.claude/settings.json` stays |
 
 The hook output and the rules size are unaffected beyond the one path in the workflow rule's record bullet, which `make check` proves.
 
@@ -114,7 +114,7 @@ The hook output and the rules size are unaffected beyond the one path in the wor
 The Document_Summary, as text:
 
 ```text
-.freethinking/specs/<task-name>/<document>.md
+.ponderly/specs/<task-name>/<document>.md
 <one sentence: open the file before answering>
 
 <for requirements: "N. <title>" then "> <user story>" per requirement, then any open question>
@@ -125,7 +125,7 @@ The Document_Summary, as text:
 The Revision_Summary, as text:
 
 ```text
-.freethinking/specs/<task-name>/<document>.md
+.ponderly/specs/<task-name>/<document>.md
 - <section>: <what changed>, with "> <new passage>" when a user story or key decision changed
 - Not applied: <which part>, because <why>
 ```
@@ -158,7 +158,7 @@ The eval case folder follows `checks/test_eval_cases.py`: `prompt.md` with its f
 |-----------|----------|----------|--------------|
 | The author answers Changes needed with a request that contradicts an approved earlier document | CONFLICT | say so in the revision summary as a part not applied, with the reason, and ask again | 5.3 |
 | A change request names a section the document does not have | VALIDATION | say so as a part not applied; revise the rest | 5.3 |
-| The sandbox refuses the write of `requirements.md` | SANDBOX | seen twice under `.claude/specs/`, with Write granted and with `Write(.claude/**)`: "Permission to use Write has been denied because Claude Code is running in don't ask mode"; the Spec_Folder moves out of `.claude/`; if `.freethinking/` is refused too, stop and report | 7.1, 8.5 |
+| The sandbox refuses the write of `requirements.md` | SANDBOX | seen twice under `.claude/specs/`, with Write granted and with `Write(.claude/**)`: "Permission to use Write has been denied because Claude Code is running in don't ask mode"; the Spec_Folder moves out of `.claude/`; if `.ponderly/` is refused too, stop and report | 7.1, 8.5 |
 | The eval run ends before the file is written for another reason | TURNS | `writes-requirements` fails; read the trace, raise `max_turns` as the evals README says, not the grader | 7.1 |
 | The eval's llm grader fails while the regex graders pass | GRADER | read the reply in the report; a judge failing a reply that meets the grader's two literal checks is a grader fault, so make the grader more literal; a reply that fails them is the skill's fault, so fix the skill text | 7.2, 7.4 |
 | An existing start-task case drops below its last result | REGRESSION | the edits touch only the closing paragraphs and the new section, so a drop points at the section's wording; shorten it and rerun | 7.4 |

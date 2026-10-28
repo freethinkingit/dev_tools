@@ -8,4 +8,4 @@ How any skill or agent writes to the author, for a reader who did not watch the 
 - **Do not narrate.** The plan stated once before acting, as the collaboration rule asks, is not narration; leave out the running account of tool calls and what is pending, which buries what matters.
 - **Lay out a decision before asking it.** Say what is being decided, the options in plain words with what each costs, then the recommendation and its reason, so the author need not rebuild the problem.
 - **Write plainly and stop.** One idea per sentence, in plain words; end when the content ends, with no offer and no restatement, because padding hides the point.
-- **Deliver with the skill.** To hand back work, ask for a decision, report status or answer what something is or why, use `/freethinking:report`, which holds each shape. A skill's own stops and questions keep their shape, as does an agent reporting to its launcher.
+- **Deliver with the skill.** To hand back work, ask for a decision, report status or answer what something is or why, use `/ponderly:report`, which holds each shape. A skill's own stops and questions keep their shape, as does an agent reporting to its launcher.

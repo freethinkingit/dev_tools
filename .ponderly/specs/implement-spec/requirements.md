@@ -6,7 +6,7 @@
 
 ## Glossary
 
-- **Skill**: The `implement-spec` skill described by this document, run as `/freethinking:implement-spec`.
+- **Skill**: The `implement-spec` skill described by this document, run as `/ponderly:implement-spec`.
 - **Author**: The engineer running the Skill, who is accountable for the resulting code.
 - **Spec**: A directory `.claude/specs/<task>/` holding `requirements.md`, `design.md` and `tasks.md` produced by `start-task`.
 - **Task_List**: The `tasks.md` file of a Spec.
@@ -47,12 +47,12 @@
 1. WHEN the Author gives a task name as the argument, THE Skill SHALL read that Spec's `tasks.md`, `requirements.md` and `design.md` before doing anything else.
 2. WHEN the Author gives no argument and exactly one Spec has an unticked non-optional Leaf_Task, THE Skill SHALL name that Spec and confirm it with the Author.
 3. WHEN the Author gives no argument and more than one Spec has an unticked non-optional Leaf_Task, THE Skill SHALL list them and ask the Author which to work.
-4. IF the named Spec has no `tasks.md`, THEN THE Skill SHALL say so, recommend `/freethinking:start-task`, and make no code change.
+4. IF the named Spec has no `tasks.md`, THEN THE Skill SHALL say so, recommend `/ponderly:start-task`, and make no code change.
 5. WHEN the Skill loads the Task_List, THE Skill SHALL validate the Graph before any other step, checking that: every Leaf_Task, Optional_Tests included, appears in exactly one Wave; every task id in the Graph is a Leaf_Task in the Task_List; and Wave ids are unique and ascending.
 6. IF the Task_List has no Graph or the Graph fails validation, THEN THE Skill SHALL list each problem by task id, propose a corrected Graph, or the removal of a task that has no work in it, as a spec edit under Requirement 6, and make no code change until the Author approves it.
 7. WHEN the Spec has ticked Leaf_Tasks, THE Skill SHALL resume at the first unticked Leaf_Task in Wave order and SHALL NOT redo a ticked task.
-8. WHEN every non-optional Leaf_Task in the Task_List is already ticked at load, THE Skill SHALL report the Spec complete, name any unticked Optional_Tests and ask whether to do them, and otherwise recommend `/freethinking:pr` and stop.
-9. WHEN the Author gives no argument and no Spec has an unticked non-optional Leaf_Task, THE Skill SHALL say there is nothing to implement, recommend `/freethinking:start-task`, and stop.
+8. WHEN every non-optional Leaf_Task in the Task_List is already ticked at load, THE Skill SHALL report the Spec complete, name any unticked Optional_Tests and ask whether to do them, and otherwise recommend `/ponderly:pr` and stop.
+9. WHEN the Author gives no argument and no Spec has an unticked non-optional Leaf_Task, THE Skill SHALL say there is nothing to implement, recommend `/ponderly:start-task`, and stop.
 
 ### Requirement 3: Set up the Run
 
@@ -102,7 +102,7 @@
 3. IF the Full_Suite fails at the end of a Wave, THEN THE Skill SHALL report the failing output verbatim and ask the Author how to proceed before starting the next Wave.
 4. THE Report SHALL list each Leaf_Task completed, each test command run with its result, each file changed, and the next unticked Leaf_Task.
 5. THE Skill SHALL NOT commit or push unless the Author asks.
-6. WHEN every Leaf_Task other than a Skipped_Test is ticked, THE Skill SHALL give the Report with the final Wave's Full_Suite result, recommend `/freethinking:pr`, and stop.
+6. WHEN every Leaf_Task other than a Skipped_Test is ticked, THE Skill SHALL give the Report with the final Wave's Full_Suite result, recommend `/ponderly:pr`, and stop.
 7. WHEN the Author says to continue after a Report, THE Skill SHALL resume at the next unticked Leaf_Task under the same Cadence and Optional_Test choices.
 
 ### Requirement 6: Handle Drift and failure
@@ -123,10 +123,10 @@
 
 #### Acceptance Criteria
 
-1. THE Skill SHALL be invokable as `/freethinking:implement-spec [task-name] [cadence]` and SHALL trigger when the Author asks to implement, build, work, continue or resume a spec or its tasks.
-2. THE handbook's workflow rule SHALL direct Claude to `/freethinking:implement-spec` when a `tasks.md` exists for the work in hand.
+1. THE Skill SHALL be invokable as `/ponderly:implement-spec [task-name] [cadence]` and SHALL trigger when the Author asks to implement, build, work, continue or resume a spec or its tasks.
+2. THE handbook's workflow rule SHALL direct Claude to `/ponderly:implement-spec` when a `tasks.md` exists for the work in hand.
 3. THE handbook README SHALL list the Skill in the skills table.
 4. THE handbook SHALL include at least one eval case under `evals/skills/implement-spec/` that passes when run twice.
-5. THE `start-task` hand-off SHALL point the Author at `/freethinking:implement-spec` for the first Wave.
+5. THE `start-task` hand-off SHALL point the Author at `/ponderly:implement-spec` for the first Wave.
 6. THE plugin version SHALL be bumped for the release that adds the Skill.
 7. THE workflow rule and the README SHALL describe stops as the Author's Cadence, after each Leaf_Task or each Wave, and SHALL NOT refer to checkpoints.

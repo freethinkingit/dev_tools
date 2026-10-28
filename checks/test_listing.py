@@ -12,7 +12,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PLUGIN = ROOT / "plugins" / "freethinking"
+PLUGIN = ROOT / "plugins" / "ponderly"
 
 README_MIN_WORDS = 40
 ICON_MIN_PX = 512

@@ -3,9 +3,9 @@ description: Launched on a spec task with one small gap, what divide should do f
 tags: [agent, task-executor]
 max_turns: 20
 allowed_tools: [Read, Glob, Grep, Agent]
-expected_outcome: Claude launches one sub-agent with subagent_type freethinking:task-executor, giving it the mode sentence and the task, and does nothing else itself. The sub-agent adds divide(a, b) to calc/ops.py next to add, picks or leaves alone the behaviour for a zero divisor, writes no test since tests are tasks of their own, runs python3 -m unittest and an ephemeral check, deletes the check, and returns its Summary with the status `done` and the zero behaviour listed under `unsure` as unsettled by the task. Claude's reply is that Summary verbatim; the workspace gains no file.
+expected_outcome: Claude launches one sub-agent with subagent_type ponderly:task-executor, giving it the mode sentence and the task, and does nothing else itself. The sub-agent adds divide(a, b) to calc/ops.py next to add, picks or leaves alone the behaviour for a zero divisor, writes no test since tests are tasks of their own, runs python3 -m unittest and an ephemeral check, deletes the check, and returns its Summary with the status `done` and the zero behaviour listed under `unsure` as unsettled by the task. Claude's reply is that Summary verbatim; the workspace gains no file.
 ---
-Launch one sub-agent with the Agent tool, `subagent_type` `freethinking:task-executor`, and give it exactly this prompt:
+Launch one sub-agent with the Agent tool, `subagent_type` `ponderly:task-executor`, and give it exactly this prompt:
 
 ```text
 This task is a leaf task from a spec; tests are tasks of their own.

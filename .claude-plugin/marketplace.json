@@ -1,13 +1,13 @@
 {
-  "name": "freethinkingit",
+  "name": "sabind",
   "description": "Engineering plugins",
   "owner": {
-    "name": "Developer Handbook contributors"
+    "name": "Dan Sabin"
   },
   "plugins": [
     {
-      "name": "freethinking",
-      "source": "./plugins/freethinking",
+      "name": "ponderly",
+      "source": "./plugins/ponderly",
       "description": "Shared engineering skills: standard workflows and prompts for day-to-day development."
     }
   ]

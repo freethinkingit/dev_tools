@@ -16,7 +16,7 @@ flowchart LR
     TC -->|vulnerability| S["Report a vulnerability<br/>security policy page"]
     I --> T["Weekly triage<br/>type confirmed, priority and areas or question,<br/>kept or not planned, milestone only when a goal has one, triage removed"]
     T --> B["Branch n-short-slug"]
-    B --> PR["/freethinking:pr<br/>ticket #n in the title and Why,<br/>Closes #n when the merge finishes it"]
+    B --> PR["/ponderly:pr<br/>ticket #n in the title and Why,<br/>Closes #n when the merge finishes it"]
     PT["PR_Template<br/>.github/pull_request_template.md"] -.used by.-> PR
     G -.points at.-> PT
     PR -->|merge| I
@@ -31,7 +31,7 @@ flowchart LR
 
 **Decision 2: issue forms, not Markdown templates** (Requirements 2.1 to 2.3). A YAML form types its fields: a dropdown or checkboxes hold one of a known set of values, so a filter or a triage step reads a value rather than prose, and a field marked required cannot be left empty, so GitHub refuses an incomplete report at submission. Its top-level `labels` and `type` keys apply the Triage_Label and the Issue_Type at submission with no automation. A Markdown template can apply labels and a type from its frontmatter too, but its body is free text with nothing required. Trade-off: a form cannot be previewed locally and GitHub reads templates only from the default branch, so the forms are checked by hand after the merge (Requirement 7.4).
 
-**Decision 3: kind lives in the Issue_Type, everything else in nine bare labels** (Requirement 3.1). The organization's `Bug`, `Feature` and `Task` types exist and are enabled (checked with `gh api orgs/freethinkingit/issue-types`), so `bug`, `enhancement` and `documentation` would duplicate them. `quality` and `compatibility` are bare rather than `area:` prefixed: with two values a prefix adds nothing, and the small and mid-sized repositories surveyed use bare labels. Rejected: effort labels, a guess nobody acts on; prefixed areas, keys without a payoff; both the author's calls.
+**Decision 3: kind lives in the Issue_Type, everything else in nine bare labels** (Requirement 3.1). The organization's `Bug`, `Feature` and `Task` types exist and are enabled (checked with `gh api` on the organization's issue types), so `bug`, `enhancement` and `documentation` would duplicate them. `quality` and `compatibility` are bare rather than `area:` prefixed: with two values a prefix adds nothing, and the small and mid-sized repositories surveyed use bare labels. Rejected: effort labels, a guess nobody acts on; prefixed areas, keys without a payoff; both the author's calls.
 
 **Decision 4: triage is a habit the Guide defines, not an automation** (Requirement 2.5). One weekly pass over the `triage` label in the six steps of Requirement 2.5. Rejected: a stale bot or a labelling action; the author wants no automation around this repository's project management.
 
@@ -54,7 +54,7 @@ flowchart LR
 | Opening | What the plugin is, links to the Community_Files | 1.4 |
 | Set up | Clone; `claude --plugin-dir .` loads the working copy for one session; `make validate` | 1.1 |
 | Test | Free checks: `make validate`, the unit tests under `checks/` then the two validators. Evals by component with `make eval-<kind>-<name>`, model calls run by hand, the table into the pull request. A change to a skill, agent, rule or hook comes with an eval case or a change to one; when none is touched no eval is needed and `make validate` is the whole check. The commands and these rules only: for how the checks and evals work, the section links the README's Testing section and `evals/README.md` rather than restating them, so that the detail has one place | 1.1, 1.2, 1.6 |
-| Make a change | Small change: make it. Sizeable: `/freethinking:start-task`, then `/freethinking:implement-spec`. Bug: `/freethinking:bugfix`. Branch `<issue number>-<short slug>` when an issue exists, a short slug otherwise, never the default branch; GitHub's Create a branch link on the issue gives that shape, and when `/freethinking:implement-spec` proposes the task name as the branch, the answer puts the issue number in front. `/freethinking:pr`, giving the issue number as the ticket; the PR_Template, linked from here, is the one place that says how the issue is linked and when to write `Closes #<number>`. A new skill, agent, rule or hook is also added to the `component` dropdown of all three forms, which name the plugin's components | 1.2, 1.3 |
+| Make a change | Small change: make it. Sizeable: `/ponderly:start-task`, then `/ponderly:implement-spec`. Bug: `/ponderly:bugfix`. Branch `<issue number>-<short slug>` when an issue exists, a short slug otherwise, never the default branch; GitHub's Create a branch link on the issue gives that shape, and when `/ponderly:implement-spec` proposes the task name as the branch, the answer puts the issue number in front. `/ponderly:pr`, giving the issue number as the ticket; the PR_Template, linked from here, is the one place that says how the issue is linked and when to write `Closes #<number>`. A new skill, agent, rule or hook is also added to the `component` dropdown of all three forms, which name the plugin's components | 1.2, 1.3 |
 | Issues | The three Issue_Forms and what submitting one does; the Template_Chooser links; triage as the six steps of Requirement 2.5, at least weekly; an issue opened without a form; a discussion that becomes work is converted to an issue, an issue that is a question is converted to a discussion at triage | 1.4, 2.5, 2.6, 5.3 |
 | Labels and milestones | One Issue_Type per issue; each label group in one sentence; labels are lowercase and Issue_Types are written as GitHub names them; at most one Priority_Label and the Area_Labels that apply, none included; a new label is proposed in an issue; `good first issue` feeds the contribute page and GitHub's surfacing of approachable issues, `help wanted` is work a Maintainer would merge but will not write; a Milestone names a goal, the open ones are the roadmap | 3.2, 3.3, 3.4, 3.5, 3.6 |
 | Compatibility | What portability across Claude Code, Cursor, Codex and other agent tools means for a skill or rule here; the checks known so far, seeded with the three in Data Models; the list grows from issues labelled `compatibility` | 1.7 |
@@ -75,7 +75,7 @@ Four files under `.github/ISSUE_TEMPLATE/`. Fields are in Data Models.
 
 | File | Content | Requirements |
 |---|---|---|
-| `LICENSE` | The MIT License text with `Copyright (c) 2026 freethinkingit` | 6.1 |
+| `LICENSE` | The MIT License text with `Copyright (c) 2026 Dan Sabin` | 6.1 |
 | `.claude-plugin/plugin.json` | gains `"license": "MIT"`, a documented manifest field holding an SPDX identifier; the marketplace entry has a relative-path source, so the listing shows it before install too | 6.1 |
 | `.github/CODE_OF_CONDUCT.md` | Contributor Covenant 2.1, the contact placeholder replaced by the method the author names | 6.2 |
 | `.github/SECURITY.md` | Report through GitHub's private vulnerability reporting, the Report a vulnerability button on the repository's Security tab, never in a public issue; the latest release is supported | 6.3 |
@@ -109,7 +109,7 @@ The "Add or change a skill or rule" section of `README.md` shrinks to at most th
 | Labels | create `quality`, `compatibility`, `triage`; delete `bug`, `enhancement`, `documentation`, `duplicate`, `invalid`, `wontfix`, `effort: high`, `effort: medium`, `effort: low`, `area: quality`; keep the rest as they are; applied before the merge, since a form's `labels` key adds only labels that already exist | 3.1 |
 | Issues #1 to #4 | drop their `effort:` and `area: quality` labels, add `quality`, keep their priorities; set the Issue_Type with `gh issue edit <n> --type <Type>`, proposed as #1 Feature (a rule change), #2 Task (an eval case), #3 Task, #4 Task, confirmed by the author at hand-back | 7.5 |
 | Discussions | already enabled on the repository (checked with `gh repo view`); confirm the Q&A and Ideas categories exist so the Template_Chooser links resolve | 5.1, 5.2 |
-| Visibility | public, with GitHub's private vulnerability reporting enabled since `SECURITY.md` names it: `gh repo edit freethinkingit/dev_tools --visibility public --accept-visibility-change-consequences`, then `gh api -X PUT repos/freethinkingit/dev_tools/private-vulnerability-reporting`; the author's action, before the merge | 6.4, 7.5 |
+| Visibility | public, with GitHub's private vulnerability reporting enabled since `SECURITY.md` names it: `gh repo edit sabind/ponderly --visibility public --accept-visibility-change-consequences`, then `gh api -X PUT repos/sabind/ponderly/private-vulnerability-reporting`; the author's action, before the merge | 6.4, 7.5 |
 | Milestone | "Listing on Claude marketplace" exists with the four issues; nothing to change | 3.3 |
 | Version | `0.5.0` to `0.5.1` in `.claude-plugin/plugin.json`, a version string the docs do not check against semver, moved by a patch step for a wording change in the pr skill; the marketplace entry sets no version, so nothing else must agree | 7.3 |
 
@@ -186,7 +186,7 @@ Propose an eval case (`type: Task`):
 | `grading` | textarea | yes | How a run would be graded: what in the transcript or in the files shows pass or fail |
 | `prompt` | textarea | no | A prompt that would exercise it |
 
-Template_Chooser (`config.yml`): `blank_issues_enabled: false` and three `contact_links`, each with `name`, `url` and `about`: a question to `https://github.com/freethinkingit/dev_tools/discussions/categories/q-a`, an idea to `https://github.com/freethinkingit/dev_tools/discussions/categories/ideas`, a vulnerability to `https://github.com/freethinkingit/dev_tools/security/policy`, the page that shows `SECURITY.md` with GitHub's Report a vulnerability button.
+Template_Chooser (`config.yml`): `blank_issues_enabled: false` and three `contact_links`, each with `name`, `url` and `about`: a question to `https://github.com/sabind/ponderly/discussions/categories/q-a`, an idea to `https://github.com/sabind/ponderly/discussions/categories/ideas`, a vulnerability to `https://github.com/sabind/ponderly/security/policy`, the page that shows `SECURITY.md` with GitHub's Report a vulnerability button.
 
 ### Ticket_Reference in the pr skill
 
@@ -200,7 +200,7 @@ What the skill writes for what it is given (Requirements 4.2 to 4.4). The rule i
 
 ### Branch name
 
-`<issue number>-<short slug>`, for example `12-ticket-reference`; the slug alone without an issue. It is the shape of the branch GitHub makes from the Create a branch link under Development on an issue page, `<number>-<title as a slug>`, so a contributor who starts there complies without reading the rule, and the Guide's slug is only shorter. When `/freethinking:implement-spec` proposes the task name as the branch, the author answers with the issue number in front, `12-contributing-guide`; the skill proposes and the author decides, so the skill stays as it is (Requirement 1.3). The Guide states it; no skill checks it.
+`<issue number>-<short slug>`, for example `12-ticket-reference`; the slug alone without an issue. It is the shape of the branch GitHub makes from the Create a branch link under Development on an issue page, `<number>-<title as a slug>`, so a contributor who starts there complies without reading the rule, and the Guide's slug is only shorter. When `/ponderly:implement-spec` proposes the task name as the branch, the author answers with the issue number in front, `12-contributing-guide`; the skill proposes and the author decides, so the skill stays as it is (Requirement 1.3). The Guide states it; no skill checks it.
 
 ### Compatibility checks, the seed list
 

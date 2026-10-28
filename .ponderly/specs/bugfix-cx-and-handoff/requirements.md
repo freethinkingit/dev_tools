@@ -6,7 +6,7 @@ The bugfix skill fixes a bug from a ticket: it reads the ticket back, reproduces
 
 ## Glossary
 
-- **Skill**: The bugfix skill, `skills/bugfix/SKILL.md`, as invoked by `/freethinking:bugfix` or by start-task through the Skill tool.
+- **Skill**: The bugfix skill, `skills/bugfix/SKILL.md`, as invoked by `/ponderly:bugfix` or by start-task through the Skill tool.
 - **Author**: The person running the Skill, who is accountable for the fix.
 - **Ticket_Reference**: A reference to a ticket in any form: an issue number such as `#12`, a ticket URL, a tracker key such as `ENG-1234`, or a short description when there is no ticket.
 - **GitHub_Issue**: A Ticket_Reference that names an issue of the current repository, readable and commentable with `gh`.
@@ -73,11 +73,11 @@ The bugfix skill fixes a bug from a ticket: it reads the ticket back, reproduces
 
 1. WHEN the fix is verified, THE Skill SHALL invoke the `report` skill in handback mode to write the Summary, and SHALL ask the Handoff_Question with the Question_Tool, header `Pull request`, with that Message as the question's own text, so the Author reads problems first in the dialog before choosing, with `Open it now`, marked "(Recommended)", as the first option and `Stop here` as the last; WHEN the dialog cannot carry the Message, or the answer was given in advance and the question is not asked, THE Skill SHALL put the Message as prose before the question or before acting on the answer; IF the `report` skill is missing, THEN THE Skill SHALL write the four parts itself as the question's text.
 2. WHERE the Ticket_Reference is a GitHub_Issue and `gh` is signed in, THE Handoff_Question SHALL offer `Stop and comment on the ticket` as the second option.
-3. WHEN the Author picks `Open it now`, THE Skill SHALL invoke the PR_Skill with the Skill tool as `freethinking:pr`, passing the Ticket_Reference as the argument when there is one, and SHALL do nothing else.
+3. WHEN the Author picks `Open it now`, THE Skill SHALL invoke the PR_Skill with the Skill tool as `ponderly:pr`, passing the Ticket_Reference as the argument when there is one, and SHALL do nothing else.
 4. WHEN the Author picks `Stop and comment on the ticket`, THE Skill SHALL post the Ticket_Comment with `gh issue comment`, written for a reader of the ticket who has none of the Author's local state: the four Summary parts, with the Fix stated as the change itself, file, line and what changed, so a reader could make it; then end. THE Ticket_Comment SHALL NOT name the Author's branch, uncommitted files or any command to run; the statement of where the fix sits is said in the conversation.
 5. WHEN the Author picks `Stop here`, THE Skill SHALL end with the statement of where the fix sits and SHALL post nothing.
 6. THE Skill SHALL NOT commit, create a branch, push, or create a pull request itself; the PR_Skill offers each of those.
-7. IF the Skill tool cannot find `freethinking:pr`, THEN THE Skill SHALL say that the plugin's pr skill is missing and stop, and SHALL NOT draft or open the pull request another way.
+7. IF the Skill tool cannot find `ponderly:pr`, THEN THE Skill SHALL say that the plugin's pr skill is missing and stop, and SHALL NOT draft or open the pull request another way.
 
 ### Requirement 5: The Skill carries a CX block
 
@@ -98,7 +98,7 @@ The bugfix skill fixes a bug from a ticket: it reads the ticket back, reproduces
 
 #### Acceptance Criteria
 
-1. THE repository SHALL carry an Eval_Case that runs the Skill on the calc fixture with the planted defect, with a Ticket_Reference and the Author's answers given up front, and whose graders pass only when the Skill lands the fix, invokes the `report` skill and writes its Message with Done and Checks, invokes `freethinking:pr` through the Skill tool with that Ticket_Reference as the argument, and runs none of `gh pr create`, `git commit`, `git push` or a branch creation.
+1. THE repository SHALL carry an Eval_Case that runs the Skill on the calc fixture with the planted defect, with a Ticket_Reference and the Author's answers given up front, and whose graders pass only when the Skill lands the fix, invokes the `report` skill and writes its Message with Done and Checks, invokes `ponderly:pr` through the Skill tool with that Ticket_Reference as the argument, and runs none of `gh pr create`, `git commit`, `git push` or a branch creation.
 2. THE Eval_Case SHALL be reachable through `make eval-skill-bugfix`, with any flags it needs on one Makefile line.
 3. THE existing `reads-ticket-first` Eval_Case SHALL pass unchanged.
 4. THE README's bugfix row SHALL say that the Ticket_Reference may be followed by what the Author already knows.

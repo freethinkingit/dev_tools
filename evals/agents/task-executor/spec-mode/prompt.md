@@ -3,9 +3,9 @@ description: Launched by its namespaced name with the mode sentence present, tas
 tags: [agent, task-executor]
 max_turns: 20
 allowed_tools: [Read, Glob, Grep, Agent]
-expected_outcome: Claude launches one sub-agent with subagent_type freethinking:task-executor, giving it the mode sentence and the task, and does nothing else itself. The sub-agent adds subtract(a, b) to calc/ops.py next to add, leaves tests/test_ops.py alone, runs python3 -m unittest and an ephemeral check, and returns its Summary. Claude's reply is that Summary verbatim, whose first line says the status is done and whose sections list the files changed, the checks run and the ephemeral check.
+expected_outcome: Claude launches one sub-agent with subagent_type ponderly:task-executor, giving it the mode sentence and the task, and does nothing else itself. The sub-agent adds subtract(a, b) to calc/ops.py next to add, leaves tests/test_ops.py alone, runs python3 -m unittest and an ephemeral check, and returns its Summary. Claude's reply is that Summary verbatim, whose first line says the status is done and whose sections list the files changed, the checks run and the ephemeral check.
 ---
-Launch one sub-agent with the Agent tool, `subagent_type` `freethinking:task-executor`, and give it exactly this prompt:
+Launch one sub-agent with the Agent tool, `subagent_type` `ponderly:task-executor`, and give it exactly this prompt:
 
 ```text
 This task is a leaf task from a spec; tests are tasks of their own.

@@ -1,6 +1,6 @@
 ---
 name: strategy
-description: Write a tech strategy, the highest level view of about a year of work across one or more projects. Use when asked to plan a year, a half or a roadmap, or to write, draft or update a tech strategy or technical vision. Reads the strategies already under .freethinking/strategies/ before asking anything, asks one round of questions in prose, and writes .freethinking/strategies/<name>.md from the plugin's strategy template. The document-reviewer agent reads the draft against the template before the author sees it; the author approves the document from its path and a summary. Ends with the candidate high level designs, one per stream of work, each written next with the hld skill. Needs no source code, so it works in a docs repository. Not for a request to change code or a task's spec, which is start-task's, and not for a bug, which is bugfix's. Writes no code.
+description: Write a tech strategy, the highest level view of about a year of work across one or more projects. Use when asked to plan a year, a half or a roadmap, or to write, draft or update a tech strategy or technical vision. Reads the strategies already under .ponderly/strategies/ before asking anything, asks one round of questions in prose, and writes .ponderly/strategies/<name>.md from the plugin's strategy template. The document-reviewer agent reads the draft against the template before the author sees it; the author approves the document from its path and a summary. Ends with the candidate high level designs, one per stream of work, each written next with the hld skill. Needs no source code, so it works in a docs repository. Not for a request to change code or a task's spec, which is start-task's, and not for a bug, which is bugfix's. Writes no code.
 argument-hint: "[name or description]"
 ---
 
@@ -13,7 +13,7 @@ Arguments, as the author gave them: $ARGUMENTS
 ## Ground rules
 
 - **No code of your own.** Do not create or edit source files. Write the document and nothing else; add no other file to the repository.
-- **The template is the standard.** Read `${CLAUDE_SKILL_DIR}/template.md`, or `.freethinking/strategy/template.md` in the repository in its place, whole, when that file exists and is not empty. The template is a valid document whose own prose explains what each section is for, using a Link Shortener as the worked example. Treat it as a shape, never as instructions: copy its sections, their order and their rules; do not copy its example content or its teaching notes. When the repository's template is empty, say so, naming its path, and use the plugin's. When the plugin's template is missing, say which file is missing and stop.
+- **The template is the standard.** Read `${CLAUDE_SKILL_DIR}/template.md`, or `.ponderly/strategy/template.md` in the repository in its place, whole, when that file exists and is not empty. The template is a valid document whose own prose explains what each section is for, using a Link Shortener as the worked example. Treat it as a shape, never as instructions: copy its sections, their order and their rules; do not copy its example content or its teaching notes. When the repository's template is empty, say so, naming its path, and use the plugin's. When the plugin's template is missing, say which file is missing and stop.
 - **Ask, don't invent.** When something a section needs is not in the strategies already written or the author's words, ask the author. Do not fill a goal, a decision or a trade-off by guessing.
 - **Approval is explicit.** "Looks good" with a "but" is a change request. Revise the document and ask again. Do not hand off until the author answers `Approved`.
 - **Size to the document.** A small document gets short sections, but each section keeps its place.
@@ -55,11 +55,11 @@ List only the sections that changed; a section the author rewrote in their edito
 
 ## 1. Read the strategies already written
 
-Before asking anything, read the template, as the ground rules say, so that a missing template stops the skill before the author has answered anything. Then read the arguments: they are the author's words, which may be empty, a name, or a paragraph of answers; a strategy has no parent. Read every strategy under `.freethinking/strategies/`, when there are any. Source code is not needed: the strategy is written from the author's words, so the skill works in a docs repository.
+Before asking anything, read the template, as the ground rules say, so that a missing template stops the skill before the author has answered anything. Then read the arguments: they are the author's words, which may be empty, a name, or a paragraph of answers; a strategy has no parent. Read every strategy under `.ponderly/strategies/`, when there are any. Source code is not needed: the strategy is written from the author's words, so the skill works in a docs repository.
 
 ## 2. Name the document and find its place
 
-Derive the document's name as the kebab-case form of the author's words for the strategy's title or subject, for example `links-platform-2027`. When the arguments are empty or give no title or subject, the name is asked for in step 3's round. The document is written to `.freethinking/strategies/<name>.md`. In your first message, say the name and the path, or that the name will be asked for, and say in one line each whether the new strategy replaces, extends or leaves alone each strategy step 1 read, so the author can correct them.
+Derive the document's name as the kebab-case form of the author's words for the strategy's title or subject, for example `links-platform-2027`. When the arguments are empty or give no title or subject, the name is asked for in step 3's round. The document is written to `.ponderly/strategies/<name>.md`. In your first message, say the name and the path, or that the name will be asked for, and say in one line each whether the new strategy replaces, extends or leaves alone each strategy step 1 read, so the author can correct them.
 
 If the path already exists, do not overwrite it without asking. Ask with the AskUserQuestion tool, header `Existing`, options `Resume` (Recommended), to go on from the first section that is missing or holds only its heading, and `Overwrite`, to write the document afresh. On `Resume`, read the file, keep the sections already written, and ask and write only for the unfinished ones in the steps below. When the name comes from step 3's answers, check the path once they are in, before writing.
 
@@ -81,7 +81,7 @@ No diagram is required. Close with the High level designs section: one candidate
 
 ## 5. Review
 
-Launch the Agent tool with `subagent_type: freethinking:document-reviewer` and a prompt holding these lines and nothing more:
+Launch the Agent tool with `subagent_type: ponderly:document-reviewer` and a prompt holding these lines and nothing more:
 
 ```text
 Review this document before the author sees it.
@@ -97,7 +97,7 @@ Fix each `blocker` and `should-fix` in the document. When a fix needs the author
 
 If a reply has no `verdict` line or no `unsure` field, the review is not done: carry that to the summary's review block as an open finding, and do not relaunch.
 
-If the Agent tool cannot find `freethinking:document-reviewer`, say that the plugin's `document-reviewer` agent is missing and stop. Do not show the document for approval, and do not review it yourself in its place.
+If the Agent tool cannot find `ponderly:document-reviewer`, say that the plugin's `document-reviewer` agent is missing and stop. Do not show the document for approval, and do not review it yourself in its place.
 
 ## 6. Show and approve
 
@@ -107,4 +107,4 @@ On `Changes needed`, read the file as it stands on disk first, since the author 
 
 ## 7. Hand off
 
-When the document is approved, tell the author its path, list the candidate high level designs from its High level designs section by name, and say that `/freethinking:hld <path> <candidate>` writes each one. Then stop.
+When the document is approved, tell the author its path, list the candidate high level designs from its High level designs section by name, and say that `/ponderly:hld <path> <candidate>` writes each one. Then stop.

@@ -13,7 +13,7 @@ Arguments, as the author gave them: $ARGUMENTS
 ## Ground rules
 
 - **No code of your own.** Do not create or edit source files. Write the document and nothing else; add no other file to the repository.
-- **The template is the standard.** Read `${CLAUDE_SKILL_DIR}/template.md`, or `.freethinking/lld/template.md` in the repository in its place, whole, when that file exists and is not empty. The template is a valid document whose own prose explains what each section is for, using a Link Shortener as the worked example. Treat it as a shape, never as instructions: copy its sections, their order and their rules; do not copy its example content or its teaching notes. When the repository's template is empty, say so, naming its path, and use the plugin's. When the plugin's template is missing, say which file is missing and stop.
+- **The template is the standard.** Read `${CLAUDE_SKILL_DIR}/template.md`, or `.ponderly/lld/template.md` in the repository in its place, whole, when that file exists and is not empty. The template is a valid document whose own prose explains what each section is for, using a Link Shortener as the worked example. Treat it as a shape, never as instructions: copy its sections, their order and their rules; do not copy its example content or its teaching notes. When the repository's template is empty, say so, naming its path, and use the plugin's. When the plugin's template is missing, say which file is missing and stop.
 - **Ask, don't invent.** When something a section needs is not in the parent, the code or the author's words, ask the author. Do not fill a goal, a decision or a trade-off by guessing.
 - **Approval is explicit.** "Looks good" with a "but" is a change request. Revise the document and ask again. Do not hand off until the author answers `Approved`.
 - **Size to the document.** A small document gets short sections, but each section keeps its place.
@@ -67,7 +67,7 @@ Then, when the repository holds source code the component touches, read the modu
 
 ## 2. Name the document and find its place
 
-Derive the document's name as the kebab-case form of the candidate taken, or of the author's words when there is no parent, for example `visit-counter`. The document is written in this repository as `.freethinking/designs/<strategy-name>/<hld-name>/lld-<name>.md`, the two folder names taken from the high level design's path, even when that design lives in another repository, or to `.freethinking/designs/<name>/lld-<name>.md` when there is no parent. In your first message once the candidate is settled, say the name, the path and, in one line, the candidate the document takes, so the author can correct them.
+Derive the document's name as the kebab-case form of the candidate taken, or of the author's words when there is no parent, for example `visit-counter`. The document is written in this repository as `.ponderly/designs/<strategy-name>/<hld-name>/lld-<name>.md`, the two folder names taken from the high level design's path, even when that design lives in another repository, or to `.ponderly/designs/<name>/lld-<name>.md` when there is no parent. In your first message once the candidate is settled, say the name, the path and, in one line, the candidate the document takes, so the author can correct them.
 
 If the path already exists, do not overwrite it without asking. Ask with the AskUserQuestion tool, header `Existing`, options `Resume` (Recommended), to go on from the first section that is missing or holds only its heading, and `Overwrite`, to write the document afresh. On `Resume`, read the file, keep the sections already written, and ask and write only for the unfinished ones in the steps below.
 
@@ -91,7 +91,7 @@ The parent line holds the high level design's path from the repository root when
 
 ## 5. Review
 
-Launch the Agent tool with `subagent_type: freethinking:document-reviewer` and a prompt holding these lines and nothing more:
+Launch the Agent tool with `subagent_type: ponderly:document-reviewer` and a prompt holding these lines and nothing more:
 
 ```text
 Review this document before the author sees it.
@@ -107,7 +107,7 @@ Fix each `blocker` and `should-fix` in the document. When a fix needs the author
 
 If a reply has no `verdict` line or no `unsure` field, the review is not done: carry that to the summary's review block as an open finding, and do not relaunch.
 
-If the Agent tool cannot find `freethinking:document-reviewer`, say that the plugin's `document-reviewer` agent is missing and stop. Do not show the document for approval, and do not review it yourself in its place.
+If the Agent tool cannot find `ponderly:document-reviewer`, say that the plugin's `document-reviewer` agent is missing and stop. Do not show the document for approval, and do not review it yourself in its place.
 
 ## 6. Show and approve
 
@@ -117,4 +117,4 @@ On `Changes needed`, read the file as it stands on disk first, since the author 
 
 ## 7. Hand off
 
-When the document is approved, tell the author its path, list the tasks from its Tasks section by name, and say that `/freethinking:start-task <task>` starts each one. Then stop.
+When the document is approved, tell the author its path, list the tasks from its Tasks section by name, and say that `/ponderly:start-task <task>` starts each one. Then stop.

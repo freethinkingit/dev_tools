@@ -16,7 +16,7 @@ The handbook has no code and no unit-test framework. Each task's check is `make 
     - Remove the two checkpoint tasks and renumber the metrics tasks 4.x; drop the checkpoint clause from the Overview and the Notes bullet; rewrite the Task Dependency Graph prose to define a leaf task and state the two rules; replace the example `waves` block with the five-wave version from the design's Data Models. Check Property 1 by hand against the example tasks
     - _Requirements: 1.3, 1.4_
   - [x] 1.3 Point the start-task hand-off at the new skill
-    - In step 6, tell the author to run `/freethinking:implement-spec <task-name>`, which builds each task in its own sub-agent in wave order, ticks each checkbox when its tests pass, runs the full suite at the end of each wave, and stops for review after each task or each wave as the author chooses
+    - In step 6, tell the author to run `/ponderly:implement-spec <task-name>`, which builds each task in its own sub-agent in wave order, ticks each checkbox when its tests pass, runs the full suite at the end of each wave, and stops for review after each task or each wave as the author chooses
     - _Requirements: 7.5_
 
 - [x] 2. Write the implement-spec skill
@@ -27,12 +27,12 @@ The handbook has no code and no unit-test framework. Each task's check is `make 
     - Step 5 asks once per new wave about optional tests, checks the code for tasks that already appear done, then for each remaining task states id, text and cited requirements and launches a sub-agent with the task text, cited requirements, matching design sections, the code-changes rules with their spec exception, the other tasks in flight and the instruction to stop on drift, which gathers context, implements only what the task describes (tests are tasks of their own), proves it with an ephemeral check and the existing tests, and returns a summary with the check's code. Sub-agents run in parallel at wave cadence and one at a time at task cadence. When one returns the skill re-runs the task's tests, reads any file two sub-agents both changed, ticks on pass and ticks the parent when complete, runs the full suite when a wave's last task is ticked, and leaves for step 6 after two failed fixes, on Drift, or on a failed suite. Run `make validate`
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.10, 4.11, 4.12, 4.13, 4.14, 4.15, 4.16, 4.17, 5.2, 5.3_
   - [x] 2.3 Steps 6 to 8: report, continue, finish
-    - Step 6 writes the Report in the design's fixed shape, adding evidence and a proposed spec edit on Drift, or verbatim output and open and confirmed causes on failure, and never commits. Step 7 resumes on "continue" with the same choices, applies an approved spec edit to the named file, and names dependents from the graph before any skip or reorder. Step 8 reports with the final wave's suite result when everything not skipped is ticked, and recommends `/freethinking:pr`. Run `make validate`
+    - Step 6 writes the Report in the design's fixed shape, adding evidence and a proposed spec edit on Drift, or verbatim output and open and confirmed causes on failure, and never commits. Step 7 resumes on "continue" with the same choices, applies an approved spec edit to the named file, and names dependents from the graph before any skip or reorder. Step 8 reports with the final wave's suite result when everything not skipped is ticked, and recommends `/ponderly:pr`. Run `make validate`
     - _Requirements: 5.1, 5.4, 5.5, 5.6, 5.7, 6.1, 6.2, 6.3, 6.4, 6.5_
 
 - [x] 3. Wire the skill into the handbook
   - [x] 3.1 Route the workflow rule to the skill
-    - In `rules/workflow.md`, change the "Existing spec: follow it" bullet to run `/freethinking:implement-spec` and to describe stops as the author's cadence, after each task or each wave, with no checkpoint wording. Confirm the combined `rules/` text stays under 10,000 characters
+    - In `rules/workflow.md`, change the "Existing spec: follow it" bullet to run `/ponderly:implement-spec` and to describe stops as the author's cadence, after each task or each wave, with no checkpoint wording. Confirm the combined `rules/` text stays under 10,000 characters
     - _Requirements: 7.2, 7.7_
   - [x] 3.2 Add the README row
     - Add `implement-spec` to the skills table, in the same voice as the other rows and with no checkpoint wording, and mention `make eval-skill-implement-spec` where the README lists eval targets
@@ -43,7 +43,7 @@ The handbook has no code and no unit-test framework. Each task's check is `make 
 
 - [x] 4. Eval cases
   - [x] 4.1 Skill case: no spec recommends start-task
-    - `evals/skills/implement-spec/no-spec-recommends-start-task/` with a `prompt.md` (`/freethinking:implement-spec link-shortener`, `runs: 1`, small `max_turns`) and graders: `regex` for `start-task`, `file_exists` with `exists: false` for `**/*`
+    - `evals/skills/implement-spec/no-spec-recommends-start-task/` with a `prompt.md` (`/ponderly:implement-spec link-shortener`, `runs: 1`, small `max_turns`) and graders: `regex` for `start-task`, `file_exists` with `exists: false` for `**/*`
     - _Requirements: 2.4, 3.6, 7.4_
   - [x] 4.2 Rule case: existing spec routes to implement-spec
     - `evals/rules/workflow/spec-routes-to-implement-spec/` with a prompt that says a `tasks.md` exists for the work and asks to continue it, and a `regex` grader for `implement-spec`
@@ -58,7 +58,7 @@ The handbook has no code and no unit-test framework. Each task's check is `make 
     - _Requirements: 7.4_
 
 - [x] 5. Manual check: run the skill on this spec
-  - In a session started with `claude --plugin-dir .`, run `/freethinking:implement-spec implement-spec`. Confirm it reads the three files, shows the Leaf_Task and Graph tables with no validation errors, reports the first unticked task, and asks the start questions without changing any file. Stop there and record the transcript summary for the PR
+  - In a session started with `claude --plugin-dir .`, run `/ponderly:implement-spec implement-spec`. Confirm it reads the three files, shows the Leaf_Task and Graph tables with no validation errors, reports the first unticked task, and asks the start questions without changing any file. Stop there and record the transcript summary for the PR
   - _Requirements: 2.1, 2.5, 2.7, 3.1, 3.2, 3.4, 3.6_
 
 ## Notes

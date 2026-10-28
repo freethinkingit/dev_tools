@@ -10,7 +10,7 @@ choose. The executor reports it under `unsure` and does not fix it unasked.
 
 The works-one-wave workspace: the calc package from `evals/fixtures/calc/` on
 branch `calc-subtract`, with the two-wave spec under
-`.freethinking/specs/calc-subtract/` committed, and the `bin/` wrappers the
+`.ponderly/specs/calc-subtract/` committed, and the `bin/` wrappers the
 Makefile's implement-spec target puts on the PATH. The one difference is
 `files/tests/test_ops.py`. A file at a fixture path replaces the fixture's
 copy, because `evals/fixtures/setup.sh` copies a fixture file only where the

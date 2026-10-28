@@ -5,6 +5,6 @@ max_turns: 40
 allowed_tools: [Read, Glob, Grep, Agent, Skill]
 expected_outcome: 'Claude states the Scope (calc/stats.py the one source file, against main), takes the Baseline with python3 -m unittest, shows calc/stats.py as one File_Group with its Shared_Decisions and takes the approval the prompt gives instead of waiting, launches one task-executor for that group, which renames s, n and m to descriptive names and drops the steps from the docstring without changing behaviour, runs the suite again and finds it unchanged, launches the wave-reviewer once, and hands back with the report skill. It adds no test file and commits nothing.'
 ---
-/freethinking:readable-code
+/ponderly:readable-code
 
 I will not be able to answer questions during this run. Approve the groups and decisions you propose. The branch is add-median; make it readable and hand back.

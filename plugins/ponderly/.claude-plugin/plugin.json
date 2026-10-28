@@ -1,15 +1,15 @@
 {
-  "name": "freethinking",
-  "displayName": "Freethinking",
-  "version": "0.18.0",
+  "name": "ponderly",
+  "displayName": "Ponderly",
+  "version": "1.0.0",
   "description": "Shared engineering skills: standard workflows and prompts for day-to-day development.",
   "author": {
-    "name": "FreeThinking IT",
-    "email": "hello@freethinking.it",
-    "url": "https://freethinking.it"
+    "name": "Dan Sabin",
+    "email": "dan.sabin@gmail.com",
+    "url": "https://dansabin.com"
   },
-  "homepage": "https://github.com/freethinkingit/dev_tools",
-  "repository": "https://github.com/freethinkingit/dev_tools",
+  "homepage": "https://github.com/sabind/ponderly",
+  "repository": "https://github.com/sabind/ponderly",
   "license": "MIT",
   "icon": "./.claude-plugin/icon.png",
   "keywords": [

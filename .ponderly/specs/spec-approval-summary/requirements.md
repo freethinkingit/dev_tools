@@ -6,9 +6,9 @@ On its spec route, the start-task skill writes `requirements.md`, `design.md` an
 
 ## Glossary
 
-- **Skill**: The start-task skill at `plugins/freethinking/skills/start-task/SKILL.md`.
+- **Skill**: The start-task skill at `plugins/ponderly/skills/start-task/SKILL.md`.
 - **Author**: The person running the Skill, who approves each document.
-- **Spec_Folder**: `.freethinking/specs/<task-name>/`, where the three Spec_Documents of a task live.
+- **Spec_Folder**: `.ponderly/specs/<task-name>/`, where the three Spec_Documents of a task live.
 - **Spec_Document**: One of `requirements.md`, `design.md` and `tasks.md` in the Spec_Folder.
 - **Approval_Question**: The question the Skill puts with the AskUserQuestion tool after each Spec_Document, header `Approve`, options `Approved` and `Changes needed`.
 - **Document_Summary**: The text the Skill shows in place of a Spec_Document's body: the document's path, its Highlights, and a short account of the rest at the depth the requirements below set for that document.
@@ -18,7 +18,7 @@ On its spec route, the start-task skill writes `requirements.md`, `design.md` an
 - **Key_Decision**: A design decision that chose between alternatives with a real trade-off, so the Author may disagree with it.
 - **Wave**: One entry of the `waves` block in a `tasks.md` Task Dependency Graph.
 - **Hand_Backs_Bullet**: The bullet in the Skill's "Working with the author" section that says what the Skill hands back on each route.
-- **README**: The plugin README at `plugins/freethinking/README.md`, whose Skills table describes the Skill.
+- **README**: The plugin README at `plugins/ponderly/README.md`, whose Skills table describes the Skill.
 - **Eval_Case**: A folder under `evals/` with a `prompt.md` and graders, run by its component's make target; Requirement 7's case is under `evals/skills/start-task/`, run with `make eval-skill-start-task`.
 - **System**: The handbook plugin: the Skill, the README and the Eval_Cases.
 
@@ -96,18 +96,18 @@ On its spec route, the start-task skill writes `requirements.md`, `design.md` an
 #### Acceptance Criteria
 
 1. THE System SHALL add one Eval_Case that gives the Skill a request on the calc fixture with the spec questions answered in the request, so that the run writes `requirements.md` and ends at its Approval_Question.
-2. THE Eval_Case SHALL grade that `requirements.md` was written in the Spec_Folder, at `.freethinking/specs/*/requirements.md`, that the final message names its path, that it does not reproduce the document's sections, that it quotes a user story, that no criterion is reproduced, and that every entry quotes its user story; whether there is one entry per requirement is read by the wave reviewer and by the first real spec written with the Skill, since a grader that sees only the reply cannot count the document's requirements.
+2. THE Eval_Case SHALL grade that `requirements.md` was written in the Spec_Folder, at `.ponderly/specs/*/requirements.md`, that the final message names its path, that it does not reproduce the document's sections, that it quotes a user story, that no criterion is reproduced, and that every entry quotes its user story; whether there is one entry per requirement is read by the wave reviewer and by the first real spec written with the Skill, since a grader that sees only the reply cannot count the document's requirements.
 3. THE Eval_Case SHALL pass `make validate` and carry the `start-task` tag so `make eval-skill-start-task` selects it.
 4. THE System SHALL run `make eval-skill-start-task` after the change, and SHALL record the result table in the pull request's Testing section, with every existing case still passing.
 
-### Requirement 8: Specs live under `.freethinking/specs/`
+### Requirement 8: Specs live under `.ponderly/specs/`
 
-**User Story:** As a maintainer of the plugin and its forks, I want every spec to live in the Spec_Folder, `.freethinking/specs/<task-name>/`, instead of `.claude/specs/<task-name>/`, so that the folder names the plugin rather than one tool, a fork for another tool keeps the same path, and the eval sandbox, which refuses every write under `.claude/`, can grade a spec being written. GitHub issue #48 is the ticket.
+**User Story:** As a maintainer of the plugin and its forks, I want every spec to live in the Spec_Folder, `.ponderly/specs/<task-name>/`, instead of `.claude/specs/<task-name>/`, so that the folder names the plugin rather than one tool, a fork for another tool keeps the same path, and the eval sandbox, which refuses every write under `.claude/`, can grade a spec being written. GitHub issue #48 is the ticket.
 
 #### Acceptance Criteria
 
-1. THE start-task Skill, THE implement-spec Skill, THE task-executor agent, THE workflow Rule and THE README SHALL name the Spec_Folder wherever they name `.claude/specs/<task-name>/` today, and THE README's "Tune the plugin for a repository" section SHALL say that `.freethinking/specs/` holds specs beside the `<skill>/<file>.md` overrides.
+1. THE start-task Skill, THE implement-spec Skill, THE task-executor agent, THE workflow Rule and THE README SHALL name the Spec_Folder wherever they name `.claude/specs/<task-name>/` today, and THE README's "Tune the plugin for a repository" section SHALL say that `.ponderly/specs/` holds specs beside the `<skill>/<file>.md` overrides.
 2. THE root README SHALL name the Spec_Folder where it names the old folder.
 3. THE Eval_Cases SHALL plant, name and grade the Spec_Folder wherever they plant, name or grade `.claude/specs/` today, their fixture folders moved with `git mv`, and `evals/README.md` SHALL replace its note that edits under `.claude/` cannot be graded with one saying the Spec_Folder is writable in the sandbox while `.claude/` is not.
-4. THE System SHALL move this repository's spec records from `.claude/specs/` to `.freethinking/specs/` with `git mv`, content untouched, this spec included.
-5. IF the sandbox refuses a write under `.freethinking/` too, THEN THE System SHALL stop and report it, since the folder would then need another name.
+4. THE System SHALL move this repository's spec records from `.claude/specs/` to `.ponderly/specs/` with `git mv`, content untouched, this spec included.
+5. IF the sandbox refuses a write under `.ponderly/` too, THEN THE System SHALL stop and report it, since the folder would then need another name.

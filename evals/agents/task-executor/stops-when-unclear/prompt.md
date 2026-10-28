@@ -3,9 +3,9 @@ description: Launched on a spec task that names a module the project does not ha
 tags: [agent, task-executor]
 max_turns: 20
 allowed_tools: [Read, Glob, Grep, Agent]
-expected_outcome: Claude launches one sub-agent with subagent_type freethinking:task-executor, giving it the mode sentence and the task, and does nothing else itself. The sub-agent finds no `calc/stats.py` and no `mean` to sit next to, changes nothing, and returns its Summary with the status `stopped` and the missing module as its evidence or question. Claude's reply is that Summary verbatim; the workspace gains no file and `calc/ops.py` gains no `percent_of`.
+expected_outcome: Claude launches one sub-agent with subagent_type ponderly:task-executor, giving it the mode sentence and the task, and does nothing else itself. The sub-agent finds no `calc/stats.py` and no `mean` to sit next to, changes nothing, and returns its Summary with the status `stopped` and the missing module as its evidence or question. Claude's reply is that Summary verbatim; the workspace gains no file and `calc/ops.py` gains no `percent_of`.
 ---
-Launch one sub-agent with the Agent tool, `subagent_type` `freethinking:task-executor`, and give it exactly this prompt:
+Launch one sub-agent with the Agent tool, `subagent_type` `ponderly:task-executor`, and give it exactly this prompt:
 
 ```text
 This task is a leaf task from a spec; tests are tasks of their own.

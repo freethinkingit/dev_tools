@@ -10,16 +10,16 @@ The one thing the design cannot settle from the docs is how `claude plugin eval`
 
 ```mermaid
 flowchart TD
-    A["Author: /freethinking:start-task <request>"] --> B{"spec exists in .claude/specs/<task>/?"}
+    A["Author: /ponderly:start-task <request>"] --> B{"spec exists in .claude/specs/<task>/?"}
     B -- yes --> S["Spec_Route: resume at first unapproved document"]
     B -- no --> C["Read the code the Request touches"]
     C --> T{"Triage"}
     T -- "defect in existing code" --> QB["Question: Bug_Route / Spec_Route / other"]
     T -- "Contained_Change" --> QE["Question: Executor_Route / Spec_Route / other"]
     T -- otherwise --> S2["Say Spec_Route in one sentence"] --> S
-    QB -- Bug_Route --> BF["Skill tool: freethinking:bugfix <request>"]
+    QB -- Bug_Route --> BF["Skill tool: ponderly:bugfix <request>"]
     QB -- Spec_Route --> S
-    QE -- Executor_Route --> EX["Agent tool: freethinking:task-executor, Standalone_Mode"]
+    QE -- Executor_Route --> EX["Agent tool: ponderly:task-executor, Standalone_Mode"]
     QE -- Spec_Route --> S
     EX --> SUM{"Summary status"}
     SUM -- done --> R["Show Summary and diff; failures first; recommend pr"]
@@ -33,21 +33,21 @@ sequenceDiagram
     actor A as Author
     participant S as start-task (session)
     participant X as task-executor (agent)
-    A->>S: /freethinking:start-task Add subtract to calc
+    A->>S: /ponderly:start-task Add subtract to calc
     S->>S: read calc/ops.py, tests/test_ops.py
     S-->>A: "Executor_Route: one function beside add, tests in test_ops.py"
     S->>A: AskUserQuestion [Executor_Route, Spec_Route, other]
     A-->>S: Executor_Route
-    S->>X: Agent(subagent_type: freethinking:task-executor, prompt: request + files found)
+    S->>X: Agent(subagent_type: ponderly:task-executor, prompt: request + files found)
     X-->>S: Summary (status: done, files changed, checks run)
-    S-->>A: Summary, git diff of files changed, "run /freethinking:pr"
+    S-->>A: Summary, git diff of files changed, "run /ponderly:pr"
 ```
 
 Key decision, Triage lives in the skill, not the rule. The rule is read before any code is, is capped by the hook limit, and has no structured way to ask; the skill has read the code by step 2 and can put a Question (Requirements 1.1, 4.5). Trade-off: a Request that the Author already knows is a bug or a one-liner still goes through the skill unless they name it, which the kept direct routes in the rule cover (Requirement 4.2, 4.3).
 
 Key decision, Triage asks, except on Spec_Route. A wrong Executor or Bug call costs one Question; a wrong Spec call costs three documents. So the two cheap routes are offered and the expensive one is simply announced, which keeps today's behaviour for today's cases (Requirements 1.4, 1.5). Rejected alternative, launch the Executor without asking: faster, but the Author told us the goal is to earn trust, and the Executor's standalone mode writes code and tests the Author has not yet agreed to.
 
-Key decision, the Executor is launched from `start-task`, not from a new skill. The agent already exists with the right mode and Summary shape; a new skill would duplicate the launch and review text that `implement-spec` already carries (Requirement 3.1). Rejected alternative, a `/freethinking:task` skill as the human entry point: the Author wants one front door, and `@agent-freethinking:task-executor` already serves anyone who wants to bypass it.
+Key decision, the Executor is launched from `start-task`, not from a new skill. The agent already exists with the right mode and Summary shape; a new skill would duplicate the launch and review text that `implement-spec` already carries (Requirement 3.1). Rejected alternative, a `/ponderly:task` skill as the human entry point: the Author wants one front door, and `@agent-ponderly:task-executor` already serves anyone who wants to bypass it.
 
 Key decision, Bug_Route is a hand-off, not a reimplementation. The skill invokes `bugfix` with the Request and stops, so the reproduction discipline stays in one place (Requirements 2.1, 2.2).
 
@@ -63,8 +63,8 @@ Key decision, the Question is the AskUserQuestion tool, named in the skill. Noth
 | `skills/start-task/SKILL.md`, CX_Block | New section "Working with the author" after Ground rules: the stops, how each asks, what each hand-back holds, the hand-offs | 1.8, 1.9 |
 | `skills/start-task/SKILL.md`, step 1 | Unchanged except: an existing spec means Spec_Route without Triage; beside the task name, propose the branch name in the contributing guide's shape, without creating it | 1.7, 1.10 |
 | `skills/start-task/SKILL.md`, step 2 | Split in two: 2a read the codebase, 2b Triage: state the Route and reason, put the Question for Bug_Route or Executor_Route, say Spec_Route in a sentence, then act | 1.1 to 1.6 |
-| `skills/start-task/SKILL.md`, step 2 Bug_Route | Skill tool, `freethinking:bugfix`, args: the Request; then stop | 2.1, 2.2 |
-| `skills/start-task/SKILL.md`, step 2 Executor_Route | Agent tool, `subagent_type: freethinking:task-executor`, the Launch_Prompt below; on `done` show Summary, `git diff -- <files>`, failures first, recommend `pr`; on `stopped` show Summary and put the relaunch Question; never edit, commit, branch | 3.1 to 3.7 |
+| `skills/start-task/SKILL.md`, step 2 Bug_Route | Skill tool, `ponderly:bugfix`, args: the Request; then stop | 2.1, 2.2 |
+| `skills/start-task/SKILL.md`, step 2 Executor_Route | Agent tool, `subagent_type: ponderly:task-executor`, the Launch_Prompt below; on `done` show Summary, `git diff -- <files>`, failures first, recommend `pr`; on `stopped` show Summary and put the relaunch Question; never edit, commit, branch | 3.1 to 3.7 |
 | `skills/start-task/SKILL.md`, steps 3 to 6 | Unchanged; the spec questions move to the head of step 3 | 1.1 |
 | `rules/workflow.md` | Rewritten bullets: bug named, spec exists, PR asked, trivial change, default to `start-task`, never on main, keep the author in the loop | 4.1 to 4.5 |
 | `rules/collaboration.md` | The six defaults, under 1,600 characters | 6.1 to 6.8 |
@@ -110,7 +110,7 @@ Under the heading, one sentence: "The first bullet that matches the request is t
 2. **Spec exists: follow it.** `implement-spec`, as today.
 3. **Pull request: use the skill.** `pr`, as today.
 4. **Small changes stay small.** typo, one-line fix, rename: make it, as today.
-5. **Anything else that changes code: start the task.** Run `/freethinking:start-task`. It reads the code and decides between the executor for one contained change, `bugfix` for a defect, and a spec for the rest, and asks before taking the first two. Do not judge the size yourself.
+5. **Anything else that changes code: start the task.** Run `/ponderly:start-task`. It reads the code and decides between the executor for one contained change, `bugfix` for a defect, and a spec for the rest, and asks before taking the first two. Do not judge the size yourself.
 6. **Never work on the default branch.** As today.
 7. **Keep the author in the loop.** As today.
 
@@ -164,9 +164,9 @@ Rule text, `rules/collaboration.md`, one bullet per criterion 6.2 to 6.7, each b
 ## Testing Strategy
 
 - Free checks, run by `make validate`: the existing `checks/test_issue_forms.py` proves Property 5 once `collaboration (rule)` is in the forms; a new check in `checks/test_rules_size.py` proves Property 4 by running `hooks/load-rules.sh` and measuring, and by measuring `rules/collaboration.md` alone. The size check also closes issue #3's first half. `claude plugin validate --strict` proves the frontmatter.
-- Eval case `contained-change-offers-executor` (Property 1, 3; Requirement 5.3): scaffold the calc fixture; prompt `/freethinking:start-task Add subtract(a, b) to calc/ops.py in the style of add`; `allowed_tools: [Read, Glob, Grep, Agent, Skill]`; `max_turns: 6`. Write and Edit come from the Makefile target's `--allow-tools` grant, the only route for them per `evals/README.md`, on purpose: a skill that writes a spec document or edits source before the Question must be caught by the `file_exists` and file-content graders, not prevented by the tool list. Graders: regex `executor` with `flags: i` in the final output (the harness's engine rejects inline `(?i)`); `file_exists` `.claude/specs/**` false; `tool_used` Agent with max 0; `tool_used` Skill with max 0; and the question grader, which task 3.1 settled as two regexes with `flags: im`, one per option as a list item at a line start. No `\?` grader: the prose fallback does not always end in a question mark, and the two option graders are the stronger proof that the question was put.
+- Eval case `contained-change-offers-executor` (Property 1, 3; Requirement 5.3): scaffold the calc fixture; prompt `/ponderly:start-task Add subtract(a, b) to calc/ops.py in the style of add`; `allowed_tools: [Read, Glob, Grep, Agent, Skill]`; `max_turns: 6`. Write and Edit come from the Makefile target's `--allow-tools` grant, the only route for them per `evals/README.md`, on purpose: a skill that writes a spec document or edits source before the Question must be caught by the `file_exists` and file-content graders, not prevented by the tool list. Graders: regex `executor` with `flags: i` in the final output (the harness's engine rejects inline `(?i)`); `file_exists` `.claude/specs/**` false; `tool_used` Agent with max 0; `tool_used` Skill with max 0; and the question grader, which task 3.1 settled as two regexes with `flags: im`, one per option as a list item at a line start. No `\?` grader: the prose fallback does not always end in a question mark, and the two option graders are the stronger proof that the question was put.
 - Eval case `wrong-repo-asks-fit` (Requirement 1.11): scaffold the calc fixture; prompt the link shortener; graders: the two fit options as list items (`Spec it here`, `Wrong repository`), `file_exists` `.claude/specs/**` false, `tool_used` Agent and Skill max 0.
-- Eval case `bug-offers-bugfix` (Property 1; Requirement 5.4): same fixture with `add` returning `a - b`; prompt `/freethinking:start-task Adding 2 and 3 in calc returns -1`; graders: regex `Bug_Route|bugfix`; `file_exists` `**/*.py` unchanged by a regex on `calc/ops.py` still containing the planted body; `tool_used` Skill max 0; the same question grader.
+- Eval case `bug-offers-bugfix` (Property 1; Requirement 5.4): same fixture with `add` returning `a - b`; prompt `/ponderly:start-task Adding 2 and 3 in calc returns -1`; graders: regex `Bug_Route|bugfix`; `file_exists` `**/*.py` unchanged by a regex on `calc/ops.py` still containing the planted body; `tool_used` Skill max 0; the same question grader.
 - Eval case `short-list-asks-with-tool` under `evals/rules/collaboration/` (Requirement 6.10): no plugin skill invoked; prompt asks Claude to pick between three named options for a config value it cannot infer; grader as the question grader above.
 - Existing cases: `names-task-and-asks` run twice; `eval-rule-workflow` run twice; `eval-skill-start-task` twice. Each result table goes into the PR's Testing section.
 - Manual check, recorded in the PR: in a session started with `claude --plugin-dir .` against the calc fixture, run the three prompts above by hand and confirm the Question renders as the interactive form and that answering Spec_Route continues to the spec questions (Property 2).

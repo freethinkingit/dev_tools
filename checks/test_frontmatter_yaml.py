@@ -25,7 +25,7 @@ DOUBLE_QUOTED_ESCAPE = re.compile(r'\\(?:[0abt\tnvfre "/\\N_LP]|x[0-9A-Fa-f]{2}|
 
 def frontmatter_files():
     """Return every file in scope: eval prompts and graders, skills and agents, sorted within each kind."""
-    plugin = ROOT / "plugins" / "freethinking"
+    plugin = ROOT / "plugins" / "ponderly"
     return (
         sorted(ROOT.glob("evals/**/prompt.md"))
         + sorted(ROOT.glob("evals/**/graders/*.md"))

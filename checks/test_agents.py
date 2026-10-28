@@ -1,11 +1,11 @@
-"""Agent frontmatter is well formed and every freethinking:<name> the skills reference exists."""
+"""Agent frontmatter is well formed and every ponderly:<name> the skills reference exists."""
 
 import re
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PLUGIN = ROOT / "plugins" / "freethinking"
+PLUGIN = ROOT / "plugins" / "ponderly"
 AGENTS_DIR = PLUGIN / "agents"
 SKILLS_DIR = PLUGIN / "skills"
 
@@ -29,7 +29,7 @@ KNOWN_TOOLS = {
 MODEL_ALIASES = {"sonnet", "opus", "haiku", "fable", "inherit"}
 EFFORTS = {"low", "medium", "high", "xhigh", "max"}
 
-HANDBOOK_REFERENCE = re.compile(r"freethinking:([a-z0-9]+(?:-[a-z0-9]+)*)")
+HANDBOOK_REFERENCE = re.compile(r"ponderly:([a-z0-9]+(?:-[a-z0-9]+)*)")
 
 
 def read_frontmatter(path):
@@ -80,7 +80,7 @@ class HandbookReferenceTest(unittest.TestCase):
                     self.assertTrue(
                         (AGENTS_DIR / (name + ".md")).is_file()
                         or (SKILLS_DIR / name / "SKILL.md").is_file(),
-                        "freethinking:{} names no agents/{}.md and no skills/{}/SKILL.md".format(name, name, name),
+                        "ponderly:{} names no agents/{}.md and no skills/{}/SKILL.md".format(name, name, name),
                     )
 
 

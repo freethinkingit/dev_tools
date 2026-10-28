@@ -1,11 +1,10 @@
 name: Propose a spike
 description: Propose a time-boxed investigation that answers a question before a design is committed to.
-labels: ["triage"]
-type: Spike
+labels: ["triage", "type: spike"]
 body:
   - type: markdown
     attributes:
-      value: Before you file, read the [Issues section of the contributing guide](https://github.com/freethinkingit/dev_tools/blob/main/.github/CONTRIBUTING.md#issues).
+      value: Before you file, read the [Issues section of the contributing guide](https://github.com/sabind/ponderly/blob/main/.github/CONTRIBUTING.md#issues).
   - type: checkboxes
     id: preflight
     attributes:

@@ -1,13 +1,13 @@
 ---
 name: implement-spec
-description: Build a task whose spec already exists, wave by wave from its tasks.md, with the task-executor agent building each task and the wave-reviewer agent reading each wave. Use when asked to implement, build, work, continue or resume a spec, a task list, or the tasks in .freethinking/specs/<task>/. Reads the spec and validates its dependency graph, then asks once how often to hand back (after each task, each wave, or only at the end) and how to treat optional tests (ask, always, never). Runs one sub-agent per leaf task, ticks a checkbox only when its tests pass or a stated manual check is done, and runs the full suite at the end of every wave. Never edits the spec beyond checkboxes without the author's approval, and pauses with a proposal when the design cannot be followed.
+description: Build a task whose spec already exists, wave by wave from its tasks.md, with the task-executor agent building each task and the wave-reviewer agent reading each wave. Use when asked to implement, build, work, continue or resume a spec, a task list, or the tasks in .ponderly/specs/<task>/. Reads the spec and validates its dependency graph, then asks once how often to hand back (after each task, each wave, or only at the end) and how to treat optional tests (ask, always, never). Runs one sub-agent per leaf task, ticks a checkbox only when its tests pass or a stated manual check is done, and runs the full suite at the end of every wave. Never edits the spec beyond checkboxes without the author's approval, and pauses with a proposal when the design cannot be followed.
 argument-hint: "[task-name] [task|wave|spec]"
-allowed-tools: Bash(git status *) Bash(git branch *) Bash(git rev-parse *) Bash(git log *) Bash(git diff *) Bash(ls .freethinking/specs*) Bash(cat .freethinking/specs/*)
+allowed-tools: Bash(git status *) Bash(git branch *) Bash(git rev-parse *) Bash(git log *) Bash(git diff *) Bash(ls .ponderly/specs*) Bash(cat .ponderly/specs/*)
 ---
 
 # Implement a spec
 
-Build a task from its approved spec: read `.freethinking/specs/<task-name>/`, check that its task list can be executed, and then work the waves in order, each leaf task built by its own executor and each wave read by the reviewer before the wave ends, ticking each checkbox only when its tests have passed or, for a task with nothing to test, after a stated manual check. Hand back to the author as often as they chose, after every task, after every wave, or only once every wave is done, with a report of what was built and tested.
+Build a task from its approved spec: read `.ponderly/specs/<task-name>/`, check that its task list can be executed, and then work the waves in order, each leaf task built by its own executor and each wave read by the reviewer before the wave ends, ticking each checkbox only when its tests have passed or, for a task with nothing to test, after a stated manual check. Hand back to the author as often as they chose, after every task, after every wave, or only once every wave is done, with a report of what was built and tested.
 
 The author is accountable for the code and owns the spec. The spec is the source of truth: `requirements.md` says what, `design.md` says how, and `tasks.md` says in what order. Do not change any of them, beyond ticking checkboxes, without the author's approval, and do not guess your way past a design that cannot be followed; pause and propose the change instead.
 
@@ -21,8 +21,8 @@ Terms used below:
 - The **cadence** is the author's choice of when a run hands back: after each leaf task (task cadence), after each wave (wave cadence), or only at the end of the run (spec cadence). At spec cadence every wave still ends with its review, its full suite and its report, but the report is written into the conversation without waiting for the author, and the next wave starts at once, in the same turn, so the session holds one short report per wave and never the diff; once the last wave is done, the reviewer reads the whole run once more, in a final review, and the run hands back with the final report. Before the end it hands back only for a failure, an unfixed finding or a proposal.
 - The **optional-tests choice** is the author's choice of what to do with optional tests: ask about them (at the start of each wave that has one, or at spec cadence once at the end of the run), always do them, or never do them.
 - A **skipped test** is an optional test the author chose not to do in this run. It stays unticked.
-- An **executor** is the plugin's `task-executor` agent, launched as `freethinking:task-executor`, one per leaf task. Its own definition holds its procedure, so the launch carries only the task: it gathers the context the task needs, implements exactly what the task describes, proves it, and returns a summary with a `status` of `done` or `stopped`, the files it changed, the checks it ran, its ephemeral check's code, what it is unsure of and, when stopped, why. Tests are tasks of their own in a spec, so an executor writes a test only when its task is a test task.
-- The **reviewer** is the plugin's `wave-reviewer` agent, launched as `freethinking:wave-reviewer`, one per wave, and at spec cadence once more over the whole run. It is read-only and changes nothing; it gathers the wave's diff itself and returns Findings: a `verdict` of `holds` or `findings`, then each finding with its file, an exact quote, the problem and a severity of `blocker`, `should-fix` or `nit`, then what it is `unsure` of. Its own definition holds its procedure, so the launch carries only what to review.
+- An **executor** is the plugin's `task-executor` agent, launched as `ponderly:task-executor`, one per leaf task. Its own definition holds its procedure, so the launch carries only the task: it gathers the context the task needs, implements exactly what the task describes, proves it, and returns a summary with a `status` of `done` or `stopped`, the files it changed, the checks it ran, its ephemeral check's code, what it is unsure of and, when stopped, why. Tests are tasks of their own in a spec, so an executor writes a test only when its task is a test task.
+- The **reviewer** is the plugin's `wave-reviewer` agent, launched as `ponderly:wave-reviewer`, one per wave, and at spec cadence once more over the whole run. It is read-only and changes nothing; it gathers the wave's diff itself and returns Findings: a `verdict` of `holds` or `findings`, then each finding with its file, an exact quote, the problem and a severity of `blocker`, `should-fix` or `nit`, then what it is `unsure` of. Its own definition holds its procedure, so the launch carries only what to review.
 - A **sub-agent**, below, means either.
 
 ## Working with the author
@@ -40,10 +40,10 @@ Terms used below:
 
 Take the task name from the arguments: the first word that is not `task`, `wave` or `spec`. The cadence is a second argument of `task`, `wave` or `spec`, or an explicit phrase in the author's message such as "one task at a time", "a wave at a time" or "run all the waves". The word "task" or "spec" on its own in a sentence is not a cadence. The optional-tests choice is settled here only by an explicit phrase in the author's message, such as "skip the optional tests".
 
-- With a task name, the spec is `.freethinking/specs/<task-name>/`.
-- With no task name, run `ls .freethinking/specs/*/tasks.md` and look at each list for an unticked non-optional leaf task. Exactly one such spec: name it and proceed. Several: list them and ask which to work. None: say there is nothing to implement, name any spec whose only unticked tasks are optional tests, recommend `/freethinking:start-task` otherwise, and stop.
+- With a task name, the spec is `.ponderly/specs/<task-name>/`.
+- With no task name, run `ls .ponderly/specs/*/tasks.md` and look at each list for an unticked non-optional leaf task. Exactly one such spec: name it and proceed. Several: list them and ask which to work. None: say there is nothing to implement, name any spec whose only unticked tasks are optional tests, recommend `/ponderly:start-task` otherwise, and stop.
 
-If the spec has no `tasks.md`, say so, recommend `/freethinking:start-task`, and stop without changing anything. One look at `.freethinking/specs/<task-name>/tasks.md` settles it; do not search elsewhere for the spec.
+If the spec has no `tasks.md`, say so, recommend `/ponderly:start-task`, and stop without changing anything. One look at `.ponderly/specs/<task-name>/tasks.md` settles it; do not search elsewhere for the spec.
 
 Read `tasks.md`, `requirements.md` and `design.md` in full before anything else. The requirements and design are read again task by task later, but the whole has to be in view first.
 
@@ -66,7 +66,7 @@ If `tasks.md` has no graph, or any check fails, list each problem by task id, pr
 
 Walk the waves in order and find the first wave with an unticked non-optional leaf task; that wave is the position. Ticked tasks are done; never redo one. A wave whose only unticked tasks are optional tests counts as finished for finding the position; those tests were skipped in an earlier run, and the author can ask for them at the end.
 
-If every non-optional leaf task is already ticked, report the spec complete. If optional tests remain unticked, name them and ask whether to do them now; if yes, they are the work for this run, worked wave by wave as in step 5 with the full suite at the end of each; the earliest such wave becomes the position that step 4 states. Otherwise recommend `/freethinking:pr` and stop.
+If every non-optional leaf task is already ticked, report the spec complete. If optional tests remain unticked, name them and ask whether to do them now; if yes, they are the work for this run, worked wave by wave as in step 5 with the full suite at the end of each; the earliest such wave becomes the position that step 4 states. Otherwise recommend `/ponderly:pr` and stop.
 
 ## 4. Set up the run
 
@@ -84,7 +84,7 @@ Make no code change until the author has answered.
 
 ## 5. Work the wave
 
-Work one wave at a time; waves run in order. Each leaf task in a wave gets its own executor, launched with the Agent tool as `subagent_type: freethinking:task-executor`, which returns at once and runs the sub-agent in the background; once every executor of the wave has returned, the wave gets one reviewer. At wave or spec cadence, launch every task of the wave before waiting on any of them, all in one message, so they run concurrently. At task cadence, launch one and wait for its result before the next, so that the hand-back after each task still makes sense. Each agent runs on the model its own definition pins; verifying, ticking, the full suite and the report are not delegated: they are done in this session, on the session's own model.
+Work one wave at a time; waves run in order. Each leaf task in a wave gets its own executor, launched with the Agent tool as `subagent_type: ponderly:task-executor`, which returns at once and runs the sub-agent in the background; once every executor of the wave has returned, the wave gets one reviewer. At wave or spec cadence, launch every task of the wave before waiting on any of them, all in one message, so they run concurrently. At task cadence, launch one and wait for its result before the next, so that the hand-back after each task still makes sense. Each agent runs on the model its own definition pins; verifying, ticking, the full suite and the report are not delegated: they are done in this session, on the session's own model.
 
 Beyond ticking checkboxes, do not edit `tasks.md`, `requirements.md` or `design.md` in this step. A change any of them needs goes to step 6 as a proposal.
 
@@ -94,7 +94,7 @@ If the wave contains optional tests: when the author chose to be asked, ask once
 
 ### Launching a task
 
-For each task that is left, other than a skipped test, state its number, its text and the requirements it cites. Then launch the agent with `subagent_type: freethinking:task-executor` and a prompt that holds:
+For each task that is left, other than a skipped test, state its number, its text and the requirements it cites. Then launch the agent with `subagent_type: ponderly:task-executor` and a prompt that holds:
 
 - the mode sentence, verbatim, "This task is a leaf task from a spec; tests are tasks of their own.", which puts the agent in its spec mode;
 - the task text and its cited requirements, quoted from `requirements.md`;
@@ -125,7 +125,7 @@ Skipped tests stay unticked and are listed as skipped in the report.
 
 Once every executor of the wave has returned, whatever each returned, and before any tick, review the wave as a whole. The review covers the tasks that passed their own checks, together with any task that appeared already done; those are fixed and ticked after it as below, and then a task that stopped, or still fails after two fix attempts, goes to step 6. At task cadence, where the wave's earlier tasks were ticked at their hand-backs, the review runs once, when the wave's last task has passed its checks and before its tick, and covers the whole wave; a task that stops or will not pass before then goes to step 6 at once, and the review waits for the wave's last task. The file list and the `unsure` items come from this run's summaries and, after a resume, from the reports of the earlier hand-backs: the files and the problems each one lists (its Files and Problems sections in the plugin's template).
 
-Launch the reviewer with `subagent_type: freethinking:wave-reviewer`, once, and a prompt that holds:
+Launch the reviewer with `subagent_type: ponderly:wave-reviewer`, once, and a prompt that holds:
 
 - the sentence, verbatim, "These changes come from a spec wave", which tells the reviewer that a code task correctly lacks a test;
 - the list of files the wave changed or created, taken from the `files changed` of the wave's summaries, with the files of tasks that appeared already done or that the author did by hand, as under "Starting a wave", and with any file two executors changed named as such;
@@ -153,7 +153,7 @@ With the review done and every task in the wave ticked, other than a skipped tes
 
 Hand back here at the end of a cadence unit (after a task at task cadence, after a wave at wave or spec cadence), after a failed full suite, after a task whose tests still fail after two fix attempts, after a review finding that is still not fixed after two attempts, or when an executor reports that the design cannot be followed or needs a new dependency. For the final wave, when its full suite passes, step 8 takes this step's place; at spec cadence, write that wave's report first, without waiting, as for any other wave, so that every wave's report is in the conversation for step 8. The report ends the message, with nothing written after it in that message. A hand-back that waits for the author is the only place the turn ends: at task or wave cadence that is every report, and at spec cadence it is the final report of step 8 or a stop for a failure, an unfixed finding or a proposal. At spec cadence, after a wave whose full suite passed, the report is written without waiting, and the next wave's executors are launched in the same turn, straight after it, as the next tool calls.
 
-To write the report, invoke the Skill tool with `skill: freethinking:report` and `args: handback`, once, in this session; its Message is the report, with nothing written before or after it in that message. If the Skill tool cannot find `freethinking:report`, say the plugin's `report` skill is missing and write the hand-back by the communication rule, Problems first.
+To write the report, invoke the Skill tool with `skill: ponderly:report` and `args: handback`, once, in this session; its Message is the report, with nothing written before or after it in that message. If the Skill tool cannot find `ponderly:report`, say the plugin's `report` skill is missing and write the hand-back by the communication rule, Problems first.
 
 At spec cadence each report covers its own wave, and the reports stack up in the conversation, one per wave, for the final review and the final report of step 8 to read back. A hand-back that waits, for a failure, an unfixed finding or a proposal, covers the wave it stops in, with the earlier waves' reports already above it.
 
@@ -179,12 +179,12 @@ When the author asks to skip a non-optional task or to work out of wave order, s
 
 When every leaf task is ticked, apart from skipped tests and any non-optional task the author chose to skip under step 7, and the final wave's full suite passes, finish.
 
-At task or wave cadence, write the report for the final wave with its full suite result, by the same invocation as step 6, in place of step 6. The Message's next step (its Next section in the plugin's template) names any skipped tests as left unticked and recommends `/freethinking:pr` to open the pull request, which the report skill writes because this step's text is in the conversation; add nothing after it. Then stop.
+At task or wave cadence, write the report for the final wave with its full suite result, by the same invocation as step 6, in place of step 6. The Message's next step (its Next section in the plugin's template) names any skipped tests as left unticked and recommends `/ponderly:pr` to open the pull request, which the report skill writes because this step's text is in the conversation; add nothing after it. Then stop.
 
 At spec cadence, finish in three parts:
 
 1. **Optional tests.** When the author chose to be asked and the run skipped optional tests, offer them once, all together, with the AskUserQuestion tool: do them now, or leave them. If the author says do them, work them as one final set as in step 5: an executor each, launched together, their checks run here, their own wave review, their ticks, and the full suite. A failure there goes to step 6 as for any wave. Left, they stay unticked as skipped tests. When the author chose always or never, there is nothing to offer.
-2. **Final review.** Launch the reviewer once more, with `subagent_type: freethinking:wave-reviewer`, over the whole run, and a prompt that holds:
+2. **Final review.** Launch the reviewer once more, with `subagent_type: ponderly:wave-reviewer`, over the whole run, and a prompt that holds:
    - the sentence, verbatim, "These changes come from a spec wave", which tells the reviewer that a code task correctly lacks a test;
    - the full list of files the run changed or created, taken from the files every wave's report lists;
    - each wave's report as written: its problems, what was done, its checks with the full-suite result and the wave-review verdict, its files and its next step;
@@ -192,4 +192,4 @@ At spec cadence, finish in three parts:
    - the files that cite the changed ones, found as for a wave review.
 
    Nothing more, and never the diff, which the reviewer gathers itself. Its job is the whole: consistency across waves, nits and other items carried from wave to wave that have piled up, and anything one wave's review could not see. Handle its Findings and `unsure` items by the rules of "Reviewing the wave" in step 5: a `blocker`, a `should-fix` or an `unsure` item that is a defect is fixed by an executor within two attempts, with the owning task's checks re-run here; a `nit` is fixed or carried; a finding in the spec goes to step 6 as a proposal; and a finding still not fixed after two attempts goes to step 6. If anything was fixed, run the full suite once more; a failure goes to step 6. There is no second final review.
-3. **Final report.** Write the report by the same invocation as step 6, covering the whole run: every task ticked in it, the full suite result and the wave-review verdict of each wave, the final review's verdict and whether anything was carried, and the files the run changed. The plugin's template writes the verdicts as the lines `Wave review of wave <n>: <verdict>` and `Final review of the run: <verdict>`, each followed by `carried: see Problems` or `nothing carried`; with a repository's own template, the final review reads the wave verdicts, and the final report writes the run's verdict, wherever that template puts them. The Message's next step names any skipped tests as left unticked and recommends `/freethinking:pr` to open the pull request, which the report skill writes because this step's text is in the conversation; add nothing after it. Then stop.
+3. **Final report.** Write the report by the same invocation as step 6, covering the whole run: every task ticked in it, the full suite result and the wave-review verdict of each wave, the final review's verdict and whether anything was carried, and the files the run changed. The plugin's template writes the verdicts as the lines `Wave review of wave <n>: <verdict>` and `Final review of the run: <verdict>`, each followed by `carried: see Problems` or `nothing carried`; with a repository's own template, the final review reads the wave verdicts, and the final report writes the run's verdict, wherever that template puts them. The Message's next step names any skipped tests as left unticked and recommends `/ponderly:pr` to open the pull request, which the report skill writes because this step's text is in the conversation; add nothing after it. Then stop.

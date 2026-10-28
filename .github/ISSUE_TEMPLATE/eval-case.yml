@@ -1,11 +1,10 @@
 name: Propose an eval case
 description: Propose an eval case that guards a behaviour of a skill, agent, rule or hook.
-labels: ["triage"]
-type: Task
+labels: ["triage", "type: task"]
 body:
   - type: markdown
     attributes:
-      value: "Before you file, read the [Issues section of the contributing guide](https://github.com/freethinkingit/dev_tools/blob/main/.github/CONTRIBUTING.md#issues)."
+      value: "Before you file, read the [Issues section of the contributing guide](https://github.com/sabind/ponderly/blob/main/.github/CONTRIBUTING.md#issues)."
   - type: checkboxes
     id: preflight
     attributes:
@@ -13,7 +12,7 @@ body:
       options:
         - label: I searched the existing issues.
           required: true
-        - label: "I read [`evals/README.md`](https://github.com/freethinkingit/dev_tools/blob/main/evals/README.md)."
+        - label: "I read [`evals/README.md`](https://github.com/sabind/ponderly/blob/main/evals/README.md)."
           required: true
   - type: dropdown
     id: component

@@ -3,9 +3,9 @@
 # Task Dependency Graph omits leaf task 4.2. Runs in the empty eval workspace.
 set -euo pipefail
 
-mkdir -p .freethinking/specs/link-shortener
+mkdir -p .ponderly/specs/link-shortener
 
-cat > .freethinking/specs/link-shortener/requirements.md <<'MD'
+cat > .ponderly/specs/link-shortener/requirements.md <<'MD'
 # Requirements Document
 
 ## Introduction
@@ -31,7 +31,7 @@ A link shortener: users submit a long URL and get a short code; visiting the cod
 2. WHEN a short code has no visits, THE Service SHALL report 0.
 MD
 
-cat > .freethinking/specs/link-shortener/design.md <<'MD'
+cat > .ponderly/specs/link-shortener/design.md <<'MD'
 # Design Document
 
 ## Overview
@@ -63,7 +63,7 @@ The count never decreases and equals the number of visits recorded.
 Unit tests with the link store mocked; property tests with at least 100 iterations per property.
 MD
 
-cat > .freethinking/specs/link-shortener/tasks.md <<'MD'
+cat > .ponderly/specs/link-shortener/tasks.md <<'MD'
 # Implementation Plan
 
 ## Overview

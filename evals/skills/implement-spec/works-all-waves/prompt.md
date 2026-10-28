@@ -5,6 +5,6 @@ max_turns: 70
 allowed_tools: [Read, Glob, Grep, Agent, Skill]
 expected_outcome: Claude validates the graph, launches the task-executor agent for task 1, runs the tests itself, launches the wave-reviewer agent for wave 0, writes the wave's report and starts wave 1 without waiting, does the same for task 2, then launches the wave-reviewer agent once more over the whole run and hands back with a final report carrying a Wave review line for each wave and the `Final review of the run:` line. It writes each wave report and the final report inline with the report skill, each opening with `## Problems` or `No problems.` before `## Done`. It ticks each task in tasks.md as its checks pass, which the sandbox should now allow.
 ---
-/freethinking:implement-spec calc-subtract spec
+/ponderly:implement-spec calc-subtract spec
 
 I will not be able to answer questions during this run. Cadence: spec, run every wave and hand back only at the end. There are no optional tests. The branch is already calc-subtract.

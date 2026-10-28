@@ -21,8 +21,8 @@ Terms used below:
 - The **Baseline** is what step 2 records before anything changes: the full suite's result, the synthesized output where Scope holds infrastructure code, and a copy of each source file in Scope.
 - A **File_Group** is the source files in Scope that share a template, role or pattern, such as several pages of one kind, worked by one executor so the issues they share are fixed the same way. A file with no peers is a group of one, and no file is in two groups.
 - The **Shared_Decisions** are a short list, written before any executor starts, of how each issue that recurs across Scope is to be handled, one line each, given to every executor so their choices agree.
-- An **executor** is the plugin's `task-executor` agent, launched as `freethinking:task-executor`, one per File_Group. Its own definition holds its procedure and the shape of its Summary.
-- The **reviewer** is the plugin's `wave-reviewer` agent, launched as `freethinking:wave-reviewer`, once per run. Its own definition holds its procedure and the shape of its Findings.
+- An **executor** is the plugin's `task-executor` agent, launched as `ponderly:task-executor`, one per File_Group. Its own definition holds its procedure and the shape of its Summary.
+- The **reviewer** is the plugin's `wave-reviewer` agent, launched as `ponderly:wave-reviewer`, once per run. Its own definition holds its procedure and the shape of its Findings.
 
 ## Working with the author
 
@@ -62,7 +62,7 @@ Show the File_Groups, each with its files and, in a line, why they belong togeth
 
 ## 4. Launch the executors
 
-Launch one executor per File_Group, all in one message so they run concurrently, each with the Agent tool as `subagent_type: freethinking:task-executor` and a prompt that holds:
+Launch one executor per File_Group, all in one message so they run concurrently, each with the Agent tool as `subagent_type: ponderly:task-executor` and a prompt that holds:
 
 - **Request**: "Make `<paths>` read plainly: apply the "Write for the reader." bullet of the `code-changes` rule and the `comments` rule to the code the branch added or changed in them, fix the issues they share the same way in each, and leave untouched code elsewhere in the files as it is.", with `<paths>` the group's files.
 - **Lines in scope**: for each of the group's files, the lines the branch added or changed in it, from `git diff <base> -- <path>`, or the whole file when it is untracked.
@@ -73,7 +73,7 @@ Launch one executor per File_Group, all in one message so they run concurrently,
 
 Nothing more. Never say, in any words, that the task comes from a spec: a readability pass is not a spec task, and the executor must run in its standalone mode. The constraints sentence is what keeps that mode from adding a test for a change with no new behaviour. The executor's own definition carries its procedure and the instruction to stop on drift, and the plugin's `SubagentStart` hook puts the handbook rules in its context, so the launch restates none of them.
 
-If the Agent tool cannot find `freethinking:task-executor`, say that the plugin's `task-executor` agent is missing and stop. Do not make the readability changes yourself.
+If the Agent tool cannot find `ponderly:task-executor`, say that the plugin's `task-executor` agent is missing and stop. Do not make the readability changes yourself.
 
 Wait until every executor has returned. Then, for each Summary:
 
@@ -90,14 +90,14 @@ If either differs, name the file that caused each difference: the source file th
 
 ## 6. Review the pass
 
-Launch the reviewer once, with the Agent tool as `subagent_type: freethinking:wave-reviewer` and a prompt that holds:
+Launch the reviewer once, with the Agent tool as `subagent_type: ponderly:wave-reviewer` and a prompt that holds:
 
 - the files the pass changed, from the Summaries' `files changed`, less any reverted in step 5;
 - for each, the scratchpad path of its Baseline copy, with the instruction that the pass's own changes are `git diff --no-index <copy> <path>`, whose exit status 1 means the files differ and is expected, and that the branch's earlier changes are not under review;
 - what the changes must satisfy: the "Write for the reader." bullet of the `code-changes` rule and the `comments` rule, which the hook puts in its context, and the constraints sentence the executors were given, quoted;
 - the files that cite the changed ones: search the repository for each changed file's path and name.
 
-Nothing more, and never the diff. If the Agent tool cannot find `freethinking:wave-reviewer`, say that the plugin's `wave-reviewer` agent is missing and stop. Do not review the pass yourself.
+Nothing more, and never the diff. If the Agent tool cannot find `ponderly:wave-reviewer`, say that the plugin's `wave-reviewer` agent is missing and stop. Do not review the pass yourself.
 
 Wait for its Findings, and collect the reviewer's `unsure` items beside them. Then:
 
@@ -109,8 +109,8 @@ No second review after the fixes.
 
 ## 7. Hand back
 
-Delete the scratchpad copies and the synthesized outputs. Then invoke the Skill tool with `skill: freethinking:report` and `args: handback`, once; its Message is the hand-back, with nothing written after it. Its problems hold every stopped executor, every difference kept, every finding still open after two fix attempts, every `nit`, every `unsure` item carried from the executors and the reviewer, and any Baseline failure the author chose to go on past. Its Next says the changes sit uncommitted on the current branch, and recommends `/freethinking:tighten-tests` to clean up the branch's tests now that the code reads plainly, or `/freethinking:pr` to open the pull request.
+Delete the scratchpad copies and the synthesized outputs. Then invoke the Skill tool with `skill: ponderly:report` and `args: handback`, once; its Message is the hand-back, with nothing written after it. Its problems hold every stopped executor, every difference kept, every finding still open after two fix attempts, every `nit`, every `unsure` item carried from the executors and the reviewer, and any Baseline failure the author chose to go on past. Its Next says the changes sit uncommitted on the current branch, and recommends `/ponderly:tighten-tests` to clean up the branch's tests now that the code reads plainly, or `/ponderly:pr` to open the pull request.
 
-If the Skill tool cannot find `freethinking:report`, say that the plugin's `report` skill is missing and stop. Do not write the hand-back yourself.
+If the Skill tool cannot find `ponderly:report`, say that the plugin's `report` skill is missing and stop. Do not write the hand-back yourself.
 
 Commit nothing and push nothing.

@@ -31,8 +31,8 @@ The contributing guide is the one document that tells a contributor how to devel
 #### Acceptance Criteria
 
 1. THE Guide SHALL say how to load a working copy for a session (`claude --plugin-dir .`), how to run the free checks (`make validate`: the unit tests under `checks/`, then the validator) and how to run the evals for one component, including that evals are model calls run by hand and that their table goes in the pull request.
-2. THE Guide SHALL say that a change to a skill, agent, rule or hook comes with an eval case or a change to one, and that a sizeable change starts with `/freethinking:start-task` and a spec, as the workflow rule says.
-3. THE Guide SHALL say how a change is submitted: on a branch named `<issue number>-<short slug>` when an issue exists and a short slug otherwise, never on the default branch, through a pull request opened with `/freethinking:pr`, giving the issue number as the Ticket_Reference, and SHALL point at the PR_Template as the one place that says how the issue is linked, so that the Guide and the template cannot drift.
+2. THE Guide SHALL say that a change to a skill, agent, rule or hook comes with an eval case or a change to one, and that a sizeable change starts with `/ponderly:start-task` and a spec, as the workflow rule says.
+3. THE Guide SHALL say how a change is submitted: on a branch named `<issue number>-<short slug>` when an issue exists and a short slug otherwise, never on the default branch, through a pull request opened with `/ponderly:pr`, giving the issue number as the Ticket_Reference, and SHALL point at the PR_Template as the one place that says how the issue is linked, so that the Guide and the template cannot drift.
 4. THE Guide SHALL describe the issue workflow of Requirement 2, the labels and Milestones of Requirement 3 and the Discussions of Requirement 5 in a few sentences each, and SHALL link the Community_Files.
 5. THE README SHALL keep its "Add or change a skill or rule" heading as a pointer to the Guide of at most three sentences, so that the two documents cannot drift apart.
 6. IF a change touches no skill, agent, rule or hook, THEN THE Guide SHALL say that no eval is required and that `make validate` is the whole check.
@@ -93,7 +93,7 @@ The contributing guide is the one document that tells a contributor how to devel
 
 #### Acceptance Criteria
 
-1. THE repository SHALL carry `LICENSE` at the repository root with the MIT License text and the copyright line `Copyright (c) 2026 freethinkingit`.
+1. THE repository SHALL carry `LICENSE` at the repository root with the MIT License text and the copyright line `Copyright (c) 2026 Dan Sabin`.
 2. THE repository SHALL carry `.github/CODE_OF_CONDUCT.md` with the Contributor Covenant version 2.1, unmodified except for the contact method, which names how a report reaches the Maintainers.
 3. THE repository SHALL carry `.github/SECURITY.md` saying that a vulnerability is reported through GitHub's private vulnerability reporting, the Report a vulnerability button on the repository's Security tab, never in a public issue, and that the latest release is the supported version.
 4. THE repository SHALL be public with GitHub's private vulnerability reporting enabled, so that the path `SECURITY.md` names exists.

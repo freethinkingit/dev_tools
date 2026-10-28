@@ -3,6 +3,6 @@ description: Given a request that extends nothing in the calc fixture, start-tas
 tags: [skill, start-task]
 max_turns: 6
 allowed_tools: [Read, Glob, Grep, Agent, Skill]
-expected_outcome: Claude reads the calc fixture, says in two or three sentences that a link shortener extends nothing in it (no module, pattern or test it builds on), and asks the fit question with Spec it here and Wrong repository as options, before any spec question. The route statement with the task name comes first in the same message as the Fit question. It writes nothing under .freethinking/specs/, edits no code, and launches no sub-agent or skill.
+expected_outcome: Claude reads the calc fixture, says in two or three sentences that a link shortener extends nothing in it (no module, pattern or test it builds on), and asks the fit question with Spec it here and Wrong repository as options, before any spec question. The route statement with the task name comes first in the same message as the Fit question. It writes nothing under .ponderly/specs/, edits no code, and launches no sub-agent or skill.
 ---
-/freethinking:start-task Link shortener: users submit a long URL and get a short code; visiting the code redirects and counts the click
+/ponderly:start-task Link shortener: users submit a long URL and get a short code; visiting the code redirects and counts the click

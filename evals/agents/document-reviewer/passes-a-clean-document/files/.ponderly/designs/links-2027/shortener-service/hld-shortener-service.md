@@ -1,6 +1,6 @@
 # Shortener Service
 
-Parent: .freethinking/strategies/links-2027.md
+Parent: .ponderly/strategies/links-2027.md
 
 ## Scope
 

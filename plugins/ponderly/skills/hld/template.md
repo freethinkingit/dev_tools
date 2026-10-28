@@ -1,11 +1,11 @@
 # Shortener Service
 
-Parent: .freethinking/strategies/links-platform-2027.md
+Parent: .ponderly/strategies/links-platform-2027.md
 
 ## Scope
 
 This document is a self-describing template: it is a valid high level design (HLD),
-written as `.freethinking/designs/links-platform-2027/shortener-service/hld-shortener-service.md`,
+written as `.ponderly/designs/links-platform-2027/shortener-service/hld-shortener-service.md`,
 whose own prose explains how an HLD works while it designs the example shortener service
 of the links platform strategy. The line under the title names the parent strategy by
 its path from the repository root, so the tree of documents can be walked from the line
@@ -163,7 +163,7 @@ than inferred.
 The Low level designs section closes the HLD with its Candidates: one LLD per component
 that needs a design of its own, each named in a line with what it covers. A component
 simple enough to build straight from this HLD gets no candidate. Each candidate becomes
-`.freethinking/designs/links-platform-2027/shortener-service/lld-<name>.md`, whose
+`.ponderly/designs/links-platform-2027/shortener-service/lld-<name>.md`, whose
 parent line names this HLD.
 
 - `redirect-api`: the create, resolve and metrics endpoints, validation, caching of hot

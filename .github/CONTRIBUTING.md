@@ -1,6 +1,6 @@
 # Contributing
 
-This repository holds a Claude Code plugin, in `plugins/freethinking/`: shared
+This repository holds a Claude Code plugin, in `plugins/ponderly/`: shared
 skills, agents and rules for a software team, whose hooks put the rules in every
 session's context. This guide
 says how to set up, test and submit a change, and how the repository uses
@@ -15,15 +15,15 @@ the [Code of Conduct](CODE_OF_CONDUCT.md). Report a vulnerability as the
 Clone the repository and work from its root:
 
 ```bash
-claude --plugin-dir ./plugins/freethinking   # load your working copy for one session
+claude --plugin-dir ./plugins/ponderly   # load your working copy for one session
 make validate                                # the unit tests and the validators; CI runs this on every PR
 ```
 
 ## Test
 
 The free checks are `make validate`: the unit tests under `checks/`, then
-three `claude plugin validate` runs, on `.`, `./plugins/freethinking` and
-`./plugins/freethinking/skills`. They make no model call.
+three `claude plugin validate` runs, on `.`, `./plugins/ponderly` and
+`./plugins/ponderly/skills`. They make no model call.
 
 Evals run by component with `make eval-<kind>-<name>`, such as
 `make eval-skill-pr`, and `make eval-hook` for the hooks. Every case is a model
@@ -46,10 +46,10 @@ For how the checks and evals work, see the README's
 ## Make a change
 
 A small change, such as a typo, a one-line fix or a rename: make it. A bug:
-run `/freethinking:bugfix`. Anything else: run `/freethinking:start-task`. It
+run `/ponderly:bugfix`. Anything else: run `/ponderly:start-task`. It
 reads the code and decides between the `task-executor` agent for one contained
 change, `bugfix` for a defect, and a spec for the rest, and asks before taking
-the first two. When it writes a spec, `/freethinking:implement-spec` builds it.
+the first two. When it writes a spec, `/ponderly:implement-spec` builds it.
 On every route, `start-task` proposes the branch name, and you or
 `implement-spec` create it; `pr` can also create it at its branch offer,
 naming it from the issue you pass it.
@@ -57,10 +57,10 @@ naming it from the issue you pass it.
 Work on a branch named `<issue number>-<short slug>` when an issue exists, such
 as `12-ticket-reference`, and on a short slug otherwise. Never work on the
 default branch. The Create a branch link under Development on an issue page
-gives that shape. When `/freethinking:implement-spec` proposes the task name as
+gives that shape. When `/ponderly:implement-spec` proposes the task name as
 the branch, answer with the issue number in front.
 
-Open the pull request with `/freethinking:pr` and give the issue number as the
+Open the pull request with `/ponderly:pr` and give the issue number as the
 ticket. The [pull request template](pull_request_template.md) is the one place
 that says how the issue is linked and when to write `Closes #<number>`.
 
@@ -78,15 +78,16 @@ New issues start from one of the issue forms:
 - **Propose a spike**, for a question that has to be answered before work can
   be designed.
 
-Submitting a form labels the issue `triage` and sets its Issue_Type: `Bug`,
-`Feature`, `Task` and `Spike` respectively. Blank issues are off. The new-issue
-page also links questions to Discussions Q&A, ideas to Discussions Ideas, and
-vulnerabilities to the security policy page.
+Submitting a form labels the issue `triage` and applies its type label:
+`type: bug`, `type: feature`, `type: task` and `type: spike` respectively.
+Blank issues are off. The new-issue page also links questions to Discussions
+Q&A, ideas to Discussions Ideas, and vulnerabilities to the security policy
+page.
 
 At least weekly, a maintainer triages:
 
 1. Reviews every issue labelled `triage`.
-2. Confirms or corrects its Issue_Type.
+2. Sets, confirms or corrects its type label.
 3. Sets one priority label and the area labels that apply, none, one or both.
 4. Applies `question` instead when the issue cannot be classified without more
    from its author.
@@ -101,9 +102,10 @@ really a question is converted to a discussion at triage.
 
 ## Labels and milestones
 
-Every issue has one Issue_Type, `Bug`, `Feature`, `Task` or `Spike`, which
-says what sort of thing it is. Labels are lowercase:
+Every issue has one type label. Labels are lowercase:
 
+- `type: bug`, `type: feature`, `type: task` and `type: spike` say what sort of
+  thing the issue is.
 - `priority: high`, `priority: medium` and `priority: low` say how soon the
   issue should be done.
 - `quality` and `compatibility` are areas: the behaviour of the skills, agents
@@ -144,6 +146,6 @@ The list grows from issues labelled `compatibility`.
 
 ## Settings, not files
 
-Labels, milestones, Discussions and Issue_Types are repository or organization
-settings, not files, so they do not travel with the tree. A fork or a copy of
-this repository does not carry them.
+Labels, milestones and Discussions are repository settings, not files, so they
+do not travel with the tree. A fork or a copy of this repository does not carry
+them.

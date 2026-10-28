@@ -111,7 +111,7 @@ plans on it. Each entry is a sentence with the reason or the place it belongs.
 
 Close with the high level designs this strategy expects, one Candidate per stream of
 work, none written yet. Each is a kebab-case name, which becomes the design's folder
-under `.freethinking/designs/links-platform-2027/`, and a line on what it covers. The
+under `.ponderly/designs/links-platform-2027/`, and a line on what it covers. The
 `hld` skill takes one of these names and this document's path to write the design.
 
 - `shortener-service`: the Short_Link service to general availability, from the

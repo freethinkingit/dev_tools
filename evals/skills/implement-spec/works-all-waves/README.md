@@ -11,7 +11,7 @@ also carries the `Final review of the run:` line.
 ## What the scaffold builds
 
 The same workspace as works-one-wave: a small Python package on branch
-`calc-subtract` with a committed spec under `.freethinking/specs/calc-subtract/`,
+`calc-subtract` with a committed spec under `.ponderly/specs/calc-subtract/`,
 two tasks in two waves (add `subtract`, then test it). The package is
 `evals/fixtures/calc/`, built by `evals/fixtures/setup.sh`; the spec is this
 case's `files/` folder, a copy of works-one-wave's, copied in before that
@@ -23,7 +23,7 @@ xcrun cache the sandbox forbids; the Makefile's implement-spec target puts
 The prompt gives the start answers up front (spec cadence, no optional tests,
 already on a branch), since nothing can answer mid-run. implement-spec writes
 each wave report and the final report by invoking the Skill tool with
-`freethinking:report` and `handback` in the session itself, which is what the
+`ponderly:report` and `handback` in the session itself, which is what the
 `invokes-report` and `problems-first` graders read.
 
 ## Graders
@@ -36,7 +36,7 @@ each wave report and the final report by invoking the Skill tool with
 - `adds-subtract`: `calc/ops.py` contains the function task 1 describes.
 - `works-wave-1`: `tests/test_ops.py` gained `test_subtract`, so wave 1 ran
   without a hand-back after wave 0. works-one-wave grades the opposite.
-- `ticks-both-tasks`: `.freethinking/specs/calc-subtract/tasks.md` has
+- `ticks-both-tasks`: `.ponderly/specs/calc-subtract/tasks.md` has
   `- [x] 1.` and then `- [x] 2.`, so both waves were ticked.
 - `reports-every-wave`: the final report carries the wave review line of
   wave 1, so the report covers each wave and not only the first.

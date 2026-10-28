@@ -6,7 +6,7 @@
 
 ## Glossary
 
-- **Skill**: The `start-task` skill described by this document, run as `/freethinking:start-task`.
+- **Skill**: The `start-task` skill described by this document, run as `/ponderly:start-task`.
 - **Author**: The engineer whose session runs the Skill and who is accountable for the resulting code.
 - **Request**: The work as the Author gave it: the Skill's argument and the Author's surrounding message.
 - **Triage**: The Skill's judgement, made after reading the codebase and before writing any document, of which Route the Request takes.
@@ -15,7 +15,7 @@
 - **Executor_Route**: The Route for a Contained_Change: the Skill launches the Executor in Standalone_Mode with the Request and reports its Summary.
 - **Spec_Route**: The Route for every other Request: the Skill writes the three spec documents as it does today.
 - **Contained_Change**: A Request that is one change, describable in a sentence or two, touching a place in the code the Skill can name after reading the codebase, needing no design decision and no new dependency, framework or tool.
-- **Executor**: The `task-executor` plugin agent, addressed as `freethinking:task-executor`.
+- **Executor**: The `task-executor` plugin agent, addressed as `ponderly:task-executor`.
 - **Standalone_Mode**: The Executor's behaviour when its launch prompt does not say the task comes from a spec: the change comes with its test.
 - **Summary**: The fixed-shape report the Executor returns: status, files changed, checks run, ephemeral check, things unsure of, and a reason when stopped.
 - **Question**: A question the Skill puts to the Author with the AskUserQuestion tool, offering a fixed set of answers plus the Author's own text.
@@ -59,7 +59,7 @@
 
 #### Acceptance Criteria
 
-1. WHEN the Author accepts Executor_Route, THE Skill SHALL launch the Executor once with the Agent tool as `subagent_type: freethinking:task-executor`.
+1. WHEN the Author accepts Executor_Route, THE Skill SHALL launch the Executor once with the Agent tool as `subagent_type: ponderly:task-executor`.
 2. THE launch prompt SHALL hold the Request in the Author's words, the files and code the Skill found that the change touches, and anything the Author added in the Question's free text, and SHALL NOT say the task comes from a spec, so that the Executor is in Standalone_Mode.
 3. THE Skill SHALL NOT edit, create or delete any source file itself on Executor_Route.
 4. WHEN the Executor returns a Summary with status `done`, THE Skill SHALL show the Author the Summary and the diff of the files it names, and SHALL recommend opening a pull request with the `pr` skill.
@@ -73,10 +73,10 @@
 
 #### Acceptance Criteria
 
-1. THE Rule SHALL direct Claude to run `/freethinking:start-task` for any request to change code that no other bullet of the Rule names, and SHALL say that the skill reads the code and decides between the executor, `bugfix` and a spec.
+1. THE Rule SHALL direct Claude to run `/ponderly:start-task` for any request to change code that no other bullet of the Rule names, and SHALL say that the skill reads the code and decides between the executor, `bugfix` and a spec.
 5. THE Rule SHALL NOT ask Claude to judge the size of a request beyond the trivial cases of criterion 3; every other bullet SHALL route on what the Author said or on a file that exists.
 6. THE Rule SHALL say that the first bullet that matches the request is the route, so that a request matching two bullets has one answer.
-2. THE Rule SHALL keep direct routes to `/freethinking:bugfix` for a request the Author names as a bug, to `/freethinking:implement-spec` when a `tasks.md` exists, and to `/freethinking:pr` for a pull request.
+2. THE Rule SHALL keep direct routes to `/ponderly:bugfix` for a request the Author names as a bug, to `/ponderly:implement-spec` when a `tasks.md` exists, and to `/ponderly:pr` for a pull request.
 3. THE Rule SHALL keep the "small changes stay small" bullet for a typo, a one-line fix or a rename, so that trivial work still needs no skill.
 4. THE combined text of `rules/*.md` SHALL stay under 10,000 characters, since Claude Code truncates hook output past that.
 

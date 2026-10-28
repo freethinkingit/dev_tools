@@ -6,11 +6,11 @@ Agents tend to write too many unit tests: they encode every value and feature ra
 
 ## Glossary
 
-- **Test_Rule**: The new rule file `plugins/freethinking/rules/tests.md`, loaded into every session and sub-agent by the plugin's hooks.
-- **Readability_Bullet**: The bullet added to `plugins/freethinking/rules/code-changes.md` that prefers readable code to terse code.
-- **Comment_Sentence**: The sentence added to `plugins/freethinking/rules/comments.md` saying that a comment describing an algorithm is fixed by making the code readable.
-- **Readable_Code**: The new skill at `plugins/freethinking/skills/readable-code/SKILL.md`.
-- **Tighten_Tests**: The new skill at `plugins/freethinking/skills/tighten-tests/SKILL.md`.
+- **Test_Rule**: The new rule file `plugins/ponderly/rules/tests.md`, loaded into every session and sub-agent by the plugin's hooks.
+- **Readability_Bullet**: The bullet added to `plugins/ponderly/rules/code-changes.md` that prefers readable code to terse code.
+- **Comment_Sentence**: The sentence added to `plugins/ponderly/rules/comments.md` saying that a comment describing an algorithm is fixed by making the code readable.
+- **Readable_Code**: The new skill at `plugins/ponderly/skills/readable-code/SKILL.md`.
+- **Tighten_Tests**: The new skill at `plugins/ponderly/skills/tighten-tests/SKILL.md`.
 - **Skill**: Readable_Code or Tighten_Tests.
 - **Author**: The person running a Skill, who answers its questions and decides its verdicts.
 - **Scope**: The files a Skill works on: the files the branch changes against its target branch, narrowed to the paths the Author passes as arguments when there are any.
@@ -146,6 +146,6 @@ Agents tend to write too many unit tests: they encode every value and feature ra
 
 1. THE System SHALL list Readable_Code and Tighten_Tests in the plugin README's skills table and the Test_Rule in its rules table, and SHALL update the `code-changes.md` and `comments.md` rows.
 2. THE System SHALL add Readable_Code, Tighten_Tests and the Test_Rule to the component dropdown of every issue form that has one.
-3. THE System SHALL bump the plugin version in `plugins/freethinking/.claude-plugin/plugin.json` from 0.16.0 to 0.17.0.
+3. THE System SHALL bump the plugin version in `plugins/ponderly/.claude-plugin/plugin.json` from 0.16.0 to 0.17.0.
 4. THE System SHALL add at least one eval case under `evals/skills/readable-code/`, one under `evals/skills/tighten-tests/` and one under `evals/rules/` for the Test_Rule, each case's behaviour decided while the Skill is built.
 5. THE System SHALL not change `implement-spec`, `pr` or any agent, and SHALL add no hook.

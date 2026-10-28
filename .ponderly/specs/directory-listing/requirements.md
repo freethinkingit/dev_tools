@@ -6,12 +6,12 @@ The plugin is submitted to Anthropic's plugin directory, which scans every file 
 
 ## Glossary
 
-- **Plugin_Folder**: The folder `plugins/freethinking/` at the repository root that holds the Manifest and every file an installed plugin loads: `skills/`, `agents/`, `rules/`, `hooks/`, the plugin README and the Icon.
+- **Plugin_Folder**: The folder `plugins/ponderly/` at the repository root that holds the Manifest and every file an installed plugin loads: `skills/`, `agents/`, `rules/`, `hooks/`, the plugin README and the Icon.
 - **Repository_Root**: The top folder of the repository, holding the Marketplace_File, `evals/`, `checks/`, `.claude/specs/`, the Makefile, the CI workflow, the contributing guide, the LICENSE and the root README.
-- **Manifest**: The file `plugins/freethinking/.claude-plugin/plugin.json`.
+- **Manifest**: The file `plugins/ponderly/.claude-plugin/plugin.json`.
 - **Marketplace_File**: The file `.claude-plugin/marketplace.json` at the Repository_Root, whose one entry names the plugin and points at the Plugin_Folder.
 - **Listing_Fields**: The Manifest fields the Directory shows: `displayName`, `homepage`, `repository`, `icon`, `keywords`, `author` and `version`.
-- **Icon**: The square PNG at `plugins/freethinking/.claude-plugin/icon.png`, 1024 pixels on each side.
+- **Icon**: The square PNG at `plugins/ponderly/.claude-plugin/icon.png`, 1024 pixels on each side.
 - **Directory**: Anthropic's plugin directory, submitted to from the developer portal at claude.ai/directory/manage.
 - **Validator_Shape**: The form of a hook script that the Directory's validator follows when the Plugin_Folder is a subfolder: every path written in full from `${CLAUDE_PLUGIN_ROOT}`, no other shell variable, no command substitution, no package launcher, and no call to another file in the plugin.
 - **Hook_Script**: One of `hooks/load-rules.sh` and `hooks/load-rules-subagent.sh` in the Plugin_Folder.
@@ -33,9 +33,9 @@ The plugin is submitted to Anthropic's plugin directory, which scans every file 
 1. THE Plugin_Folder SHALL hold the Manifest, the Icon, `skills/`, `agents/`, `rules/`, `hooks/` and a `README.md`, each moved from the Repository_Root with its content otherwise unchanged except where a later requirement says.
 2. THE Repository_Root SHALL keep the Marketplace_File, `evals/`, `checks/`, `.claude/specs/`, `Makefile`, `.github/`, `LICENSE` and `.gitignore` where they are.
 3. THE Plugin_Folder SHALL contain no file under `evals/`, `checks/` or `.claude/specs/`, and no symbolic link.
-4. THE Marketplace_File SHALL keep its `name` `freethinkingit` and its entry's `name` `freethinking`, and SHALL point the entry's `source` at `./plugins/freethinking`.
-5. WHEN `claude plugin validate . --strict` runs at the Repository_Root and `claude plugin validate ./plugins/freethinking --strict` runs, THE System SHALL print `Validation passed` for each with no warning.
-6. WHEN a machine with the plugin installed from this marketplace runs `claude plugin update freethinking@freethinkingit`, THE System SHALL install the new version under the same install id, with every skill, agent, rule and hook loaded.
+4. THE Marketplace_File SHALL keep its `name` `sabind` and its entry's `name` `ponderly`, and SHALL point the entry's `source` at `./plugins/ponderly`.
+5. WHEN `claude plugin validate . --strict` runs at the Repository_Root and `claude plugin validate ./plugins/ponderly --strict` runs, THE System SHALL print `Validation passed` for each with no warning.
+6. WHEN a machine with the plugin installed from this marketplace runs `claude plugin update ponderly@sabind`, THE System SHALL install the new version under the same install id, with every skill, agent, rule and hook loaded.
 
 ### Requirement 2: The manifest carries the listing fields
 
@@ -43,12 +43,12 @@ The plugin is submitted to Anthropic's plugin directory, which scans every file 
 
 #### Acceptance Criteria
 
-1. THE Manifest SHALL set `displayName` to `Freethinking`, `homepage` and `repository` to `https://github.com/freethinkingit/dev_tools`, `icon` to `./.claude-plugin/icon.png`, and `license` to `MIT`.
-2. THE Manifest SHALL set `author` to name `FreeThinking IT`, email `hello@freethinking.it` and url `https://freethinking.it`.
+1. THE Manifest SHALL set `displayName` to `Ponderly`, `homepage` and `repository` to `https://github.com/sabind/ponderly`, `icon` to `./.claude-plugin/icon.png`, and `license` to `MIT`.
+2. THE Manifest SHALL set `author` to name `Dan Sabin`, email `dan.sabin@gmail.com` and url `https://dansabin.com`.
 3. THE Manifest SHALL set `keywords` to `developer-workflow`, `feature-development`, `bug-fixing`, `pull-requests`, `code-review`, `spec-driven`, `engineering-standards` and `accountability`.
 4. THE Manifest SHALL set `version` to `0.13.0`.
 5. THE Icon SHALL be a PNG of 1024 by 1024 pixels at the path the Manifest names.
-6. IF a Listing_Field is absent, misspelt or not of the type the manifest reference gives, THEN `claude plugin validate ./plugins/freethinking --strict` SHALL fail, and THE System SHALL not be submitted.
+6. IF a Listing_Field is absent, misspelt or not of the type the manifest reference gives, THEN `claude plugin validate ./plugins/ponderly --strict` SHALL fail, and THE System SHALL not be submitted.
 
 ### Requirement 3: The plugin README discloses what runs and sends
 
@@ -95,9 +95,9 @@ The plugin is submitted to Anthropic's plugin directory, which scans every file 
 #### Acceptance Criteria
 
 1. THE Free_Checks that read `skills/`, `agents/`, `rules/`, `hooks/` or the Manifest SHALL read them under the Plugin_Folder, and `make validate` SHALL pass.
-2. THE `validate` target SHALL run `make check`, then `claude plugin validate . --strict` for the Marketplace_File and `claude plugin validate ./plugins/freethinking --strict` for the plugin.
+2. THE `validate` target SHALL run `make check`, then `claude plugin validate . --strict` for the Marketplace_File and `claude plugin validate ./plugins/ponderly --strict` for the plugin.
 3. THE CI workflow SHALL keep running `make validate` unchanged.
-4. THE contributing guide, the root README, the plugin README and `evals/README.md` SHALL name paths as they are after the move, including that the plugin loads for one session with `claude --plugin-dir ./plugins/freethinking`, and SHALL say that `evals/` sits outside the plugin and how an Eval_Target runs it.
+4. THE contributing guide, the root README, the plugin README and `evals/README.md` SHALL name paths as they are after the move, including that the plugin loads for one session with `claude --plugin-dir ./plugins/ponderly`, and SHALL say that `evals/` sits outside the plugin and how an Eval_Target runs it.
 5. THE Makefile SHALL name the Plugin_Folder in one `PLUGIN` variable, and each Free_Check that reads the Plugin_Folder SHALL name it in one constant at its top, so that adding a second plugin under `plugins/` is one edit per file.
 6. IF a backticked repository path in the contributing guide, the root README, the plugin README or `evals/README.md` names a file or folder that does not exist after the move, THEN the wave review SHALL report it as a finding to fix in this task.
 
@@ -107,7 +107,7 @@ The plugin is submitted to Anthropic's plugin directory, which scans every file 
 
 #### Acceptance Criteria
 
-1. WHEN the author validates the repository in the Directory's developer portal with the plugin path `plugins/freethinking` after the change merges, THE report SHALL show no finding with the result "Policy hold" and no finding with the result "Blocks".
+1. WHEN the author validates the repository in the Directory's developer portal with the plugin path `plugins/ponderly` after the change merges, THE report SHALL show no finding with the result "Policy hold" and no finding with the result "Blocks".
 2. WHILE a warning remains in that report, THE System SHALL record the warning's title and cause as a comment on issue #43, so the next change knows what is left.
 
 ### Requirement 8: The listing rules are checked before the portal

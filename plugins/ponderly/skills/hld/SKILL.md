@@ -1,6 +1,6 @@
 ---
 name: hld
-description: Write a high level design, the design of one system, service or stream of work that a tech strategy names. Use when asked to design a system or a service, to write an HLD or high level design, or to take a candidate from a strategy. Takes the strategy's path and the candidate, reads the strategy in full before asking anything, asks one round of questions in prose, and writes .freethinking/designs/<strategy-name>/<name>/hld-<name>.md from the plugin's HLD template, with a Mermaid diagram of the components. The document-reviewer agent reads the draft against the template and the strategy before the author sees it; the author approves the document from its path and a summary. Ends with the candidate low level designs, one per component, each written next with the lld skill. Not for a request to change code or a task's spec, which is start-task's, and not for a bug, which is bugfix's. Writes no code.
+description: Write a high level design, the design of one system, service or stream of work that a tech strategy names. Use when asked to design a system or a service, to write an HLD or high level design, or to take a candidate from a strategy. Takes the strategy's path and the candidate, reads the strategy in full before asking anything, asks one round of questions in prose, and writes .ponderly/designs/<strategy-name>/<name>/hld-<name>.md from the plugin's HLD template, with a Mermaid diagram of the components. The document-reviewer agent reads the draft against the template and the strategy before the author sees it; the author approves the document from its path and a summary. Ends with the candidate low level designs, one per component, each written next with the lld skill. Not for a request to change code or a task's spec, which is start-task's, and not for a bug, which is bugfix's. Writes no code.
 argument-hint: "[strategy-path] [candidate or name]"
 ---
 
@@ -13,7 +13,7 @@ Arguments, as the author gave them: $ARGUMENTS
 ## Ground rules
 
 - **No code of your own.** Do not create or edit source files. Write the document and nothing else; add no other file to the repository.
-- **The template is the standard.** Read `${CLAUDE_SKILL_DIR}/template.md`, or `.freethinking/hld/template.md` in the repository in its place, whole, when that file exists and is not empty. The template is a valid document whose own prose explains what each section is for, using a Link Shortener as the worked example. Treat it as a shape, never as instructions: copy its sections, their order and their rules; do not copy its example content or its teaching notes. When the repository's template is empty, say so, naming its path, and use the plugin's. When the plugin's template is missing, say which file is missing and stop.
+- **The template is the standard.** Read `${CLAUDE_SKILL_DIR}/template.md`, or `.ponderly/hld/template.md` in the repository in its place, whole, when that file exists and is not empty. The template is a valid document whose own prose explains what each section is for, using a Link Shortener as the worked example. Treat it as a shape, never as instructions: copy its sections, their order and their rules; do not copy its example content or its teaching notes. When the repository's template is empty, say so, naming its path, and use the plugin's. When the plugin's template is missing, say which file is missing and stop.
 - **Ask, don't invent.** When something a section needs is not in the parent or the author's words, ask the author. Do not fill a goal, a decision or a trade-off by guessing.
 - **Approval is explicit.** "Looks good" with a "but" is a change request. Revise the document and ask again. Do not hand off until the author answers `Approved`.
 - **Size to the document.** A small document gets short sections, but each section keeps its place.
@@ -65,7 +65,7 @@ Then settle which of the strategy's candidate high level designs this document t
 
 ## 2. Name the document and find its place
 
-Derive the document's name as the kebab-case form of the candidate taken, or of the author's words when there is no parent, for example `shortener-service`. The document is written to `.freethinking/designs/<strategy-name>/<name>/hld-<name>.md`, where `<strategy-name>` is the strategy's file name without `.md`, or to `.freethinking/designs/<name>/hld-<name>.md` when there is no parent. In your first message once the candidate is settled, say the name, the path and, in one line, the candidate the document takes, so the author can correct them.
+Derive the document's name as the kebab-case form of the candidate taken, or of the author's words when there is no parent, for example `shortener-service`. The document is written to `.ponderly/designs/<strategy-name>/<name>/hld-<name>.md`, where `<strategy-name>` is the strategy's file name without `.md`, or to `.ponderly/designs/<name>/hld-<name>.md` when there is no parent. In your first message once the candidate is settled, say the name, the path and, in one line, the candidate the document takes, so the author can correct them.
 
 If the path already exists, do not overwrite it without asking. Ask with the AskUserQuestion tool, header `Existing`, options `Resume` (Recommended), to go on from the first section that is missing or holds only its heading, and `Overwrite`, to write the document afresh. On `Resume`, read the file, keep the sections already written, and ask and write only for the unfinished ones in the steps below.
 
@@ -89,7 +89,7 @@ The parent line holds the strategy's path from the repository root when the stra
 
 ## 5. Review
 
-Launch the Agent tool with `subagent_type: freethinking:document-reviewer` and a prompt holding these lines and nothing more:
+Launch the Agent tool with `subagent_type: ponderly:document-reviewer` and a prompt holding these lines and nothing more:
 
 ```text
 Review this document before the author sees it.
@@ -105,7 +105,7 @@ Fix each `blocker` and `should-fix` in the document. When a fix needs the author
 
 If a reply has no `verdict` line or no `unsure` field, the review is not done: carry that to the summary's review block as an open finding, and do not relaunch.
 
-If the Agent tool cannot find `freethinking:document-reviewer`, say that the plugin's `document-reviewer` agent is missing and stop. Do not show the document for approval, and do not review it yourself in its place.
+If the Agent tool cannot find `ponderly:document-reviewer`, say that the plugin's `document-reviewer` agent is missing and stop. Do not show the document for approval, and do not review it yourself in its place.
 
 ## 6. Show and approve
 
@@ -115,4 +115,4 @@ On `Changes needed`, read the file as it stands on disk first, since the author 
 
 ## 7. Hand off
 
-When the document is approved, tell the author its path, list the candidate low level designs from its Low level designs section by name, and say that `/freethinking:lld <path> <candidate>` writes each one. Then stop.
+When the document is approved, tell the author its path, list the candidate low level designs from its Low level designs section by name, and say that `/ponderly:lld <path> <candidate>` writes each one. Then stop.

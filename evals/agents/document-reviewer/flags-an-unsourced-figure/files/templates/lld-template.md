@@ -1,6 +1,6 @@
 # Visit Counter
 
-Parent: .freethinking/designs/links-platform-2027/shortener-service/hld-shortener-service.md
+Parent: .ponderly/designs/links-platform-2027/shortener-service/hld-shortener-service.md
 
 ## Responsibility
 
@@ -155,7 +155,7 @@ happening. A risk with no mitigation says so plainly.
 ## Tasks
 
 This closing section breaks the component into tasks, each small enough for one
-`/freethinking:start-task` run, roughly a dozen or fewer for one low level design.
+`/ponderly:start-task` run, roughly a dozen or fewer for one low level design.
 Each entry is a short name, a line on what it covers, and the section of this document
 it builds, so a reader can check that every section describing something to build
 (Interfaces, Data, Behaviour and Testing) is built by some task and every task builds

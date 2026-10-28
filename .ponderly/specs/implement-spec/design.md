@@ -16,7 +16,7 @@ flowchart TD
     B -- invalid --> P["Propose corrected Graph, stop (R2.6)"]
     B -- valid --> C{"All non-optional ticked? (R2.8)"}
     C -- yes --> O{"Unticked Optional_Tests the Author wants?"}
-    O -- no --> Z["Recommend /freethinking:pr, stop"]
+    O -- no --> Z["Recommend /ponderly:pr, stop"]
     O -- yes --> D
     C -- no --> D["State next Wave; ask Cadence, Optional_Tests, branch (R3)"]
     D --> H["Next Wave: check code for tasks already done (R4.7)"]
@@ -28,7 +28,7 @@ flowchart TD
     W -- yes --> S["Run Full_Suite (R5.2)"]
     S -- fails --> K2["Report verbatim, ask (R5.3)"]
     S -- passes --> F{"All tasks done?"}
-    F -- yes --> Z2["Final Report, recommend /freethinking:pr (R5.6)"]
+    F -- yes --> Z2["Final Report, recommend /ponderly:pr (R5.6)"]
     F -- no --> L
     W -- no --> L{"Cadence unit done?"}
     L -- no --> I
@@ -86,9 +86,9 @@ Rejected alternative: a `validate-tasks.py` beside the skill. Deterministic, but
 |-----------|----------------|--------------|
 | `skills/implement-spec/SKILL.md` | The skill: load, validate, set up, work loop, report, continue, finish | 1.5, 2 to 7.1 |
 | `skills/start-task/SKILL.md` step 5 | Instruct that the Graph names every leaf task once, optional tests included, and that the Graph, not numbering, orders the work; no checkpoint tasks | 1.1, 1.2 |
-| `skills/start-task/SKILL.md` step 6 | Hand off to `/freethinking:implement-spec` | 7.5 |
+| `skills/start-task/SKILL.md` step 6 | Hand off to `/ponderly:implement-spec` | 7.5 |
 | `skills/start-task/spec-template/tasks.md` | No checkpoint tasks; define a leaf task; state the two Graph rules; example Graph that satisfies them | 1.3 |
-| `rules/workflow.md` | Route "existing spec" to `/freethinking:implement-spec`; describe stops as Cadence | 7.2, 7.7 |
+| `rules/workflow.md` | Route "existing spec" to `/ponderly:implement-spec`; describe stops as Cadence | 7.2, 7.7 |
 | `README.md` | Skills table row and eval mention; describe stops as Cadence | 7.3, 7.7 |
 | `evals/skills/implement-spec/<case>/` | At least one eval case | 7.4 |
 | `.claude-plugin/plugin.json` | Version bump to 0.4.0 | 7.6 |
@@ -107,7 +107,7 @@ The skill body follows the house pattern of the pr and bugfix skills: a short st
 | 5. Work the wave | New Wave with Optional_Tests: ask once. Check the code for each unticked task and say which appear done. For each remaining task, state id, text and cited requirements, then launch a Sub_Agent with the task text, the cited requirements, the matching design sections, the code-changes rules with their spec exception, the other tasks in flight, and the instruction to stop on drift; it gathers context, implements only what the task describes, proves it with an Ephemeral_Check and the existing tests, and returns a summary with the check's code. Parallel at wave Cadence, one at a time at task Cadence. At wave Cadence wait for every Sub_Agent of the wave; at task Cadence handle each as it returns. For each: re-run its tests, read any file another Sub_Agent of the wave also changed, then tick, and tick the parent if all its sub-tasks are ticked. Fail: have the Sub_Agent fix at most twice, then step 6. Design cannot be followed: step 6. Last task of a Wave other than a Skipped_Test ticked: run the Full_Suite; if it fails, step 6 with the output | 4.1 to 4.6, 3.3, 5.2, 5.3 |
 | 6. Stop and report | Reached at the end of a Cadence unit, on a failed Full_Suite, on Drift or on failure. Write the Report. Drift: add the evidence and the proposed spec edit. Failure: add verbatim output and open and confirmed causes. Never commit | 5.1, 5.4, 5.5, 6.1, 6.2, 6.5 |
 | 7. Continue | On "continue", resume at step 5 with the same choices. On an approved spec edit, apply it to the named file and resume where the Run stopped (step 3 if the edit was a Graph fix at load). On a request to skip or reorder, name dependents from the Graph and wait for confirmation | 5.7, 6.3, 6.4 |
-| 8. Finish | When every task other than a Skipped_Test is ticked, write the Report with the final Wave's Full_Suite result, recommend `/freethinking:pr`, stop | 5.6 |
+| 8. Finish | When every task other than a Skipped_Test is ticked, write the Report with the final Wave's Full_Suite result, recommend `/ponderly:pr`, stop | 5.6 |
 
 ### Report shape
 
@@ -207,9 +207,9 @@ The template example Graph after the prerequisite, with the checkpoint tasks rem
 |-----------|----------|-----------|--------------|
 | No argument and no Spec with open tasks | NOT_FOUND | Say there is nothing to implement, recommend start-task, stop | 2.9 |
 | No argument and several Specs with open tasks | AMBIGUOUS | List them, ask which | 2.3 |
-| Named Spec has no `tasks.md` | NOT_FOUND | Recommend `/freethinking:start-task`, no code change | 2.4 |
+| Named Spec has no `tasks.md` | NOT_FOUND | Recommend `/ponderly:start-task`, no code change | 2.4 |
 | Graph missing or fails any check | VALIDATION | List problems by id, propose corrected JSON or removal of a task with no work, no code change until approved | 1.5, 2.5, 2.6 |
-| Every non-optional Leaf_Task ticked at load | DONE | Report complete, ask about unticked Optional_Tests, else recommend `/freethinking:pr`, stop | 2.8 |
+| Every non-optional Leaf_Task ticked at load | DONE | Report complete, ask about unticked Optional_Tests, else recommend `/ponderly:pr`, stop | 2.8 |
 | On the Default_Branch | PRECONDITION | Propose a branch, create on confirmation, no code before | 3.5 |
 | Task tests fail after 2 fix attempts | FAILURE | Stop, verbatim output, confirmed and open causes, ask | 6.2 |
 | Sub_Agent reports passing tests but the Skill's own run fails | FAILURE | Treat as a failed attempt; never tick on the report alone | 4.10 |
@@ -225,7 +225,7 @@ The template example Graph after the prerequisite, with the checkpoint tasks rem
 The skill is a prompt, so its tests are `make validate` for the frontmatter and manifest, eval cases for behaviour, and manual review for the properties that an eval cannot observe cheaply.
 
 - `make validate` after every change to a `SKILL.md`, the template, `plugin.json` or `rules/`. It is also this repository's Full_Suite.
-- Eval case `evals/skills/implement-spec/no-spec-recommends-start-task/`: prompt `/freethinking:implement-spec link-shortener` in the empty sandbox. Graders: a `regex` for `start-task` and a `file_exists` with `exists: false` for `**/*`. Covers Requirements 2.4 and 3.6 and runs in about four turns. Run twice before trusting it, per the README.
+- Eval case `evals/skills/implement-spec/no-spec-recommends-start-task/`: prompt `/ponderly:implement-spec link-shortener` in the empty sandbox. Graders: a `regex` for `start-task` and a `file_exists` with `exists: false` for `**/*`. Covers Requirements 2.4 and 3.6 and runs in about four turns. Run twice before trusting it, per the README.
 - Eval case `evals/rules/workflow/spec-routes-to-implement-spec/`: a prompt saying a `tasks.md` exists for the work and asking to continue it. Grader: a `regex` for `implement-spec`. Covers Requirement 7.2.
 - Property 1 is checked by hand against the updated template example and against this spec's own `tasks.md`. A Graph-validation eval needs a fixture `tasks.md` in the sandbox; whether `claude plugin eval` supports fixture files is not known from this repository (inferred, not observed). The task list includes a step to check the docs and add the case if it does.
 - Properties 2 to 5 are reviewed by reading the skill text against the requirement, and exercised once by running the finished skill on this spec's own `tasks.md` at `task` Cadence, which is the manual check recorded in the PR's Testing section.

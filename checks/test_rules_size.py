@@ -14,7 +14,7 @@ import subprocess
 import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PLUGIN = os.path.join(ROOT, "plugins", "freethinking")
+PLUGIN = os.path.join(ROOT, "plugins", "ponderly")
 LOAD_RULES = os.path.join(PLUGIN, "hooks", "load-rules.sh")
 LOAD_RULES_SUBAGENT = os.path.join(PLUGIN, "hooks", "load-rules-subagent.sh")
 RULES = os.path.join(PLUGIN, "rules")

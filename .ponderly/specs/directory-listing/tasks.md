@@ -2,20 +2,20 @@
 
 ## Overview
 
-The move comes first, because every other task writes paths under `plugins/freethinking/`. Then, in one wave, the manifest, the hook scripts, the re-rooted checks, the Makefile and the four guides, which touch disjoint files. The two checks that depend on new content, the encoder check on the rewritten hooks and the listing check on the new manifest, follow. The last wave is the author's: the eval runs that cost tokens and the local install. Every task is proved by `make validate` plus the ephemeral check its text names; the eval runs are the integration proof. Requirement 7, the portal's validation, happens after the merge and is recorded on issue #43, so it is not a task here.
+The move comes first, because every other task writes paths under `plugins/ponderly/`. Then, in one wave, the manifest, the hook scripts, the re-rooted checks, the Makefile and the four guides, which touch disjoint files. The two checks that depend on new content, the encoder check on the rewritten hooks and the listing check on the new manifest, follow. The last wave is the author's: the eval runs that cost tokens and the local install. Every task is proved by `make validate` plus the ephemeral check its text names; the eval runs are the integration proof. Requirement 7, the portal's validation, happens after the merge and is recorded on issue #43, so it is not a task here.
 
 ## Tasks
 
-- [x] 1. Move the plugin into `plugins/freethinking/`
-  - `git mv` `.claude-plugin/plugin.json`, `skills/`, `agents/`, `rules/`, `hooks/` and `README.md` under `plugins/freethinking/`, and move the untracked `.claude-plugin/icon.png` to `plugins/freethinking/.claude-plugin/icon.png`; leave `.claude-plugin/marketplace.json` at the root and set its entry's `source` to `./plugins/freethinking`. Ephemeral check for Property 1: list the skill, agent, rule and hook names at the old and new paths and diff them; `claude plugin validate . --strict` passes
+- [x] 1. Move the plugin into `plugins/ponderly/`
+  - `git mv` `.claude-plugin/plugin.json`, `skills/`, `agents/`, `rules/`, `hooks/` and `README.md` under `plugins/ponderly/`, and move the untracked `.claude-plugin/icon.png` to `plugins/ponderly/.claude-plugin/icon.png`; leave `.claude-plugin/marketplace.json` at the root and set its entry's `source` to `./plugins/ponderly`. Ephemeral check for Property 1: list the skill, agent, rule and hook names at the old and new paths and diff them; `claude plugin validate . --strict` passes
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
 - [x] 2. Fill the manifest's listing fields
-  - In `plugins/freethinking/.claude-plugin/plugin.json`, set `displayName`, `version` 0.13.0, `author`, `homepage`, `repository`, `license`, `icon` and `keywords` to the values of Requirement 2, in the field order the design gives; `claude plugin validate ./plugins/freethinking --strict` passes with no warning
+  - In `plugins/ponderly/.claude-plugin/plugin.json`, set `displayName`, `version` 0.13.0, `author`, `homepage`, `repository`, `license`, `icon` and `keywords` to the values of Requirement 2, in the field order the design gives; `claude plugin validate ./plugins/ponderly --strict` passes with no warning
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
 - [x] 3. Rewrite the hook scripts to the validator's shape
-  - Rewrite `plugins/freethinking/hooks/load-rules.sh` and `load-rules-subagent.sh` as the design's table says: one `awk` program each over `"${CLAUDE_PLUGIN_ROOT}"/rules/*.md`, no other variable, no command substitution, no call between them, the header written in both with a comment naming the other, and the no-rules branches of Requirement 4.4. Ephemeral check: run the old scripts from `git show HEAD:` and the new ones on the real rules folder and diff the session output and the decoded subagent context, byte for byte
+  - Rewrite `plugins/ponderly/hooks/load-rules.sh` and `load-rules-subagent.sh` as the design's table says: one `awk` program each over `"${CLAUDE_PLUGIN_ROOT}"/rules/*.md`, no other variable, no command substitution, no call between them, the header written in both with a comment naming the other, and the no-rules branches of Requirement 4.4. Ephemeral check: run the old scripts from `git show HEAD:` and the new ones on the real rules folder and diff the session output and the decoded subagent context, byte for byte
   - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
 - [x] 4. Re-point the free checks
@@ -30,18 +30,18 @@ The move comes first, because every other task writes paths under `plugins/freet
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
 - [x] 5. Teach the Makefile the layout and the Run_Tree
-  - Add `PLUGIN := plugins/freethinking`; make `validate` run `check`, then the three strict validate commands; add the `RUN_EVAL` define of the design, with a per-recipe results folder, `mktemp`, the traps, `cp -R` of the plugin, `tar` of `evals/` without `results/` and no pipeline, the pull request template, `git init`, `mkdir -p` of the results folder and `claude plugin eval` with `--output-dir`; expand it in every eval recipe with the same tags; keep the per-target flags, `help` and the `PATH` exports. Ephemeral check: `make -n eval-skill-pr` shows the recipe, and `make validate` passes
+  - Add `PLUGIN := plugins/ponderly`; make `validate` run `check`, then the three strict validate commands; add the `RUN_EVAL` define of the design, with a per-recipe results folder, `mktemp`, the traps, `cp -R` of the plugin, `tar` of `evals/` without `results/` and no pipeline, the pull request template, `git init`, `mkdir -p` of the results folder and `claude plugin eval` with `--output-dir`; expand it in every eval recipe with the same tags; keep the per-target flags, `help` and the `PATH` exports. Ephemeral check: `make -n eval-skill-pr` shows the recipe, and `make validate` passes
   - _Requirements: 5.1, 5.2, 5.4, 5.5, 6.2, 6.3, 6.5_
 
 - [x] 6. Update the guides
   - [x] 6.1 The plugin README
-    - In `plugins/freethinking/README.md`, drop the read-access sentence and the `gh auth` paragraph from Install, cut the "Add or change a skill or rule" and Testing sections, and add the Disclosure_Section last with the sentences of Requirement 3.2; every backticked path in the file exists
+    - In `plugins/ponderly/README.md`, drop the read-access sentence and the `gh auth` paragraph from Install, cut the "Add or change a skill or rule" and Testing sections, and add the Disclosure_Section last with the sentences of Requirement 3.2; every backticked path in the file exists
     - _Requirements: 3.1, 3.2, 3.3, 3.5_
   - [x] 6.2 The root README
-    - Write a new `README.md` at the root: the title, what the repository is, the layout list, links to `plugins/freethinking/README.md` and `.github/CONTRIBUTING.md`, then the "Add or change a skill or rule" and Testing sections moved from the plugin README, with the Validator subsection naming the three validate commands and the Evals subsection saying how an Eval_Target copies the plugin and `evals/` into a temporary tree; every backticked path in the file exists
+    - Write a new `README.md` at the root: the title, what the repository is, the layout list, links to `plugins/ponderly/README.md` and `.github/CONTRIBUTING.md`, then the "Add or change a skill or rule" and Testing sections moved from the plugin README, with the Validator subsection naming the three validate commands and the Evals subsection saying how an Eval_Target copies the plugin and `evals/` into a temporary tree; every backticked path in the file exists
     - _Requirements: 3.4, 6.4_
   - [x] 6.3 The contributing guide and the evals README
-    - In `.github/CONTRIBUTING.md`, `claude --plugin-dir ./plugins/freethinking` and one sentence on `evals/` sitting outside the plugin; in `evals/README.md`, the Makefile's copy in place of `claude plugin eval . --tag <name>` and the note that `git rev-parse --show-toplevel` resolves to the copy; every backticked path in both files exists
+    - In `.github/CONTRIBUTING.md`, `claude --plugin-dir ./plugins/ponderly` and one sentence on `evals/` sitting outside the plugin; in `evals/README.md`, the Makefile's copy in place of `claude plugin eval . --tag <name>` and the note that `git rev-parse --show-toplevel` resolves to the copy; every backticked path in both files exists
     - _Requirements: 6.4_
 
 - [x] 7. Prove the run tree and the install by hand
@@ -50,7 +50,7 @@ The move comes first, because every other task writes paths under `plugins/freet
     - **Property 3: An eval run leaves only results behind**
     - **Validates: Requirements 5.1, 5.2, 5.3**
   - [x] 7.2 Install from the checkout
-    - The author registers the checkout as a local marketplace from another folder, installs `freethinking@freethinkingit`, runs `claude plugin details freethinking` and records that it lists five skills, two agents and two hooks, then removes the probe marketplace
+    - The author registers the checkout as a local marketplace from another folder, installs `ponderly@sabind`, runs `claude plugin details ponderly` and records that it lists five skills, two agents and two hooks, then removes the probe marketplace
     - _Requirements: 1.6_
 
 ## Notes

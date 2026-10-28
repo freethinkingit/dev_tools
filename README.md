@@ -1,27 +1,27 @@
 # Developer Handbook
 
-This repository holds the `freethinking` Claude Code plugin, its eval suite,
+This repository holds the `ponderly` Claude Code plugin, its eval suite,
 its free checks and its spec records. To install and use the plugin, read
-[the plugin README](plugins/freethinking/README.md). To change it, read
+[the plugin README](plugins/ponderly/README.md). To change it, read
 [the contributing guide](.github/CONTRIBUTING.md).
 
-- `plugins/freethinking/`: the plugin itself, with its manifest, skills,
+- `plugins/ponderly/`: the plugin itself, with its manifest, skills,
   agents, rules, hooks and its README.
 - `evals/`: the eval cases, kept outside the plugin folder because Anthropic's
   plugin directory scans every file in that folder when the plugin is
   submitted.
 - `checks/`: the free unit tests.
-- `.freethinking/specs/`: the design records of past tasks.
+- `.ponderly/specs/`: the design records of past tasks.
 - `.claude-plugin/marketplace.json`: the marketplace entry that points at the
   plugin folder.
 
 ## Add or change a skill or rule
 
-Each skill is a folder under `plugins/freethinking/skills/` with a `SKILL.md`;
-each rule is a Markdown file under `plugins/freethinking/rules/`. The
+Each skill is a folder under `plugins/ponderly/skills/` with a `SKILL.md`;
+each rule is a Markdown file under `plugins/ponderly/rules/`. The
 [contributing guide](.github/CONTRIBUTING.md) says how to set up, test and
 submit a change. To try a change in one session, load the plugin from your
-clone with `claude --plugin-dir ./plugins/freethinking`.
+clone with `claude --plugin-dir ./plugins/ponderly`.
 
 ## Testing
 
@@ -39,8 +39,8 @@ Line Tools, and there is no venv, pip or requirements file.
 ### Validator
 
 `claude plugin validate . --strict` checks the marketplace at the repository
-root, `claude plugin validate ./plugins/freethinking --strict` checks the
-plugin, and `claude plugin validate ./plugins/freethinking/skills --strict`
+root, `claude plugin validate ./plugins/ponderly --strict` checks the
+plugin, and `claude plugin validate ./plugins/ponderly/skills --strict`
 checks the skills. They are built into Claude Code and make no model call. They
 check the manifests and skill frontmatter; for an agent file they check only
 that a frontmatter block with a description exists.
@@ -72,14 +72,14 @@ test, so you can run only the ones for what you changed:
 ```text
 evals/
   hook/<case>/              # the SessionStart and SubagentStart hooks that load the rules
-  rules/<rule>/<case>/      # one folder per plugins/freethinking/rules/<rule>.md
-  skills/<skill>/<case>/    # one folder per plugins/freethinking/skills/<skill>/
-  agents/<agent>/<case>/    # one folder per plugins/freethinking/agents/<agent>.md
+  rules/<rule>/<case>/      # one folder per plugins/ponderly/rules/<rule>.md
+  skills/<skill>/<case>/    # one folder per plugins/ponderly/skills/<skill>/
+  agents/<agent>/<case>/    # one folder per plugins/ponderly/agents/<agent>.md
 ```
 
 `evals/` sits outside the plugin, but `claude plugin eval` reads cases only
 from inside the plugin root. So every eval target builds a temporary tree: a
-copy of `plugins/freethinking/` with a copy of `evals/`, minus its results,
+copy of `plugins/ponderly/` with a copy of `evals/`, minus its results,
 inside it, and `git init` at its top. It runs `claude plugin eval` against that
 tree, writes the results to `evals/results/<timestamp>/` at the repository
 root, and deletes the tree afterwards whether the run passed or failed.

@@ -28,8 +28,8 @@ Terms used below:
 - A **Mutation_Check** breaks, in one source file, the behaviour a test covers, shows that a test fails, and restores the file at once; step 8 says how.
 - A **Vacuous_Test** is a test that still passes when the behaviour it claims to test is removed or inverted.
 - An **Expected_Failure** is a test marked in the project's test framework as known to fail, such as node:test `todo` or Python's `expectedFailure`.
-- The **backup folder** is a folder in the system's temporary directory, outside the repository, named `freethinking-tighten-tests-` followed by the repository's top-level path (`git rev-parse --show-toplevel`) with each `/` replaced by `-`, so that a later run finds it. It holds the backup of the one source file a Mutation_Check has broken, at that file's path relative to the repository's top level.
-- An **executor** is the plugin's `task-executor` agent, launched as `freethinking:task-executor`. The **reviewer** is the plugin's `wave-reviewer` agent, launched as `freethinking:wave-reviewer`. Each agent's own definition holds its procedure, so a launch carries only its job.
+- The **backup folder** is a folder in the system's temporary directory, outside the repository, named `ponderly-tighten-tests-` followed by the repository's top-level path (`git rev-parse --show-toplevel`) with each `/` replaced by `-`, so that a later run finds it. It holds the backup of the one source file a Mutation_Check has broken, at that file's path relative to the repository's top level.
+- An **executor** is the plugin's `task-executor` agent, launched as `ponderly:task-executor`. The **reviewer** is the plugin's `wave-reviewer` agent, launched as `ponderly:wave-reviewer`. Each agent's own definition holds its procedure, so a launch carries only its job.
 
 ## Working with the author
 
@@ -38,7 +38,7 @@ Terms used below:
 - **Hand-backs.** The Audit, the File_Groups and the Shared_Decisions in step 5, as the approval question's text; the hand-back in step 10, written by the plugin's `report` skill.
 - **Hand-offs.** `readable-code` when the author chooses to run it first; `start-task` for each Gap, or the issue it is filed as; `pr` once the hand-back is accepted. This skill never commits, branches or pushes.
 
-If the Agent tool cannot find `freethinking:task-executor` or `freethinking:wave-reviewer`, or the Skill tool cannot find `freethinking:report`, say which is missing and stop. Do not do its work another way.
+If the Agent tool cannot find `ponderly:task-executor` or `ponderly:wave-reviewer`, or the Skill tool cannot find `ponderly:report`, say which is missing and stop. Do not do its work another way.
 
 ## 1. State the Scope and check readability
 
@@ -53,7 +53,7 @@ Before anything else, say the Scope in one line: the target branch, the paths pa
 Then ask, header `Readability`, whether `readable-code` has run on the final code, since renames and restructures change what the tests should assert and coverage is measured once, on the final code. Options:
 
 - **It has run**: go on to step 2.
-- **Run readable-code first (Recommended)**: invoke the Skill tool with `skill: freethinking:readable-code` and the same paths as `args`, and end this run.
+- **Run readable-code first (Recommended)**: invoke the Skill tool with `skill: ponderly:readable-code` and the same paths as `args`, and end this run.
 - **Go on without it**: go on to step 2, and say in the hand-back that coverage was measured on code that may still change.
 
 ## 2. Take the Baseline
@@ -73,7 +73,7 @@ If the project has no coverage tool, say so, and ask, header `Coverage`, with op
 
 Before the Audit, gather the Keep_List from three places:
 
-- the spec or ticket the branch serves: the `.freethinking/specs/<task>/requirements.md` the branch implements, or the issue the branch name or its commits cite; take every test a requirement or acceptance criterion names, and every seeded property test a spec names. Keep the requirements themselves for step 9;
+- the spec or ticket the branch serves: the `.ponderly/specs/<task>/requirements.md` the branch implements, or the issue the branch name or its commits cite; take every test a requirement or acceptance criterion names, and every seeded property test a spec names. Keep the requirements themselves for step 9;
 - the tests of the branch: deployed end-to-end proofs, and seeded property tests;
 - the author.
 
@@ -110,7 +110,7 @@ Ask, header `Approve`, options `Approved` and `Changes needed`, whether to apply
 
 ## 6. Apply the Verdicts
 
-Launch one executor per approved File_Group, with `subagent_type: freethinking:task-executor`, all in one message so they run concurrently. Never say to an executor, in any words, that its task comes from a spec. Each prompt holds:
+Launch one executor per approved File_Group, with `subagent_type: ponderly:task-executor`, all in one message so they run concurrently. Never say to an executor, in any words, that its task comes from a spec. Each prompt holds:
 
 - the group's file paths, and that they are the only files to change;
 - each file's approved Verdicts, each test quoted with its Verdict and the test it merges into or why it goes;
@@ -158,7 +158,7 @@ When the checks are done, delete the backup folder. Then compare the source stat
 
 ## 9. Review
 
-Launch the reviewer once, with `subagent_type: freethinking:wave-reviewer`, and a prompt that holds:
+Launch the reviewer once, with `subagent_type: ponderly:wave-reviewer`, and a prompt that holds:
 
 - the list of test files this run changed, from the executors' Summaries and the restorations of steps 7 and 8;
 - the requirements the branch serves, quoted, from step 3; or, when there are none, the Keep_List, quoted;
@@ -179,7 +179,7 @@ There is no second review after the fixes.
 
 ## 10. Hand back
 
-Invoke the Skill tool with `skill: freethinking:report` and `args: handback`, inline, to write the hand-back Message. It carries:
+Invoke the Skill tool with `skill: ponderly:report` and `args: handback`, inline, to write the hand-back Message. It carries:
 
 - the problems, first: each executor that stopped; each Expected_Failure with its defect; each line that lost its test and the test restored; each dropped test restored by a Mutation_Check; each Vacuous_Test left unfixed; each review finding still open after two fix attempts, each that needs a source change, and each `nit`; each check not run, such as coverage when there is no tool, and readability when the author went on without it;
 - the test counts before and after, per file and in total;
@@ -187,7 +187,7 @@ Invoke the Skill tool with `skill: freethinking:report` and `args: handback`, in
 - the empty source diff of step 8;
 - the files changed;
 - each Gap as a separate task one `start-task` run could take, saying what is unproved and where; none is filled here;
-- the next step: `/freethinking:pr`. Nothing is committed.
+- the next step: `/ponderly:pr`. Nothing is committed.
 
 When there are Gaps, put the Message as the text of a question, header `Gaps`, options `File them` and `Leave them`, asking whether to file each Gap as an issue; when the dialog cannot hold the Message, write it as a message immediately followed by the question. When there are none, the Message is the hand-back and the run ends.
 
