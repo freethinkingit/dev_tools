@@ -1,6 +1,6 @@
 title: ponderly — start-task
 date: 2026-10-22
-plugin: ponderly 0.15.0
+plugin: ponderly v1.1.0
 source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
 alt: Claude runs start-task on the request to add an eval case that checks the bugfix skill's read-back, lists and reads the two existing bugfix eval cases, then asks how to build it: Executor_Route (Recommended), where the task-executor adds one case beside reads-ticket-first, or Spec_Route, which writes requirements, design and tasks first. The author picks Executor_Route.
 

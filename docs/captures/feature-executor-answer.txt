@@ -1,6 +1,6 @@
 title: ponderly — implement-spec
 date: 2026-10-20
-plugin: ponderly 0.14.0
+plugin: ponderly v1.1.0
 source: inline-email, session 4c0c154a-4af6-4bd3-b6c5-b6dbbc7a15b0
 alt: The wave 3 report opens with the stopped README task under Problems, then Done, Checks, Files and Next with two ways to fix the README's first screen; Claude asks which, with the options Reorder (Recommended) and Keep order, relax to 90, and the author picks Reorder (Recommended).
 

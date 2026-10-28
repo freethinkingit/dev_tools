@@ -1,6 +1,6 @@
 title: ponderly — bugfix
 date: 2026-10-22
-plugin: ponderly 0.15.0
+plugin: ponderly v1.1.0
 source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
 alt: The bugfix skill shows the pr skill's permission error in the workflow eval target, a running summary that rules out three causes and confirms a fourth, then states the root cause and asks the author to confirm it, with the options Confirmed and Different cause; the author picks Confirmed.
 

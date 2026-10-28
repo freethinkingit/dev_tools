@@ -1,6 +1,6 @@
 title: ponderly — implement-spec
 date: 2026-10-21
-plugin: ponderly 0.15.0
+plugin: ponderly v1.1.0
 source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
 alt: An implement-spec wave 1 report: Problems first, including a clause shortened to fit a length limit and graders not yet run; then Done task by task, the checks, the files changed, and Next asking the author to approve two design edits before the evals run.
 

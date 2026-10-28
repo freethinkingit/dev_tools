@@ -1,6 +1,6 @@
 title: ponderly — start-task
 date: 2026-10-20
-plugin: ponderly 0.14.0
+plugin: ponderly v1.1.0
 source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
 alt: The author asks for skills for tech strategy, high level design and low level design; Claude sends the request to start-task, which reads the plugin and states Route: Spec_Route with the task name design-skills, then asks one round of six questions.
 

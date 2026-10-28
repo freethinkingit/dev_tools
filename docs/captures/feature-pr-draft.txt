@@ -1,6 +1,6 @@
 title: ponderly — pr
 date: 2026-10-22
-plugin: ponderly 0.15.0
+plugin: ponderly v1.1.0
 source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
 alt: The pr skill shows its full draft of a pull request, with title, Why, What, Changes, Testing with an eval table, Risk and Notes for reviewers, and a commit message; it asks for approval and the author picks Approved.
 

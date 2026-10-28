@@ -1,6 +1,6 @@
 title: ponderly — start-task
 date: 2026-10-20
-plugin: ponderly 0.14.0
+plugin: ponderly v1.1.0
 source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
 alt: Claude says the requirements need no further change and asks whether they say what the author wants built, with the options Approved and Changes needed; the author picks Approved.
 

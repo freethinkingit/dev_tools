@@ -1,6 +1,6 @@
 title: ponderly — start-task
 date: 2026-10-22
-plugin: ponderly 0.15.0
+plugin: ponderly v1.1.0
 source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
 alt: Claude's hand-back for the new eval case, problems first: the case may pass whether or not the skill reads back, it will probably fail on today's skill, and a label in a different shape would fail. Then what was done, the checks, the five files, and the next step: the case goes out with the newcomer-docs pull request, with the command to run just this case.
 

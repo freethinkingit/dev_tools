@@ -103,6 +103,6 @@
 <text x="38" y="1911" fill="#a6e3a1" xml:space="preserve">no "symptom" at all. Its bugfix Skill call returned "Shell command permission check failed for </text>
 <text x="38" y="1931" fill="#a6e3a1" xml:space="preserve">pattern \"!`gh issue view \"ENG-412:\" 2&gt;". That may bear on the bug-routes-to-bugfix </text>
 <text x="38" y="1951" fill="#a6e3a1" xml:space="preserve">states-symptom failure. I did not investigate it.</text>
-<text x="920" y="1978" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly 0.15.0</text>
+<text x="920" y="1978" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly v1.1.0</text>
 </g>
 </svg>

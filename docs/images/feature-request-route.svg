@@ -86,6 +86,6 @@
 <text x="38" y="1571" fill="#e6e6e6" xml:space="preserve">dependencies is a given, but for example no diagrams beyond Mermaid, no reading of external docs, </text>
 <text x="38" y="1591" fill="#e6e6e6" xml:space="preserve">no ticket integration? Should each skill get evals and a free check like the others, and a </text>
 <text x="38" y="1611" fill="#e6e6e6" xml:space="preserve">self-describing template with a worked example?</text>
-<text x="920" y="1638" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · ponderly 0.14.0</text>
+<text x="920" y="1638" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · ponderly v1.1.0</text>
 </g>
 </svg>

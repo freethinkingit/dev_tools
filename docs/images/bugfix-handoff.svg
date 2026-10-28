@@ -64,6 +64,6 @@
 <text x="20" y="1131" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="1151" fill="#e6e6e6" xml:space="preserve">  Every task in the spec is ticked. Nothing on `50-design-skills` is committed, so this fix and the </text>
 <text x="38" y="1171" fill="#e6e6e6" xml:space="preserve">whole branch go into one pull request with `/ponderly:pr #50`.</text>
-<text x="920" y="1198" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly 0.15.0</text>
+<text x="920" y="1198" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly v1.1.0</text>
 </g>
 </svg>

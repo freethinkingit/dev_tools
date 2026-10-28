@@ -33,6 +33,6 @@
 <text x="20" y="511" fill="#e6e6e6" xml:space="preserve">  - **Ticket.** The `pr` skill wants an issue. If you file one before the PR, the branch becomes </text>
 <text x="38" y="531" fill="#e6e6e6" xml:space="preserve">`&lt;number&gt;-design-skills` and the pull request closes it on merge; I can draft the issue body from </text>
 <text x="38" y="551" fill="#e6e6e6" xml:space="preserve">the requirements whenever you want.</text>
-<text x="920" y="578" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · ponderly 0.14.0</text>
+<text x="920" y="578" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · ponderly v1.1.0</text>
 </g>
 </svg>

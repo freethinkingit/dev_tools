@@ -67,6 +67,6 @@
 <text x="20" y="1191" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "Is that the root cause: the workflow eval target grants no </text>
 <text x="38" y="1211" fill="#a6e3a1" xml:space="preserve">Bash, so the bugfix and pr skills fail to load there and only states-symptom </text>
 <text x="38" y="1231" fill="#a6e3a1" xml:space="preserve">notices?"="Confirmed". You can now continue with these answers in mind.</text>
-<text x="920" y="1258" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly 0.15.0</text>
+<text x="920" y="1258" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly v1.1.0</text>
 </g>
 </svg>
