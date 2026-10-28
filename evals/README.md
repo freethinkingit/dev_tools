@@ -8,9 +8,9 @@ list-price estimates, usually ten to thirty cents a case.
 ```text
 evals/
   hook/<case>/                  # the SessionStart and SubagentStart hooks that load the rules
-  rules/<rule>/<case>/          # one folder per plugins/freethinking/rules/<rule>.md
-  skills/<skill>/<case>/        # one folder per plugins/freethinking/skills/<skill>/
-  agents/<agent>/<case>/        # one folder per plugins/freethinking/agents/<agent>.md
+  rules/<rule>/<case>/          # one folder per plugins/ponderly/rules/<rule>.md
+  skills/<skill>/<case>/        # one folder per plugins/ponderly/skills/<skill>/
+  agents/<agent>/<case>/        # one folder per plugins/ponderly/agents/<agent>.md
   fixtures/<tree>/              # a project the scaffolds build, copied in by fixtures/setup.sh
   results/                      # one folder per run, gitignored
 ```
@@ -26,9 +26,9 @@ make eval                        # the whole suite
 ```
 
 Every case carries its component's name as a tag. `evals/` sits outside the
-plugin folder (`plugins/freethinking/`); because `claude plugin eval` reads
+plugin folder (`plugins/ponderly/`); because `claude plugin eval` reads
 cases only from inside the plugin, each target runs it against a temporary copy
-of `plugins/freethinking/` with `evals/` inside, with `--tag <name>` plus the
+of `plugins/ponderly/` with `evals/` inside, with `--tag <name>` plus the
 flags its cases need, which live in the Makefile's "Per-target flags" block.
 Results come back to `evals/results/`, and the copy is deleted after the run,
 pass or fail. Anything extra goes through `EVAL_ARGS`, and the
@@ -42,7 +42,7 @@ make eval EVAL_MAX_COST_USD=5
 ```
 
 Run only the target of the component your change touched, never the whole
-suite, unless the change is to `plugins/freethinking/hooks/` or the Makefile.
+suite, unless the change is to `plugins/ponderly/hooks/` or the Makefile.
 A single run is noisy, so iterate with `EVAL_ARGS="--runs 1"`, then confirm
 before trusting a change: pass `--runs 2` when every grader of the case is
 `regex`, `tool_used` or `file_exists`, and `--runs 3` when any grader is `llm`.
@@ -154,13 +154,13 @@ the worked example.
 - Writes and edits under `.claude/` in the workspace are refused even when
   Write or Edit is granted, and so is a shell fallback; a path-scoped grant such
   as `Write(.claude/**)` does not lift it, and a committed `CLAUDE.md` is not
-  loaded. Specs live under `.freethinking/specs/`, which the sandbox lets a
+  loaded. Specs live under `.ponderly/specs/`, which the sandbox lets a
   skill write, so a spec being written or ticked can be graded there.
-- A prompt that starts with `/freethinking:<skill>` is expanded before the model
+- A prompt that starts with `/ponderly:<skill>` is expanded before the model
   runs, so a `tool_used` grader on `Skill` never fires for it; grade the
   behaviour instead. A Skill call the model makes later, to another skill, is
   still seen by a `tool_used` grader, which is how the bugfix hand-off case
-  grades its call to `freethinking:pr`. A prompt that merely describes the work does trigger the
+  grades its call to `ponderly:pr`. A prompt that merely describes the work does trigger the
   Skill tool, which is what the workflow-rule cases grade.
 
 ## Writing a case

@@ -1,5 +1,5 @@
 ---
 type: tool_used
 tool: Agent
-input_match: '"subagent_type"\s*:\s*"freethinking:document-reviewer"'
+input_match: '"subagent_type"\s*:\s*"ponderly:document-reviewer"'
 ---

@@ -5,6 +5,6 @@ max_turns: 30
 allowed_tools: [Read, Glob, Grep, Agent, Skill]
 expected_outcome: 'Claude states the Scope (target main, one test file and no source file), takes `It has run` for readability without asking, runs the suite once as the Baseline, takes `Mutation_Checks alone` if there is no coverage tool, takes the Keep_List answer, and writes the Audit: test_many_values and test_default_high_is_100 marked `drop` or `merge` with every field of their records, test_clamp_gives_the_same_answer_twice flagged as proving nothing, the near-duplicate inside-range tests merged or dropped, the keeps counted, the test counts before and after, and any Gap. It then asks for approval and stops, with no Agent launched, no file edited or written in the workspace, and nothing committed.'
 ---
-/freethinking:tighten-tests
+/ponderly:tighten-tests
 
 I am the author. I cannot answer questions during this run, so here are my answers in advance; take them and do not ask. Readability: `It has run`. Baseline: if the suite fails, `Go on`. Coverage: if the project has no coverage tool, `Mutation_Checks alone`. Keep_List: there is no spec or ticket, and no other test must stay. I will answer the approval of the Audit after the run, so ask for it and stop there.

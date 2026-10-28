@@ -1,4 +1,4 @@
 ---
 type: regex
-pattern: '\.freethinking/strategies/[a-z0-9-]+\.md'
+pattern: '\.ponderly/strategies/[a-z0-9-]+\.md'
 ---

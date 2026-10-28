@@ -70,8 +70,8 @@ $GIT add -A && $GIT commit -q -m "Test greet helper"
 # The spec is committed on the branch, not on main, so it is in the branch's
 # diff: the pr skill counts only a spec the diff adds or changes. No
 # implement-spec reports exist in this sandbox.
-mkdir -p .freethinking/specs/add-greeting
-cat > .freethinking/specs/add-greeting/requirements.md <<'SPEC'
+mkdir -p .ponderly/specs/add-greeting
+cat > .ponderly/specs/add-greeting/requirements.md <<'SPEC'
 # Requirements Document
 
 ## Introduction
@@ -101,7 +101,7 @@ The demo CLI has no way to greet its user. This feature adds a greeting helper t
 
 1. THE System SHALL have a test that checks the Greeting returned for a sample name.
 SPEC
-cat > .freethinking/specs/add-greeting/design.md <<'SPEC'
+cat > .ponderly/specs/add-greeting/design.md <<'SPEC'
 # Design Document
 
 ## Overview
@@ -119,7 +119,7 @@ One new module, `demo/greeting.py`, holds a `greet(name)` function that returns 
 
 `pytest tests/test_greeting.py` runs the one test.
 SPEC
-cat > .freethinking/specs/add-greeting/tasks.md <<'SPEC'
+cat > .ponderly/specs/add-greeting/tasks.md <<'SPEC'
 # Implementation Plan
 
 ## Overview

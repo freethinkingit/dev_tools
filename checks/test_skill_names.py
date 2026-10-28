@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKILLS_DIR = ROOT / "plugins" / "freethinking" / "skills"
+SKILLS_DIR = ROOT / "plugins" / "ponderly" / "skills"
 
 
 def read_frontmatter(path):

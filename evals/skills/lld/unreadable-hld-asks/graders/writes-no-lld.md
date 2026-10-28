@@ -1,5 +1,5 @@
 ---
 type: file_exists
-path: '.freethinking/**/lld-*.md'
+path: '.ponderly/**/lld-*.md'
 exists: false
 ---

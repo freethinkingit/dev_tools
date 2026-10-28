@@ -15,7 +15,7 @@ import tempfile
 import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PLUGIN = os.path.join(ROOT, "plugins", "freethinking")
+PLUGIN = os.path.join(ROOT, "plugins", "ponderly")
 HOOK = os.path.join(PLUGIN, "hooks", "load-rules-subagent.sh")
 LOAD_RULES = os.path.join(PLUGIN, "hooks", "load-rules.sh")
 

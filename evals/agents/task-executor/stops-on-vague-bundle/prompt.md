@@ -3,9 +3,9 @@ description: Launched on a spec task that is vague and bundles two changes with 
 tags: [agent, task-executor]
 max_turns: 20
 allowed_tools: [Read, Glob, Grep, Agent]
-expected_outcome: Claude launches one sub-agent with subagent_type freethinking:task-executor, giving it the mode sentence and the task, and does nothing else itself. The sub-agent finds that the task names two changes joined by "or optionally", with a third conditional on the second and none of them specified, changes nothing, and returns its Summary with the status `stopped` and, under `stopped because`, the questions the launcher must answer, which change and what rounding or division by zero should do. Claude's reply is that Summary verbatim; `calc/ops.py` gains neither rounding nor a divide, and the workspace gains no file.
+expected_outcome: Claude launches one sub-agent with subagent_type ponderly:task-executor, giving it the mode sentence and the task, and does nothing else itself. The sub-agent finds that the task names two changes joined by "or optionally", with a third conditional on the second and none of them specified, changes nothing, and returns its Summary with the status `stopped` and, under `stopped because`, the questions the launcher must answer, which change and what rounding or division by zero should do. Claude's reply is that Summary verbatim; `calc/ops.py` gains neither rounding nor a divide, and the workspace gains no file.
 ---
-Launch one sub-agent with the Agent tool, `subagent_type` `freethinking:task-executor`, and give it exactly this prompt:
+Launch one sub-agent with the Agent tool, `subagent_type` `ponderly:task-executor`, and give it exactly this prompt:
 
 ```text
 This task is a leaf task from a spec; tests are tasks of their own.

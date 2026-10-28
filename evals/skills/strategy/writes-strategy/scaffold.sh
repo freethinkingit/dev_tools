@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Builds the workspace for this case: a docs repository on main whose one
 # commit holds only a README, with no source code and no strategies under
-# .freethinking/strategies/, so the strategy skill has nothing to read before
+# .ponderly/strategies/, so the strategy skill has nothing to read before
 # asking and proves it needs no code. The git binary and author match
 # evals/fixtures/setup.sh.
 set -euo pipefail

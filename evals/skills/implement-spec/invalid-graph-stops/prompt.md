@@ -3,6 +3,6 @@ description: Invoked on a spec whose Task Dependency Graph omits a leaf task, im
 tags: [skill, implement-spec]
 max_turns: 8
 allowed_tools: [Read, Glob, Grep]
-expected_outcome: Claude reads `.freethinking/specs/link-shortener/`, finds that leaf task 4.2 is missing from the graph, proposes a corrected `waves` block that includes 4.2, and stops for approval. It writes nothing.
+expected_outcome: Claude reads `.ponderly/specs/link-shortener/`, finds that leaf task 4.2 is missing from the graph, proposes a corrected `waves` block that includes 4.2, and stops for approval. It writes nothing.
 ---
-/freethinking:implement-spec link-shortener
+/ponderly:implement-spec link-shortener

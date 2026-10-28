@@ -3,6 +3,6 @@ description: Work with an existing spec is routed through the implement-spec ski
 tags: [rule, workflow]
 max_turns: 10
 allowed_tools: [Read, Glob, Grep, Skill]
-expected_outcome: Claude invokes /freethinking:implement-spec (the Skill tool) rather than reading the spec and coding straight away. The sandbox has no spec, so the skill then stops; only the routing is graded.
+expected_outcome: Claude invokes /ponderly:implement-spec (the Skill tool) rather than reading the spec and coding straight away. The sandbox has no spec, so the skill then stops; only the routing is graded.
 ---
-There is an approved spec in .freethinking/specs/link-shortener/ with a tasks.md. Pick up the work and continue it.
+There is an approved spec in .ponderly/specs/link-shortener/ with a tasks.md. Pick up the work and continue it.

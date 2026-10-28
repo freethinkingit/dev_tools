@@ -3,9 +3,9 @@ description: Launched by its namespaced name on a scaffolded calc package whose 
 tags: [agent, wave-reviewer]
 max_turns: 20
 allowed_tools: [Read, Glob, Grep, Agent]
-expected_outcome: Claude launches one sub-agent with subagent_type freethinking:wave-reviewer, giving it the spec-wave sentence, the changed file and the requirement, and does nothing else itself. The sub-agent runs git status and git diff, sees subtract return a - b as the requirement says, and returns Findings with an empty list. Claude's reply is those Findings verbatim, whose first line says the verdict is holds.
+expected_outcome: Claude launches one sub-agent with subagent_type ponderly:wave-reviewer, giving it the spec-wave sentence, the changed file and the requirement, and does nothing else itself. The sub-agent runs git status and git diff, sees subtract return a - b as the requirement says, and returns Findings with an empty list. Claude's reply is those Findings verbatim, whose first line says the verdict is holds.
 ---
-Launch one sub-agent with the Agent tool, `subagent_type` `freethinking:wave-reviewer`, and give it exactly this prompt:
+Launch one sub-agent with the Agent tool, `subagent_type` `ponderly:wave-reviewer`, and give it exactly this prompt:
 
 ```text
 Review the changes of one wave of a spec. The changes come from a spec wave, where tests are tasks of their own, so the code tasks correctly carry no test. The changes are uncommitted in the working tree.

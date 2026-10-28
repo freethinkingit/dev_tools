@@ -33,7 +33,7 @@
 # repository root (gitignored). Paste the table the command prints into the
 # PR's Testing section.
 
-PLUGIN := plugins/freethinking
+PLUGIN := plugins/ponderly
 EVAL_MAX_COST_USD ?= 2
 EVAL_ARGS ?=
 CASE_ARGS :=
@@ -41,7 +41,7 @@ CASE_ARGS :=
 define RUN_EVAL
 set -eu; \
 results=$$(pwd)/evals/results/$$(date +%Y-%m-%dT%H-%M-%S); \
-run=$$(mktemp -d "$${TMPDIR:-/tmp}/freethinking-eval.XXXXXX"); \
+run=$$(mktemp -d "$${TMPDIR:-/tmp}/ponderly-eval.XXXXXX"); \
 trap 'rm -rf "$$run"' EXIT; trap 'exit 130' HUP INT TERM; \
 cp -R $(PLUGIN)/. "$$run"/; \
 tar -C . --exclude=evals/results -cf "$$run/evals.tar" evals; \

@@ -5,6 +5,6 @@ max_turns: 20
 allowed_tools: [Read, Glob, Grep]
 expected_outcome: 'Claude reads ticket #7 with `gh issue view`, walks the greeting group and confirms it from the advance text, treats the version bump as a mechanical group and takes the advance answer that a reviewer needs nothing, without asking "anything a reviewer should know?" more than once, pushes, calls `gh pr create` with a Changes bullet naming the version bump to 0.2.0, and reports the PR URL the stub returns (Property 2, Requirement 7.4).'
 ---
-/freethinking:pr #7
+/ponderly:pr #7
 
 I cannot answer during this run. The greeting group and its test: confirmed as you explain it. The version bump: nothing a reviewer needs. Merging finishes the ticket; not a draft; treat the draft as approved.

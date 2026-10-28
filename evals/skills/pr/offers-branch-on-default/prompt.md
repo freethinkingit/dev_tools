@@ -5,6 +5,6 @@ max_turns: 20
 allowed_tools: [Read, Glob, Grep]
 expected_outcome: Claude runs the starting checks, finds the current branch is main, the default branch, notes it, and asks the branch question in the one fixed-choice call after the walkthrough with the options `Create <name>` (Recommended), the name a slug from the changes since no ticket was given, and `Stop`, rendered as list items in prose since the AskUserQuestion tool is absent in the sandbox. It then stops and waits. It creates no branch, does not push, does not run `gh pr create`, and does not end with the stop sentence saying a pull request needs its own branch.
 ---
-/freethinking:pr
+/ponderly:pr
 
 I am the author. I cannot answer during this run. Why: the CLI needed a greeting helper. Confirm every group as you explain it. For the questions still missing: there is no ticket; I did not test it; there is no risk or rollout to note; there is no review focus. Stop at the branch, commit, Closes and draft questions and wait for me.

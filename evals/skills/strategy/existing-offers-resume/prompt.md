@@ -3,6 +3,6 @@ description: When the strategy's path already exists, the strategy skill does no
 tags: [skill, strategy]
 max_turns: 12
 allowed_tools: [Read, Glob, Grep, Write, Edit, Agent, Skill]
-expected_outcome: Claude derives the name links-2027, finds .freethinking/strategies/links-2027.md already written up to its Goals section, and asks whether to resume it from Current state or overwrite it, offering Resume and Overwrite each on its own line, then waits. The existing file keeps its two sections and gains no new one, and no other strategy file is written.
+expected_outcome: Claude derives the name links-2027, finds .ponderly/strategies/links-2027.md already written up to its Goals section, and asks whether to resume it from Current state or overwrite it, offering Resume and Overwrite each on its own line, then waits. The existing file keeps its two sections and gains no new one, and no other strategy file is written.
 ---
-/freethinking:strategy links 2027
+/ponderly:strategy links 2027

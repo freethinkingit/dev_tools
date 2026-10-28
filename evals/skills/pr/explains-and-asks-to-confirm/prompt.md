@@ -5,4 +5,4 @@ max_turns: 20
 allowed_tools: [Read, Glob, Grep]
 expected_outcome: 'Claude finds no ticked spec in the branch, says it is explaining each change for the author to confirm, and puts both groups in one message: group 1 the greet helper in `demo/greeting.py`, explained first by what changes for whoever uses it and what the author takes on, then how it was done; group 2 its test in `tests/test_greeting.py`. It ends with one prose question asking the author to confirm, correct or add to each group, puts none of the five review prompts, and waits without calling `gh pr create` (Property 1, Requirement 7.2).'
 ---
-/freethinking:pr
+/ponderly:pr

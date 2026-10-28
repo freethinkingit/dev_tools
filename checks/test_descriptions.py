@@ -9,7 +9,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PLUGIN = ROOT / "plugins" / "freethinking"
+PLUGIN = ROOT / "plugins" / "ponderly"
 AGENTS_DIR = PLUGIN / "agents"
 SKILLS_DIR = PLUGIN / "skills"
 

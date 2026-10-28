@@ -1,0 +1,25 @@
+{
+  "name": "ponderly",
+  "displayName": "Ponderly",
+  "version": "1.0.0",
+  "description": "Shared engineering skills: standard workflows and prompts for day-to-day development.",
+  "author": {
+    "name": "Dan Sabin",
+    "email": "dan.sabin@gmail.com",
+    "url": "https://dansabin.com"
+  },
+  "homepage": "https://github.com/sabind/ponderly",
+  "repository": "https://github.com/sabind/ponderly",
+  "license": "MIT",
+  "icon": "./.claude-plugin/icon.png",
+  "keywords": [
+    "developer-workflow",
+    "feature-development",
+    "bug-fixing",
+    "pull-requests",
+    "code-review",
+    "spec-driven",
+    "engineering-standards",
+    "accountability"
+  ]
+}
