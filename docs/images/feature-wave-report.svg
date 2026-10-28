@@ -7,7 +7,7 @@
 <circle cx="40" cy="18" r="6" fill="#febc2e"/>
 <circle cx="60" cy="18" r="6" fill="#28c840"/>
 <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
-<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — implement-spec</text>
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — implement-spec</text>
 <text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● ## Problems</text>
 <text x="20" y="91" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  - The `start-task` description now carries a shorter clause than `design.md` gives. With the </text>
@@ -25,8 +25,8 @@
 <text x="38" y="351" fill="#e6e6e6" xml:space="preserve">reads only the template the launch names. Options: approve the second edit under Next so the </text>
 <text x="38" y="371" fill="#e6e6e6" xml:space="preserve">design says one template, or leave the mismatch.</text>
 <text x="20" y="391" fill="#e6e6e6" xml:space="preserve">  - No case has run yet, so these graders are unproven:</text>
-<text x="20" y="411" fill="#e6e6e6" xml:space="preserve">    - Two `strategy` graders read the exact path `.freethinking/strategies/docs-platform-2028.md`. </text>
-<text x="38" y="431" fill="#e6e6e6" xml:space="preserve">They assume the skill derives that name from "Docs platform 2028".</text>
+<text x="20" y="411" fill="#e6e6e6" xml:space="preserve">    - Two `strategy` graders read the exact path `.ponderly/strategies/docs-platform-2028.md`. They </text>
+<text x="38" y="431" fill="#e6e6e6" xml:space="preserve">assume the skill derives that name from "Docs platform 2028".</text>
 <text x="20" y="451" fill="#e6e6e6" xml:space="preserve">    - The new reviewer-launch and parent-read graders assume the harness serialises tool input as </text>
 <text x="38" y="471" fill="#e6e6e6" xml:space="preserve">JSON with `"subagent_type"` and `"file_path"` keys.</text>
 <text x="20" y="491" fill="#e6e6e6" xml:space="preserve">    - The read graders prove a read happened, not that it came before any question.</text>
@@ -49,13 +49,13 @@
 <text x="38" y="831" fill="#e6e6e6" xml:space="preserve">`document-reviewer` appears 8 times in the plugin README. The Agents paragraph names each agent </text>
 <text x="38" y="851" fill="#e6e6e6" xml:space="preserve">with the skills that launch it. `plugin.json` reads `"version": "0.15.0"`.</text>
 <text x="20" y="871" fill="#e6e6e6" xml:space="preserve">  - **Task 7.1, two `strategy` cases (Requirements 1.7, 9.1, 9.3).** The `writes-strategy` </text>
-<text x="38" y="891" fill="#e6e6e6" xml:space="preserve">workspace holds no source code, and its reviewer grader matches `freethinking:document-reviewer`. </text>
+<text x="38" y="891" fill="#e6e6e6" xml:space="preserve">workspace holds no source code, and its reviewer grader matches `ponderly:document-reviewer`. </text>
 <text x="38" y="911" fill="#e6e6e6" xml:space="preserve">Both scaffolds exit 0.</text>
 <text x="20" y="931" fill="#e6e6e6" xml:space="preserve">  - **Task 7.2, two `hld` cases (Requirements 3.2, 9.1, 9.3).** A grader checks the reviewer launch </text>
 <text x="38" y="951" fill="#e6e6e6" xml:space="preserve">and another checks that the strategy file is read. Both scaffolds exit 0.</text>
 <text x="20" y="971" fill="#e6e6e6" xml:space="preserve">  - **Task 7.3, two `lld` cases (Requirements 4.2, 4.4, 9.1, 9.3).** Graders check the reviewer </text>
 <text x="38" y="991" fill="#e6e6e6" xml:space="preserve">launch, the HLD read, a `calc/` read and that no code is written. The no-LLD glob is </text>
-<text x="38" y="1011" fill="#e6e6e6" xml:space="preserve">`.freethinking/**/lld-*.md`. Both scaffolds exit 0.</text>
+<text x="38" y="1011" fill="#e6e6e6" xml:space="preserve">`.ponderly/**/lld-*.md`. Both scaffolds exit 0.</text>
 <text x="20" y="1031" fill="#e6e6e6" xml:space="preserve">  - **Task 7.4, two `document-reviewer` cases (Requirements 5.3, 5.4, 9.2, 9.3).** The two trees </text>
 <text x="38" y="1051" fill="#e6e6e6" xml:space="preserve">differ by one line in the LLD's Data section. The section and quote patterns were loosened. Both </text>
 <text x="38" y="1071" fill="#e6e6e6" xml:space="preserve">scaffolds exit 0.</text>
@@ -73,22 +73,22 @@
 <text x="20" y="1311" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="1331" fill="#e6e6e6" xml:space="preserve">  ## Files</text>
 <text x="20" y="1351" fill="#e6e6e6" xml:space="preserve"></text>
-<text x="20" y="1371" fill="#e6e6e6" xml:space="preserve">  - `plugins/freethinking/skills/start-task/SKILL.md`</text>
-<text x="20" y="1391" fill="#e6e6e6" xml:space="preserve">  - `plugins/freethinking/README.md`</text>
-<text x="20" y="1411" fill="#e6e6e6" xml:space="preserve">  - `plugins/freethinking/.claude-plugin/plugin.json`</text>
-<text x="20" y="1431" fill="#e6e6e6" xml:space="preserve">  - `plugins/freethinking/skills/strategy/SKILL.md`</text>
-<text x="20" y="1451" fill="#e6e6e6" xml:space="preserve">  - `plugins/freethinking/skills/lld/SKILL.md`</text>
+<text x="20" y="1371" fill="#e6e6e6" xml:space="preserve">  - `plugins/ponderly/skills/start-task/SKILL.md`</text>
+<text x="20" y="1391" fill="#e6e6e6" xml:space="preserve">  - `plugins/ponderly/README.md`</text>
+<text x="20" y="1411" fill="#e6e6e6" xml:space="preserve">  - `plugins/ponderly/.claude-plugin/plugin.json`</text>
+<text x="20" y="1431" fill="#e6e6e6" xml:space="preserve">  - `plugins/ponderly/skills/strategy/SKILL.md`</text>
+<text x="20" y="1451" fill="#e6e6e6" xml:space="preserve">  - `plugins/ponderly/skills/lld/SKILL.md`</text>
 <text x="20" y="1471" fill="#e6e6e6" xml:space="preserve">  - `README.md`</text>
 <text x="20" y="1491" fill="#e6e6e6" xml:space="preserve">  - `Makefile`</text>
 <text x="20" y="1511" fill="#e6e6e6" xml:space="preserve">  - `evals/skills/strategy/`</text>
 <text x="20" y="1531" fill="#e6e6e6" xml:space="preserve">  - `evals/skills/hld/`</text>
 <text x="20" y="1551" fill="#e6e6e6" xml:space="preserve">  - `evals/skills/lld/`</text>
 <text x="20" y="1571" fill="#e6e6e6" xml:space="preserve">  - `evals/agents/document-reviewer/`</text>
-<text x="20" y="1591" fill="#e6e6e6" xml:space="preserve">  - `.freethinking/specs/design-skills/tasks.md`</text>
+<text x="20" y="1591" fill="#e6e6e6" xml:space="preserve">  - `.ponderly/specs/design-skills/tasks.md`</text>
 <text x="20" y="1611" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="1631" fill="#e6e6e6" xml:space="preserve">  ## Next</text>
 <text x="20" y="1651" fill="#e6e6e6" xml:space="preserve"></text>
-<text x="20" y="1671" fill="#e6e6e6" xml:space="preserve">  Two edits to `.freethinking/specs/design-skills/design.md` need your approval:</text>
+<text x="20" y="1671" fill="#e6e6e6" xml:space="preserve">  Two edits to `.ponderly/specs/design-skills/design.md` need your approval:</text>
 <text x="20" y="1691" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="1711" fill="#e6e6e6" xml:space="preserve">  1. **The `start-task` section.** The quoted clause becomes "not a strategy or a high or low level </text>
 <text x="38" y="1731" fill="#e6e6e6" xml:space="preserve">design, which are `strategy`, `hld` and `lld`'s". It is followed by: "The longer wording, naming </text>
@@ -115,6 +115,6 @@
 <text x="20" y="2151" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="2171" fill="#e6e6e6" xml:space="preserve">  Approve the two design edits. Then say whether I run these five targets one at a time, or you run </text>
 <text x="38" y="2191" fill="#e6e6e6" xml:space="preserve">them.</text>
-<text x="920" y="2218" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-21 · freethinking 0.15.0</text>
+<text x="920" y="2218" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-21 · ponderly 0.15.0</text>
 </g>
 </svg>

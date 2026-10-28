@@ -1,92 +1,91 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1672" viewBox="0 0 940 1672" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="1652" viewBox="0 0 940 1652" role="img">
 <title>The author asks for skills for tech strategy, high level design and low level design; Claude sends the request to start-task, which reads the plugin and states Route: Spec_Route with the task name design-skills, then asks one round of six questions.</title>
-<rect width="940" height="1672" rx="8" fill="#1e1e2e"/>
+<rect width="940" height="1652" rx="8" fill="#1e1e2e"/>
 <rect width="940" height="36" rx="8" fill="#2a2a3c"/>
 <rect y="28" width="940" height="8" fill="#2a2a3c"/>
 <circle cx="20" cy="18" r="6" fill="#ff5f57"/>
 <circle cx="40" cy="18" r="6" fill="#febc2e"/>
 <circle cx="60" cy="18" r="6" fill="#28c840"/>
 <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
-<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — start-task</text>
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — start-task</text>
 <text x="20" y="71" fill="#7fc8f8" xml:space="preserve">&gt; I want to work on skills for tech stratey -&gt; high level design(s) -&gt; low level design(s) each as </text>
 <text x="38" y="91" fill="#7fc8f8" xml:space="preserve">a skill and similar to implement spec with some reviewres and stuff?</text>
 <text x="20" y="111" fill="#7fc8f8" xml:space="preserve"></text>
 <text x="20" y="131" fill="#e6e6e6" xml:space="preserve">● This is a new feature for the plugin, so it goes through start-task. I'll hand it the request in </text>
 <text x="38" y="151" fill="#e6e6e6" xml:space="preserve">your words and let it read the plugin, size the work and start the spec questions.</text>
 <text x="20" y="171" fill="#e6e6e6" xml:space="preserve"></text>
-<text x="20" y="191" fill="#a6e3a1" xml:space="preserve">⏺ Skill(skill: freethinking:start-task, args: I want to work on skills for tech strategy -&gt; high </text>
-<text x="38" y="211" fill="#a6e3a1" xml:space="preserve">level design(s) -&gt; low level design(s) each as a skill and similar to implement spec with some </text>
+<text x="20" y="191" fill="#a6e3a1" xml:space="preserve">⏺ Skill(skill: ponderly:start-task, args: I want to work on skills for tech strategy -&gt; high level </text>
+<text x="38" y="211" fill="#a6e3a1" xml:space="preserve">design(s) -&gt; low level design(s) each as a skill and similar to implement spec with some </text>
 <text x="38" y="231" fill="#a6e3a1" xml:space="preserve">reviewers and stuff?)</text>
 <text x="20" y="251" fill="#a6e3a1" xml:space="preserve"></text>
-<text x="20" y="271" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: ls .freethinking/specs/ &amp;&amp; echo --- &amp;&amp; ls plugins/freethinking </text>
-<text x="38" y="291" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/skills plugins/freethinking/agents plugins/freethinking/rules </text>
-<text x="38" y="311" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/hooks &amp;&amp; echo --- &amp;&amp; cat plugins/freethinking/.claude-plugin/plugin.json &amp;&amp; </text>
-<text x="38" y="331" fill="#a6e3a1" xml:space="preserve">echo --- &amp;&amp; wc -l plugins/freethinking/skills/*/SKILL.md plugins/freethinking/agents/*.md </text>
-<text x="38" y="351" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/README.md README.md &amp;&amp; ls evals evals/skills evals/agents 2&gt;/dev/null, </text>
-<text x="38" y="371" fill="#a6e3a1" xml:space="preserve">description: List plugin layout, specs, skills, agents, evals)</text>
+<text x="20" y="271" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: ls .ponderly/specs/ &amp;&amp; echo --- &amp;&amp; ls plugins/ponderly plugins/ponderly/skills </text>
+<text x="38" y="291" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/agents plugins/ponderly/rules plugins/ponderly/hooks &amp;&amp; echo --- &amp;&amp; cat </text>
+<text x="38" y="311" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/.claude-plugin/plugin.json &amp;&amp; echo --- &amp;&amp; wc -l </text>
+<text x="38" y="331" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/skills/*/SKILL.md plugins/ponderly/agents/*.md plugins/ponderly/README.md </text>
+<text x="38" y="351" fill="#a6e3a1" xml:space="preserve">README.md &amp;&amp; ls evals evals/skills evals/agents 2&gt;/dev/null, description: List plugin layout, </text>
+<text x="38" y="371" fill="#a6e3a1" xml:space="preserve">specs, skills, agents, evals)</text>
 <text x="20" y="391" fill="#a6e3a1" xml:space="preserve"></text>
-<text x="20" y="411" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: cat plugins/freethinking/README.md &amp;&amp; echo ===== &amp;&amp; cat </text>
-<text x="38" y="431" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/agents/wave-reviewer.md &amp;&amp; echo ===== &amp;&amp; cat </text>
-<text x="38" y="451" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/rules/workflow.md &amp;&amp; echo ===== &amp;&amp; head -40 </text>
-<text x="38" y="471" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/skills/implement-spec/SKILL.md &amp;&amp; echo ===== &amp;&amp; ls </text>
-<text x="38" y="491" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/skills/start-task plugins/freethinking/skills/start-task/spec-template </text>
-<text x="38" y="511" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/skills/report plugins/freethinking/skills/report/templates &amp;&amp; echo ===== &amp;&amp; </text>
-<text x="38" y="531" fill="#a6e3a1" xml:space="preserve">head -20 plugins/freethinking/skills/start-task/SKILL.md, description: Read plugin README, </text>
-<text x="38" y="551" fill="#a6e3a1" xml:space="preserve">reviewer agent, workflow rule, skill heads)</text>
-<text x="20" y="571" fill="#a6e3a1" xml:space="preserve"></text>
-<text x="20" y="591" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: cat plugins/freethinking/agents/wave-reviewer.md; echo '-----'; cat </text>
-<text x="38" y="611" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/agents/task-executor.md, description: Read the two agent definitions)</text>
-<text x="20" y="631" fill="#a6e3a1" xml:space="preserve"></text>
-<text x="20" y="651" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: cat plugins/freethinking/rules/workflow.md; echo '-----'; head -12 </text>
-<text x="38" y="671" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/skills/start-task/SKILL.md; echo '-----'; head -12 </text>
-<text x="38" y="691" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/skills/implement-spec/SKILL.md; echo '-----'; ls </text>
-<text x="38" y="711" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/skills/start-task plugins/freethinking/skills/start-task/spec-template </text>
-<text x="38" y="731" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/skills/report plugins/freethinking/skills/report/templates </text>
-<text x="38" y="751" fill="#a6e3a1" xml:space="preserve">plugins/freethinking/skills/pr; echo '-----'; cat plugins/freethinking/hooks/hooks.json, </text>
-<text x="38" y="771" fill="#a6e3a1" xml:space="preserve">description: Read workflow rule, skill frontmatter, skill folders, hooks)</text>
-<text x="20" y="791" fill="#a6e3a1" xml:space="preserve"></text>
-<text x="20" y="811" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: sed -n 1,80p evals/README.md; echo '-----'; ls evals/skills/start-task </text>
-<text x="38" y="831" fill="#a6e3a1" xml:space="preserve">evals/skills/start-task/summarises-requirements evals/agents/wave-reviewer; echo '-----'; cat </text>
-<text x="38" y="851" fill="#a6e3a1" xml:space="preserve">evals/skills/start-task/summarises-requirements/case.yaml; echo '-----'; ls checks; grep -n </text>
-<text x="38" y="871" fill="#a6e3a1" xml:space="preserve">'eval-' Makefile | head -30, description: Read eval README, a case layout, checks and Makefile </text>
-<text x="38" y="891" fill="#a6e3a1" xml:space="preserve">targets)</text>
-<text x="20" y="911" fill="#a6e3a1" xml:space="preserve"></text>
-<text x="20" y="931" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: sed -n 1,60p plugins/freethinking/skills/start-task/spec-template/design.md; echo </text>
-<text x="38" y="951" fill="#a6e3a1" xml:space="preserve">'-----'; cat README.md | sed -n 1,124p, description: Read design template head and root README)</text>
-<text x="20" y="971" fill="#a6e3a1" xml:space="preserve"></text>
-<text x="20" y="991" fill="#e6e6e6" xml:space="preserve">● **Route: Spec_Route.** Task name `design-skills`, branch `design-skills` (no issue named; `pr` </text>
-<text x="38" y="1011" fill="#e6e6e6" xml:space="preserve">wants a ticket later, so if you file one the branch becomes `&lt;number&gt;-design-skills`). The plugin </text>
-<text x="38" y="1031" fill="#e6e6e6" xml:space="preserve">has five skills and two agents, with `start-task` and `implement-spec` as the shape this extends: </text>
-<text x="38" y="1051" fill="#e6e6e6" xml:space="preserve">a self-describing template per document, path-and-summary hand-backs, AskUserQuestion stops, a </text>
-<text x="38" y="1071" fill="#e6e6e6" xml:space="preserve">reviewer agent that gathers the diff itself, and an eval case folder per behaviour.</text>
-<text x="20" y="1091" fill="#e6e6e6" xml:space="preserve"></text>
-<text x="20" y="1111" fill="#e6e6e6" xml:space="preserve">  Before I write the requirements, one round of questions. Answer in your own words, as much or as </text>
-<text x="38" y="1131" fill="#e6e6e6" xml:space="preserve">little as you like.</text>
-<text x="20" y="1151" fill="#e6e6e6" xml:space="preserve"></text>
-<text x="20" y="1171" fill="#e6e6e6" xml:space="preserve">  1. **What each skill produces.** What is a tech strategy document to you: for one repository, or </text>
-<text x="38" y="1191" fill="#e6e6e6" xml:space="preserve">for a product or organisation spanning several? What does a high level design cover (a system, a </text>
-<text x="38" y="1211" fill="#e6e6e6" xml:space="preserve">service, a bounded context?) and a low level design (a module, a component, an API?). Can one </text>
-<text x="38" y="1231" fill="#e6e6e6" xml:space="preserve">strategy have many HLDs, and one HLD many LLDs?</text>
-<text x="20" y="1251" fill="#e6e6e6" xml:space="preserve"></text>
-<text x="20" y="1271" fill="#e6e6e6" xml:space="preserve">  2. **How they chain.** Does an LLD feed into `start-task`, so a spec's `design.md` cites or is </text>
-<text x="38" y="1291" fill="#e6e6e6" xml:space="preserve">derived from it, or does the chain end at the LLD? Does an HLD have to exist before an LLD can be </text>
-<text x="38" y="1311" fill="#e6e6e6" xml:space="preserve">written, and a strategy before an HLD, or can someone start at any level?</text>
-<text x="20" y="1331" fill="#e6e6e6" xml:space="preserve"></text>
-<text x="20" y="1351" fill="#e6e6e6" xml:space="preserve">  3. **Where the documents live.** Under `.freethinking/` in the repository, like specs, or </text>
-<text x="38" y="1371" fill="#e6e6e6" xml:space="preserve">somewhere else? One file per document, or a folder with sections like a spec?</text>
-<text x="20" y="1391" fill="#e6e6e6" xml:space="preserve"></text>
-<text x="20" y="1411" fill="#e6e6e6" xml:space="preserve">  4. **"Similar to implement-spec with some reviewers".** Which parts do you mean: a reviewer agent </text>
-<text x="38" y="1431" fill="#e6e6e6" xml:space="preserve">reading each document before you approve it, with findings you see? Sub-agents writing sections </text>
-<text x="38" y="1451" fill="#e6e6e6" xml:space="preserve">in parallel? A cadence choice? And are the reviewers agents, or does the skill also prepare the </text>
-<text x="38" y="1471" fill="#e6e6e6" xml:space="preserve">document for human reviewers?</text>
-<text x="20" y="1491" fill="#e6e6e6" xml:space="preserve"></text>
-<text x="20" y="1511" fill="#e6e6e6" xml:space="preserve">  5. **Who it is for and the value.** The author writing the strategy or design, a team reading it </text>
-<text x="38" y="1531" fill="#e6e6e6" xml:space="preserve">later, or both? What goes wrong today that these skills fix?</text>
-<text x="20" y="1551" fill="#e6e6e6" xml:space="preserve"></text>
-<text x="20" y="1571" fill="#e6e6e6" xml:space="preserve">  6. **Out of scope and constraints.** Anything you already know you do not want: no new </text>
-<text x="38" y="1591" fill="#e6e6e6" xml:space="preserve">dependencies is a given, but for example no diagrams beyond Mermaid, no reading of external docs, </text>
-<text x="38" y="1611" fill="#e6e6e6" xml:space="preserve">no ticket integration? Should each skill get evals and a free check like the others, and a </text>
-<text x="38" y="1631" fill="#e6e6e6" xml:space="preserve">self-describing template with a worked example?</text>
-<text x="920" y="1658" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · freethinking 0.14.0</text>
+<text x="20" y="411" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: cat plugins/ponderly/README.md &amp;&amp; echo ===== &amp;&amp; cat </text>
+<text x="38" y="431" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/agents/wave-reviewer.md &amp;&amp; echo ===== &amp;&amp; cat plugins/ponderly/rules/workflow.md </text>
+<text x="38" y="451" fill="#a6e3a1" xml:space="preserve">&amp;&amp; echo ===== &amp;&amp; head -40 plugins/ponderly/skills/implement-spec/SKILL.md &amp;&amp; echo ===== &amp;&amp; ls </text>
+<text x="38" y="471" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/skills/start-task plugins/ponderly/skills/start-task/spec-template </text>
+<text x="38" y="491" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/skills/report plugins/ponderly/skills/report/templates &amp;&amp; echo ===== &amp;&amp; head -20 </text>
+<text x="38" y="511" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/skills/start-task/SKILL.md, description: Read plugin README, reviewer agent, </text>
+<text x="38" y="531" fill="#a6e3a1" xml:space="preserve">workflow rule, skill heads)</text>
+<text x="20" y="551" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="571" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: cat plugins/ponderly/agents/wave-reviewer.md; echo '-----'; cat </text>
+<text x="38" y="591" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/agents/task-executor.md, description: Read the two agent definitions)</text>
+<text x="20" y="611" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="631" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: cat plugins/ponderly/rules/workflow.md; echo '-----'; head -12 </text>
+<text x="38" y="651" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/skills/start-task/SKILL.md; echo '-----'; head -12 </text>
+<text x="38" y="671" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/skills/implement-spec/SKILL.md; echo '-----'; ls </text>
+<text x="38" y="691" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/skills/start-task plugins/ponderly/skills/start-task/spec-template </text>
+<text x="38" y="711" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/skills/report plugins/ponderly/skills/report/templates </text>
+<text x="38" y="731" fill="#a6e3a1" xml:space="preserve">plugins/ponderly/skills/pr; echo '-----'; cat plugins/ponderly/hooks/hooks.json, description: </text>
+<text x="38" y="751" fill="#a6e3a1" xml:space="preserve">Read workflow rule, skill frontmatter, skill folders, hooks)</text>
+<text x="20" y="771" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="791" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: sed -n 1,80p evals/README.md; echo '-----'; ls evals/skills/start-task </text>
+<text x="38" y="811" fill="#a6e3a1" xml:space="preserve">evals/skills/start-task/summarises-requirements evals/agents/wave-reviewer; echo '-----'; cat </text>
+<text x="38" y="831" fill="#a6e3a1" xml:space="preserve">evals/skills/start-task/summarises-requirements/case.yaml; echo '-----'; ls checks; grep -n </text>
+<text x="38" y="851" fill="#a6e3a1" xml:space="preserve">'eval-' Makefile | head -30, description: Read eval README, a case layout, checks and Makefile </text>
+<text x="38" y="871" fill="#a6e3a1" xml:space="preserve">targets)</text>
+<text x="20" y="891" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="911" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: sed -n 1,60p plugins/ponderly/skills/start-task/spec-template/design.md; echo </text>
+<text x="38" y="931" fill="#a6e3a1" xml:space="preserve">'-----'; cat README.md | sed -n 1,124p, description: Read design template head and root README)</text>
+<text x="20" y="951" fill="#a6e3a1" xml:space="preserve"></text>
+<text x="20" y="971" fill="#e6e6e6" xml:space="preserve">● **Route: Spec_Route.** Task name `design-skills`, branch `design-skills` (no issue named; `pr` </text>
+<text x="38" y="991" fill="#e6e6e6" xml:space="preserve">wants a ticket later, so if you file one the branch becomes `&lt;number&gt;-design-skills`). The plugin </text>
+<text x="38" y="1011" fill="#e6e6e6" xml:space="preserve">has five skills and two agents, with `start-task` and `implement-spec` as the shape this extends: </text>
+<text x="38" y="1031" fill="#e6e6e6" xml:space="preserve">a self-describing template per document, path-and-summary hand-backs, AskUserQuestion stops, a </text>
+<text x="38" y="1051" fill="#e6e6e6" xml:space="preserve">reviewer agent that gathers the diff itself, and an eval case folder per behaviour.</text>
+<text x="20" y="1071" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1091" fill="#e6e6e6" xml:space="preserve">  Before I write the requirements, one round of questions. Answer in your own words, as much or as </text>
+<text x="38" y="1111" fill="#e6e6e6" xml:space="preserve">little as you like.</text>
+<text x="20" y="1131" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1151" fill="#e6e6e6" xml:space="preserve">  1. **What each skill produces.** What is a tech strategy document to you: for one repository, or </text>
+<text x="38" y="1171" fill="#e6e6e6" xml:space="preserve">for a product or organisation spanning several? What does a high level design cover (a system, a </text>
+<text x="38" y="1191" fill="#e6e6e6" xml:space="preserve">service, a bounded context?) and a low level design (a module, a component, an API?). Can one </text>
+<text x="38" y="1211" fill="#e6e6e6" xml:space="preserve">strategy have many HLDs, and one HLD many LLDs?</text>
+<text x="20" y="1231" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1251" fill="#e6e6e6" xml:space="preserve">  2. **How they chain.** Does an LLD feed into `start-task`, so a spec's `design.md` cites or is </text>
+<text x="38" y="1271" fill="#e6e6e6" xml:space="preserve">derived from it, or does the chain end at the LLD? Does an HLD have to exist before an LLD can be </text>
+<text x="38" y="1291" fill="#e6e6e6" xml:space="preserve">written, and a strategy before an HLD, or can someone start at any level?</text>
+<text x="20" y="1311" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1331" fill="#e6e6e6" xml:space="preserve">  3. **Where the documents live.** Under `.ponderly/` in the repository, like specs, or somewhere </text>
+<text x="38" y="1351" fill="#e6e6e6" xml:space="preserve">else? One file per document, or a folder with sections like a spec?</text>
+<text x="20" y="1371" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1391" fill="#e6e6e6" xml:space="preserve">  4. **"Similar to implement-spec with some reviewers".** Which parts do you mean: a reviewer agent </text>
+<text x="38" y="1411" fill="#e6e6e6" xml:space="preserve">reading each document before you approve it, with findings you see? Sub-agents writing sections </text>
+<text x="38" y="1431" fill="#e6e6e6" xml:space="preserve">in parallel? A cadence choice? And are the reviewers agents, or does the skill also prepare the </text>
+<text x="38" y="1451" fill="#e6e6e6" xml:space="preserve">document for human reviewers?</text>
+<text x="20" y="1471" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1491" fill="#e6e6e6" xml:space="preserve">  5. **Who it is for and the value.** The author writing the strategy or design, a team reading it </text>
+<text x="38" y="1511" fill="#e6e6e6" xml:space="preserve">later, or both? What goes wrong today that these skills fix?</text>
+<text x="20" y="1531" fill="#e6e6e6" xml:space="preserve"></text>
+<text x="20" y="1551" fill="#e6e6e6" xml:space="preserve">  6. **Out of scope and constraints.** Anything you already know you do not want: no new </text>
+<text x="38" y="1571" fill="#e6e6e6" xml:space="preserve">dependencies is a given, but for example no diagrams beyond Mermaid, no reading of external docs, </text>
+<text x="38" y="1591" fill="#e6e6e6" xml:space="preserve">no ticket integration? Should each skill get evals and a free check like the others, and a </text>
+<text x="38" y="1611" fill="#e6e6e6" xml:space="preserve">self-describing template with a worked example?</text>
+<text x="920" y="1638" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · ponderly 0.14.0</text>
 </g>
 </svg>

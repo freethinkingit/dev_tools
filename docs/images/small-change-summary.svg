@@ -7,7 +7,7 @@
 <circle cx="40" cy="18" r="6" fill="#febc2e"/>
 <circle cx="60" cy="18" r="6" fill="#28c840"/>
 <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
-<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — start-task</text>
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — start-task</text>
 <text x="20" y="71" fill="#a6e3a1" xml:space="preserve">⏺ status: done</text>
 <text x="20" y="91" fill="#a6e3a1" xml:space="preserve">  files changed:</text>
 <text x="20" y="111" fill="#a6e3a1" xml:space="preserve">  - </text>
@@ -26,8 +26,8 @@
 <text x="38" y="371" fill="#a6e3a1" xml:space="preserve">~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads</text>
 <text x="38" y="391" fill="#a6e3a1" xml:space="preserve">-back-without-ticket/graders/reads-back-before-bash.md (new)</text>
 <text x="20" y="411" fill="#a6e3a1" xml:space="preserve"></text>
-<text x="20" y="431" fill="#a6e3a1" xml:space="preserve">  What the case is: the prompt is `/freethinking:bugfix ` followed by the session's advance </text>
-<text x="38" y="451" fill="#a6e3a1" xml:space="preserve">context, word for word. Its frontmatter is tags [skill, bugfix], max_turns 10 and a single-quoted </text>
+<text x="20" y="431" fill="#a6e3a1" xml:space="preserve">  What the case is: the prompt is `/ponderly:bugfix ` followed by the session's advance context, </text>
+<text x="38" y="451" fill="#a6e3a1" xml:space="preserve">word for word. Its frontmatter is tags [skill, bugfix], max_turns 10 and a single-quoted </text>
 <text x="38" y="471" fill="#a6e3a1" xml:space="preserve">description and expected_outcome. There is no case.yaml and no scaffold: the workspace is empty, </text>
 <text x="38" y="491" fill="#a6e3a1" xml:space="preserve">so the make command in the prompt cannot run. The Makefile's bugfix target still grants Bash, and </text>
 <text x="38" y="511" fill="#a6e3a1" xml:space="preserve">that is what makes the real failure possible: running the command before the read-back. All four </text>
@@ -86,7 +86,7 @@
 <text x="20" y="1571" fill="#a6e3a1" xml:space="preserve">  `make eval-skill-bugfix EVAL_ARGS="--case reads-back-without-ticket"`</text>
 <text x="20" y="1591" fill="#a6e3a1" xml:space="preserve"></text>
 <text x="20" y="1611" fill="#a6e3a1" xml:space="preserve">  unsure:</text>
-<text x="20" y="1631" fill="#a6e3a1" xml:space="preserve">  - Whether a `/freethinking:bugfix` prompt and its expanded SKILL.md appear in the run record is </text>
+<text x="20" y="1631" fill="#a6e3a1" xml:space="preserve">  - Whether a `/ponderly:bugfix` prompt and its expanded SKILL.md appear in the run record is </text>
 <text x="38" y="1651" fill="#a6e3a1" xml:space="preserve">inferred, not seen. No kept run record from a slash-command bugfix run was on disk. In the </text>
 <text x="38" y="1671" fill="#a6e3a1" xml:space="preserve">records I did read (e-EZG7P2, e-MDubbG), the user prompt does not appear, and SKILL.md's "what </text>
 <text x="38" y="1691" fill="#a6e3a1" xml:space="preserve">actually happens" line does not appear. If the expanded SKILL.md did appear, its `**Symptom**:` </text>
@@ -103,6 +103,6 @@
 <text x="38" y="1911" fill="#a6e3a1" xml:space="preserve">no "symptom" at all. Its bugfix Skill call returned "Shell command permission check failed for </text>
 <text x="38" y="1931" fill="#a6e3a1" xml:space="preserve">pattern \"!`gh issue view \"ENG-412:\" 2&gt;". That may bear on the bug-routes-to-bugfix </text>
 <text x="38" y="1951" fill="#a6e3a1" xml:space="preserve">states-symptom failure. I did not investigate it.</text>
-<text x="920" y="1978" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · freethinking 0.15.0</text>
+<text x="920" y="1978" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly 0.15.0</text>
 </g>
 </svg>

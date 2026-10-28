@@ -2,7 +2,7 @@
 
 ## Overview
 
-The documentation splits by reader and by where it is read. The root `README.md` becomes the Front_Door, a short newcomer page that GitHub shows. `plugins/freethinking/README.md` becomes a short Listing_Page that stands on its own in the plugin listing. Everything deeper lives in a new `docs/` folder at the repository root, outside the plugin, with five Guides, the Reference and the Evidence_Page, and an `llms.txt` sits beside the README. The contributor material in today's root README moves into `.github/CONTRIBUTING.md`.
+The documentation splits by reader and by where it is read. The root `README.md` becomes the Front_Door, a short newcomer page that GitHub shows. `plugins/ponderly/README.md` becomes a short Listing_Page that stands on its own in the plugin listing. Everything deeper lives in a new `docs/` folder at the repository root, outside the plugin, with five Guides, the Reference and the Evidence_Page, and an `llms.txt` sits beside the README. The contributor material in today's root README moves into `.github/CONTRIBUTING.md`.
 
 Two pieces of tooling keep the pages honest, both standard-library Python with no new dependency. `docs/captures/render.py` turns an excerpt of a real session transcript into an SVG drawn as a terminal window, so every Session_Capture can be regenerated from a text file in the repository. `checks/test_docs.py` is the Integrity_Check: it confirms that every name, path, link, command and image a Doc_Page mentions exists, that every component appears where it must, and that every SVG matches its source.
 
@@ -21,7 +21,7 @@ The words that must be the author's are recorded here, with spelling and grammar
 ```mermaid
 flowchart LR
     GH["GitHub page"] --> FD["README.md (Front_Door)"]
-    PL["Plugin listing"] --> LP["plugins/freethinking/README.md (Listing_Page)"]
+    PL["Plugin listing"] --> LP["plugins/ponderly/README.md (Listing_Page)"]
     AI["AI_Assistant"] --> LLM["llms.txt"]
     FD --> G["docs/guides/*.md (Guides)"]
     FD --> R["docs/reference.md (Reference)"]
@@ -44,7 +44,7 @@ flowchart LR
     IC -.reads.-> E
     IC -.reads.-> LLM
     IC -.re-renders.-> SRC
-    IC -.lists.-> PLUG["plugins/freethinking/ skills, agents, rules, hooks"]
+    IC -.lists.-> PLUG["plugins/ponderly/ skills, agents, rules, hooks"]
 ```
 
 A Session_Capture is made in three steps, and only the last runs in `make validate`:
@@ -73,11 +73,11 @@ Rejected alternative: one full README inside the plugin folder, with the root RE
 
 Rejected alternative: the same README copied into both places. The two would drift, and the Listing_Page would carry Mermaid and relative image links that the plugin listing may not render; whether it renders Mermaid is not known, so the Listing_Page uses neither.
 
-Key decision: every other Doc_Page lives in `docs/` at the repository root, with `llms.txt` at the root (Requirements 2.4, 8.1). Anthropic's directory scans every file in `plugins/freethinking/` and ships it, and llmstxt.org places the file at the site root. The trade-off is that the Listing_Page must link with absolute `https://github.com/freethinkingit/dev_tools/blob/main/...` URLs (Requirement 2.3), which the Integrity_Check maps back to local paths.
+Key decision: every other Doc_Page lives in `docs/` at the repository root, with `llms.txt` at the root (Requirements 2.4, 8.1). Anthropic's directory scans every file in `plugins/ponderly/` and ships it, and llmstxt.org places the file at the site root. The trade-off is that the Listing_Page must link with absolute `https://github.com/sabind/ponderly/blob/main/...` URLs (Requirement 2.3), which the Integrity_Check maps back to local paths.
 
 Key decision: the contributor sections of today's root README ("Add or change a skill or rule" and "Testing", with its Validator, Unit tests and Evals parts) move into `.github/CONTRIBUTING.md`, merged into its existing "Make a change" and "Test" sections, and the Front_Door keeps one "Develop the plugin" line linking there (Requirement 1.7). The repository layout list moves with them. The trade-off is a longer contributing guide; nothing is deleted.
 
-Key decision: Session_Captures are emulated terminals drawn as SVG by a standard-library Python script from excerpts of real transcripts (Requirements 6.4, 6.5, 6.6, 6.7). The script's `extract` command copies the text of a range of messages from a Claude Code session's `.jsonl` file, so the excerpt starts as recorded; the author then redacts only credentials, tokens, private repository names, email addresses and home-directory paths, each replaced by `[redacted]` or `~`. Its `render` command draws a fixed-width terminal window with a title bar, monospace text wrapped at 100 columns, the author's prompts, Claude's text and tool calls in three colours, and a footer with the date and the plugin version. GitHub shows an SVG as an image, the text stays selectable, and the same input gives the same bytes, so the Integrity_Check can compare them. The trade-off is that the window looks like Claude Code's terminal rather than being a pixel copy of it.
+Key decision: Session_Captures are emulated terminals drawn as SVG by a standard-library Python script from excerpts of real transcripts (Requirements 6.4, 6.5, 6.6, 6.7). The script's `extract` command copies the text of a range of messages from a Claude Code session's `.jsonl` file, so the excerpt starts as recorded; the author then redacts only credentials, tokens, private repository names, email addresses and home-directory paths, each replaced by `[redacted]` or `~`, and replaces the plugin's, marketplace's and repository's former names with their current ones. Its `render` command draws a fixed-width terminal window with a title bar, monospace text wrapped at 100 columns, the author's prompts, Claude's text and tool calls in three colours, and a footer with the date and the plugin version. GitHub shows an SVG as an image, the text stays selectable, and the same input gives the same bytes, so the Integrity_Check can compare them. The trade-off is that the window looks like Claude Code's terminal rather than being a pixel copy of it.
 
 Rejected alternative: hand-taken screenshots. They cannot be regenerated when the plugin changes, and nothing can check that their text was not edited.
 
@@ -85,9 +85,9 @@ Rejected alternative: a terminal recorder such as VHS, asciinema or termtosvg. E
 
 Rejected alternative: an HTML terminal emulator such as xterm.js or Hyper. GitHub strips scripts from Markdown, so the page would have to be screenshotted by a headless browser, which is a new tool and gives back a hand-taken screenshot's problems.
 
-Key decision: captures come from real sessions in the author's public repositories, this one and `freethinkingit/inline-email`. Where a real session of a Guide's job already exists, its transcript is the source; where none does, the author runs the Guide's job in a fresh session while the Guide is written, and that run is both the capture's source and the proof that the Guide's steps work (Requirements 5.3, 5.7, 6.4). Two sources are already known:
+Key decision: captures come from real sessions in the author's public repositories, this one and `inline-email`. Where a real session of a Guide's job already exists, its transcript is the source; where none does, the author runs the Guide's job in a fresh session while the Guide is written, and that run is both the capture's source and the proof that the Guide's steps work (Requirements 5.3, 5.7, 6.4). Two sources are already known:
 - The design-skills work on this repository (issue #50, PR #53), for the feature Guide's spec, waves and hand-back.
-- The newcomer-docs build of `freethinkingit/inline-email`, where an executor returned `status: stopped` because "The README cannot meet Requirements 1.1 and 1.6 with the Quickstart the task asks for", with the line count that proved it. This is the stop the feature Guide shows (Requirement 5.5).
+- The newcomer-docs build of `inline-email`, where an executor returned `status: stopped` because "The README cannot meet Requirements 1.1 and 1.6 with the Quickstart the task asks for", with the line count that proved it. This is the stop the feature Guide shows (Requirement 5.5).
 
 The hero image is a hand-back from the design-skills session that lists problems first, then what was done, then the next step (Requirement 6.1). The trade-off is that the author runs up to three short sessions for the plan-a-year, contained-change and tune-a-template Guides.
 
@@ -95,7 +95,7 @@ Key decision: the Evidence_Page shows new runs of the rule targets with `EVAL_AR
 
 Rejected alternative: a script that writes the Evidence_Page from `evals/results/`. The results folder is gitignored and local to one machine, so the page could not be regenerated anywhere else.
 
-Key decision: the Integrity_Check checks names it can find without reading any skill's text: links, images, `/freethinking:` commands, `freethinking:` agent names, `make` targets, and backticked paths under the repository's own top-level folders. It lists components from the folder structure alone: skill folders, agent files, rule files and hook scripts (Requirement 9). A backticked path that names a user's repository, such as `.freethinking/strategies/links-2027.md` in a Guide, is not checked, because it does not exist here; only paths under `plugins/`, `evals/`, `checks/`, `docs/`, `.github/`, `.claude-plugin/` and `bin/`, and the root files, are. A path holding `<`, `*` or `{` is a pattern and is skipped. The trade-off is that a misspelt bare skill name in prose, such as `implement-specs`, passes unless it is part of a command or a link.
+Key decision: the Integrity_Check checks names it can find without reading any skill's text: links, images, `/ponderly:` commands, `ponderly:` agent names, `make` targets, and backticked paths under the repository's own top-level folders. It lists components from the folder structure alone: skill folders, agent files, rule files and hook scripts (Requirement 9). A backticked path that names a user's repository, such as `.ponderly/strategies/links-2027.md` in a Guide, is not checked, because it does not exist here; only paths under `plugins/`, `evals/`, `checks/`, `docs/`, `.github/`, `.claude-plugin/` and `bin/`, and the root files, are. A path holding `<`, `*` or `{` is a pattern and is skipped. The trade-off is that a misspelt bare skill name in prose, such as `implement-specs`, passes unless it is part of a command or a link.
 
 Key decision: the version rises to 0.17.0, because the Listing_Page and `plugin.json`'s description ship with the plugin, and an unchanged version means `claude plugin update` delivers nothing (the 0.15.0 collision fixed by PR #54). This serves Requirements 2.1 and 10.1.
 
@@ -116,7 +116,7 @@ Sections in order: title and Pitch; a "Docs:" line linking each Guide, the Refer
 | state the limits | what the plugin leaves to the author | the "What this does not do" section | 1.5 |
 | report the length | the first draft | line count against 220 | 1.6 |
 
-### Listing_Page (`plugins/freethinking/README.md`)
+### Listing_Page (`plugins/ponderly/README.md`)
 
 Sections in order: title and Pitch; Install; Stay up to date, kept as it is; Skills, one line per skill saying when to use it; Agents and Rules, one line each; What the plugin runs and sends, kept as it is; Learn more, with absolute links. The per-skill paragraphs, the agents' detail and "Tune the plugin for a repository" move to the Reference, each leaving a one-line pointer.
 
@@ -148,7 +148,7 @@ A table of contents, then sections in the order Skills, Agents, Rules, Hooks, Tu
 
 ### Evidence_Page (`docs/evidence.md`)
 
-Sections: Why it was built, the Origin_Story; How it is tested, in plain words, for the free checks and the evals, with the commands; Results against Claude Code without the plugin, one table per rule target with its date, version and command; Not measured, listing the skill and agent targets and why; A real example, linking `.freethinking/specs/design-skills/`.
+Sections: Why it was built, the Origin_Story; How it is tested, in plain words, for the free checks and the evals, with the commands; Results against Claude Code without the plugin, one table per rule target with its date, version and command; Not measured, listing the skill and agent targets and why; A real example, linking `.ponderly/specs/design-skills/`.
 
 | Operation | Input | Output | Requirements |
 |-----------|-------|--------|--------------|
@@ -160,7 +160,7 @@ Sections: Why it was built, the Origin_Story; How it is tested, in plain words, 
 
 ### `llms.txt`
 
-In the llmstxt.org shape: `# freethinking`, a blockquote with the Pitch's first two sentences, a paragraph with the install commands, what the plugin needs, its license and what it runs and sends, then `## Skills`, `## Agents`, `## Rules` and `## Docs`, each a list of `- [name](absolute URL): when to use it`.
+In the llmstxt.org shape: `# ponderly`, a blockquote with the Pitch's first two sentences, a paragraph with the install commands, what the plugin needs, its license and what it runs and sends, then `## Skills`, `## Agents`, `## Rules` and `## Docs`, each a list of `- [name](absolute URL): when to use it`.
 
 | Operation | Input | Output | Requirements |
 |-----------|-------|--------|--------------|
@@ -183,13 +183,13 @@ Standard-library `unittest`, run by `make check` and so by `make validate`; it i
 | Operation | Input | Output | Requirements |
 |-----------|-------|--------|--------------|
 | resolve links and images | every Doc_Page | a failure per missing file or heading, with page and line | 9.2, 9.4, 9.5 |
-| resolve commands, agents and targets | `/freethinking:`, `freethinking:` and `make` mentions | a failure per missing skill, agent or target | 9.2, 9.5 |
+| resolve commands, agents and targets | `/ponderly:`, `ponderly:` and `make` mentions | a failure per missing skill, agent or target | 9.2, 9.5 |
 | resolve repository paths | backticked paths under the repository's own folders | a failure per missing path | 9.2, 9.5 |
 | check coverage | the plugin folder's components | a failure per component missing from the Listing_Page, the Reference or `llms.txt` | 8.5, 9.3, 9.5 |
 | check captures | each source and SVG | a failure per SVG that differs from its re-render, per SVG with no source, per source with no SVG | 6.6, 9.4 |
 | scan captures | each source | a failure per credential, token, email address or home-directory path | 6.9 |
 | check alt text | every image in a Doc_Page | a failure per image with empty alt text | 6.8 |
-| check the Listing_Page's words | `plugins/freethinking/README.md` | the existing `checks/test_listing.py` check, unchanged | 2.5 |
+| check the Listing_Page's words | `plugins/ponderly/README.md` | the existing `checks/test_listing.py` check, unchanged | 2.5 |
 
 ### Metadata
 
@@ -204,9 +204,9 @@ A capture source, `docs/captures/<name>.txt`, is plain UTF-8 text: a header, a b
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `title` | string | the window's title bar, such as `freethinking — start-task` |
+| `title` | string | the window's title bar, such as `ponderly — start-task` |
 | `date` | ISO date | the session's date, shown in the footer (Req 6.4) |
-| `plugin` | version string | the plugin version loaded in the session, shown in the footer (Req 6.4) |
+| `plugin` | name and version | the plugin's name and version loaded in the session, such as `ponderly 0.16.0`, shown in the footer (Req 6.4) |
 | `source` | string | the repository, and the session id or eval case it came from |
 | `alt` | string | the alt text the pages use for the image (Req 6.8) |
 | body | lines | each line prefixed `> ` for the author, `● ` for Claude's text, `⏺ ` for a tool call, or `  ` for a continuation, otherwise as recorded; a subagent's hand-back is shown as the report it carries, its harness frame dropped; an answer to a question is shown after the question (Req 6.5) |
@@ -219,13 +219,13 @@ A Guide's file name is its job in two to four words; the order of the five is fi
 
 ### Property 1: Every name a page mentions exists
 
-*For any* Doc_Page and any link, image, `/freethinking:` command, `freethinking:` agent name, `make` target or checked repository path it mentions, the thing named exists in the repository.
+*For any* Doc_Page and any link, image, `/ponderly:` command, `ponderly:` agent name, `make` target or checked repository path it mentions, the thing named exists in the repository.
 
 **Validates: Requirements 9.2, 9.4**
 
 ### Property 2: Every component is named where it must be
 
-*For any* skill folder, agent file or rule file under `plugins/freethinking/`, its name appears in the Listing_Page, as a `###` heading in the Reference, and in `llms.txt`.
+*For any* skill folder, agent file or rule file under `plugins/ponderly/`, its name appears in the Listing_Page, as a `###` heading in the Reference, and in `llms.txt`.
 
 **Validates: Requirements 7.1, 8.2, 8.5, 9.3**
 

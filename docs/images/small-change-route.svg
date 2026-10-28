@@ -7,15 +7,15 @@
 <circle cx="40" cy="18" r="6" fill="#febc2e"/>
 <circle cx="60" cy="18" r="6" fill="#28c840"/>
 <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
-<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — start-task</text>
-<text x="20" y="71" fill="#a6e3a1" xml:space="preserve">⏺ Skill(skill: freethinking:start-task, args: Add an eval case that checks the bugfix skill states </text>
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — start-task</text>
+<text x="20" y="71" fill="#a6e3a1" xml:space="preserve">⏺ Skill(skill: ponderly:start-task, args: Add an eval case that checks the bugfix skill states </text>
 <text x="38" y="91" fill="#a6e3a1" xml:space="preserve">Symptom, Expected and Context back to the author before it reproduces anything (its step 1 </text>
 <text x="38" y="111" fill="#a6e3a1" xml:space="preserve">read-back). In this repository's session 8a0ad5ce on 2026-10-22, bugfix 0.15.0 was invoked with </text>
 <text x="38" y="131" fill="#a6e3a1" xml:space="preserve">no ticket and an advance context that described the eval failure, and it went straight to running </text>
 <text x="38" y="151" fill="#a6e3a1" xml:space="preserve">the eval case without stating the read-back. The author said: "add an eval case".)</text>
 <text x="20" y="171" fill="#a6e3a1" xml:space="preserve"></text>
 <text x="20" y="191" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: ls evals/ evals/skills/bugfix/ 2&gt;/dev/null; ls evals/skills/bugfix/* | head -40; ls </text>
-<text x="38" y="211" fill="#a6e3a1" xml:space="preserve">.freethinking/specs/ | grep -i read, description: List the bugfix eval cases)</text>
+<text x="38" y="211" fill="#a6e3a1" xml:space="preserve">.ponderly/specs/ | grep -i read, description: List the bugfix eval cases)</text>
 <text x="20" y="231" fill="#a6e3a1" xml:space="preserve"></text>
 <text x="20" y="251" fill="#a6e3a1" xml:space="preserve">⏺ Bash(command: cd </text>
 <text x="38" y="271" fill="#a6e3a1" xml:space="preserve">~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix &amp;&amp; </text>
@@ -32,6 +32,6 @@
 <text x="20" y="491" fill="#a6e3a1" xml:space="preserve"></text>
 <text x="20" y="511" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "How should the bugfix read-back eval case be </text>
 <text x="38" y="531" fill="#a6e3a1" xml:space="preserve">built?"="Executor_Route (Recommended)". You can now continue with these answers in mind.</text>
-<text x="920" y="558" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · freethinking 0.15.0</text>
+<text x="920" y="558" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly 0.15.0</text>
 </g>
 </svg>

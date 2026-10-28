@@ -7,7 +7,7 @@
 <circle cx="40" cy="18" r="6" fill="#febc2e"/>
 <circle cx="60" cy="18" r="6" fill="#28c840"/>
 <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
-<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — start-task</text>
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — start-task</text>
 <text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● ## Problems</text>
 <text x="20" y="91" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  - **The new case may pass whether or not the skill reads back.** Three of its graders look for </text>
@@ -22,8 +22,8 @@
 <text x="38" y="291" fill="#e6e6e6" xml:space="preserve">1. Read the ticket". If that heading is there, the graders need to read only Claude's messages.</text>
 <text x="20" y="311" fill="#e6e6e6" xml:space="preserve">  - **The case will probably fail on today's skill.** That is its purpose: it reproduces the </text>
 <text x="38" y="331" fill="#e6e6e6" xml:space="preserve">session where bugfix 0.15.0 skipped its read-back. A failure on its first run is a bugfix for the </text>
-<text x="38" y="351" fill="#e6e6e6" xml:space="preserve">skill, which you'd start with `/freethinking:bugfix` and this case as the evidence. A pass means </text>
-<text x="38" y="371" fill="#e6e6e6" xml:space="preserve">the miss doesn't show up under eval conditions.</text>
+<text x="38" y="351" fill="#e6e6e6" xml:space="preserve">skill, which you'd start with `/ponderly:bugfix` and this case as the evidence. A pass means the </text>
+<text x="38" y="371" fill="#e6e6e6" xml:space="preserve">miss doesn't show up under eval conditions.</text>
 <text x="20" y="391" fill="#e6e6e6" xml:space="preserve">  - **A label in a different shape would fail.** A read-back that writes "Symptom —" instead of </text>
 <text x="38" y="411" fill="#e6e6e6" xml:space="preserve">"Symptom:" would fail the label graders, even though it is a read-back. The skill's own step 1 </text>
 <text x="38" y="431" fill="#e6e6e6" xml:space="preserve">writes the labels with a colon, so I'd accept that risk.</text>
@@ -31,8 +31,8 @@
 <text x="20" y="471" fill="#e6e6e6" xml:space="preserve">  ## Done</text>
 <text x="20" y="491" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="511" fill="#e6e6e6" xml:space="preserve">  - **Added `evals/skills/bugfix/reads-back-without-ticket/`.**</text>
-<text x="20" y="531" fill="#e6e6e6" xml:space="preserve">    - **The prompt:** `/freethinking:bugfix` followed by the real session's advance context, word </text>
-<text x="38" y="551" fill="#e6e6e6" xml:space="preserve">for word, with no ticket and no scaffold.</text>
+<text x="20" y="531" fill="#e6e6e6" xml:space="preserve">    - **The prompt:** `/ponderly:bugfix` followed by the real session's advance context, word for </text>
+<text x="38" y="551" fill="#e6e6e6" xml:space="preserve">word, with no ticket and no scaffold.</text>
 <text x="20" y="571" fill="#e6e6e6" xml:space="preserve">    - **The graders:** "Symptom:", "Expected:" and "Context:" must each appear, and no Bash call </text>
 <text x="38" y="591" fill="#e6e6e6" xml:space="preserve">may come before the read-back.</text>
 <text x="20" y="611" fill="#e6e6e6" xml:space="preserve">    - **Checked by running the regexes on four made-up run records:**</text>
@@ -58,7 +58,7 @@
 <text x="20" y="1011" fill="#e6e6e6" xml:space="preserve">  ## Next</text>
 <text x="20" y="1031" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="1051" fill="#e6e6e6" xml:space="preserve">  The case sits uncommitted on branch `newcomer-docs`, alongside the docs work, and goes out in </text>
-<text x="38" y="1071" fill="#e6e6e6" xml:space="preserve">that pull request through `/freethinking:pr` once the spec is done. To run just this case:</text>
+<text x="38" y="1071" fill="#e6e6e6" xml:space="preserve">that pull request through `/ponderly:pr` once the spec is done. To run just this case:</text>
 <text x="20" y="1091" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="1111" fill="#e6e6e6" xml:space="preserve">  ```</text>
 <text x="20" y="1131" fill="#e6e6e6" xml:space="preserve">  make eval-skill-bugfix EVAL_ARGS="--case reads-back-without-ticket --keep-temp"</text>
@@ -66,6 +66,6 @@
 <text x="20" y="1171" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="1191" fill="#e6e6e6" xml:space="preserve">  Wave 2's review of the captures is still running. I'll bring you its findings, along with the </text>
 <text x="38" y="1211" fill="#e6e6e6" xml:space="preserve">decision on the 633-line stop capture.</text>
-<text x="920" y="1238" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · freethinking 0.15.0</text>
+<text x="920" y="1238" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly 0.15.0</text>
 </g>
 </svg>

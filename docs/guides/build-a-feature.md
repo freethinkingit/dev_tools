@@ -2,12 +2,12 @@
 
 This guide specs and builds a feature with three skills: `start-task`,
 `implement-spec` and `pr`. At the end you have a spec of three files in
-`.freethinking/specs/<task>/`, code built and reviewed wave by wave with
+`.ponderly/specs/<task>/`, code built and reviewed wave by wave with
 every task ticked, and a pull request open on GitHub.
 
 The example is real. It is the work that added the `strategy`, `hld` and
 `lld` skills to this plugin, under the task name `design-skills`. One step
-comes from another repository, `freethinkingit/inline-email`, because it
+comes from another repository, `inline-email`, because it
 shows an agent stopping when the spec could not be followed as written. Every image
 below is an excerpt of a recorded session.
 
@@ -16,11 +16,11 @@ below is an excerpt of a recorded session.
 - Claude Code, with the plugin installed:
 
   ```
-  claude plugin marketplace add freethinkingit/dev_tools
-  claude plugin install freethinking@freethinkingit
+  claude plugin marketplace add sabind/ponderly
+  claude plugin install ponderly@sabind
   ```
 
-  The [plugin README](../../plugins/freethinking/README.md#install) has the
+  The [plugin README](../../plugins/ponderly/README.md#install) has the
   rest of the install steps.
 - A git repository to work in.
 - The `gh` CLI, signed in, for the `pr` step.
@@ -32,7 +32,7 @@ below is an excerpt of a recorded session.
 
 ## 1. Ask for the feature
 
-Run `/freethinking:start-task` with a short description, or ask Claude for
+Run `/ponderly:start-task` with a short description, or ask Claude for
 the change in your own words. The author of this example typed:
 
 > I want to work on skills for tech stratey -> high level design(s) -> low
@@ -52,7 +52,7 @@ It writes nothing yet.
 ## 2. Approve the requirements
 
 After your answers, `start-task` writes `requirements.md` in
-`.freethinking/specs/design-skills/`. You see its path and a short summary.
+`.ponderly/specs/design-skills/`. You see its path and a short summary.
 Then it stops and asks:
 
 - **Approved**: the requirements stand; the design comes next.
@@ -75,10 +75,10 @@ two options. **Approved** moves on to the task list.
 Last it writes `tasks.md`: the tasks, grouped into waves that can run
 together. It asks a third time, with the same two options.
 
-![Claude asks whether the task list builds the design in an acceptable order, with the options Approved and Changes needed; the author picks Approved, and Claude says the spec is in .freethinking/specs/design-skills/ and the next step is /freethinking:implement-spec design-skills.](../images/feature-tasks-approval.svg)
+![Claude asks whether the task list builds the design in an acceptable order, with the options Approved and Changes needed; the author picks Approved, and Claude says the spec is in .ponderly/specs/design-skills/ and the next step is /ponderly:implement-spec design-skills.](../images/feature-tasks-approval.svg)
 
 After **Approved**, it says where the spec is and what comes next:
-`/freethinking:implement-spec design-skills`. It also names two things to
+`/ponderly:implement-spec design-skills`. It also names two things to
 settle first. `start-task` never creates the branch. When you are on the
 default branch, `implement-spec` offers to create it at set-up, and `pr`
 offers it too. This example's worktree was detached at `origin/main`, not on
@@ -93,7 +93,7 @@ The spec folder now holds `requirements.md`, `design.md` and `tasks.md`.
 Run:
 
 ```
-/freethinking:implement-spec design-skills
+/ponderly:implement-spec design-skills
 ```
 
 You can add how often it hands back as a second argument: `task`, `wave` or
@@ -158,7 +158,7 @@ Answer the report, then say to continue.
 
 An executor stops instead of guessing when the spec cannot be followed as
 written.
-This happened in `freethinkingit/inline-email`, during a spec for that
+This happened in `inline-email`, during a spec for that
 library's documentation.
 
 The task asked for a README whose Quickstart quotes two example files byte
@@ -190,11 +190,11 @@ and the run goes on from there.
 
 ## 7. Open the pull request
 
-When every task is ticked, the last report recommends `/freethinking:pr`.
+When every task is ticked, the last report recommends `/ponderly:pr`.
 Give it the issue as `#50`, with the `#`; a bare `50` is read as no ticket:
 
 ```
-/freethinking:pr #50
+/ponderly:pr #50
 ```
 
 This step has no capture until the draft. `pr` first checks where the branch

@@ -30,7 +30,7 @@ CONTINUATION = "  "
 
 # The skill loader's message is the one record that names the plugin version a session ran;
 # other mentions of the plugin cache are commands and their output.
-SKILL_BASE = re.compile(r"^Base directory for this skill: \S*/freethinking/(\d[\w.\-]*)/skills/")
+SKILL_BASE = re.compile(r"^Base directory for this skill: \S*/(ponderly)/(\d[\w.\-]*)/skills/")
 
 # The harness wraps what it adds to a user turn in hyphenated tags, such as task notifications,
 # shell output and system reminders; the author typed none of it. A paste is <pasted_content>.
@@ -151,7 +151,7 @@ def skill_versions(record):
         return []
     content = (record.get("message") or {}).get("content")
     texts = [content] if isinstance(content, str) else [part.get("text", "") for part in content or [] if part.get("type") == "text"]
-    return [match.group(1) for text in texts for match in [SKILL_BASE.match(text)] if match]
+    return [" ".join(match.groups()) for text in texts for match in [SKILL_BASE.match(text)] if match]
 
 
 def extract(transcript, first, last, name, force=False):
@@ -263,7 +263,7 @@ def render_svg(source_text):
     top = TITLE_BAR + PAD + FONT_SIZE
     for row, (column, colour, text) in enumerate(shown):
         parts.append(text_element(PAD + column * CHAR_WIDTH, top + row * LINE_HEIGHT, colour, text))
-    footer = "{} · freethinking {}".format(fields["date"], fields["plugin"])
+    footer = "{} · {}".format(fields["date"], fields["plugin"])
     parts.append(text_element(WIDTH - PAD, height - 14, MUTED, footer, ' text-anchor="end"'))
     parts.append("</g>")
     parts.append("</svg>")

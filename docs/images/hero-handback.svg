@@ -7,7 +7,7 @@
 <circle cx="40" cy="18" r="6" fill="#febc2e"/>
 <circle cx="60" cy="18" r="6" fill="#28c840"/>
 <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
-<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — implement-spec</text>
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — implement-spec</text>
 <text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● ## Problems</text>
 <text x="20" y="91" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  - **The Vanilla Tones section is wrong about data-driven tones, outside this wave.** It says "You </text>
@@ -61,6 +61,6 @@
 <text x="20" y="1071" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="1091" fill="#e6e6e6" xml:space="preserve">  Wave 2 starts now: the test that runs every guide example (3.1) and the four guide pages (4.2 to </text>
 <text x="38" y="1111" fill="#e6e6e6" xml:space="preserve">4.5).</text>
-<text x="920" y="1138" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · freethinking 0.14.0</text>
+<text x="920" y="1138" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · ponderly 0.14.0</text>
 </g>
 </svg>

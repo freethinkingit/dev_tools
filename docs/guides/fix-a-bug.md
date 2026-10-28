@@ -16,8 +16,8 @@ on 2026-10-22.
 - Claude Code with the plugin installed:
 
   ```bash
-  claude plugin marketplace add freethinkingit/dev_tools
-  claude plugin install freethinking@freethinkingit
+  claude plugin marketplace add sabind/ponderly
+  claude plugin install ponderly@sabind
   ```
 
 - The `gh` CLI signed in, if your ticket is a GitHub issue. `bugfix` reads the
@@ -32,7 +32,7 @@ on 2026-10-22.
 Type the skill with the ticket:
 
 ```
-/freethinking:bugfix #12
+/ponderly:bugfix #12
 ```
 
 The ticket can be a GitHub issue number, such as `#12`, an issue URL, or a key
@@ -40,7 +40,7 @@ from another tracker, such as `ENG-412`. After the ticket you can add what you
 already know, such as a suspected file or a recent commit:
 
 ```
-/freethinking:bugfix #12 started after the date parser change
+/ponderly:bugfix #12 started after the date parser change
 ```
 
 You can also just ask Claude to fix the bug. The skill's description matches
@@ -167,7 +167,7 @@ note that the record of the investigation stays in the conversation. Then the
 root cause, the fix, the prevention, the checks that were run with their
 results, the files changed, and the next step.
 
-![The bugfix skill hands back: Problems first, then Done with the root cause, the fix and the prevention, the checks that pass, the files changed, and Next, which says to open one pull request with /freethinking:pr #50.](../images/bugfix-handoff.svg)
+![The bugfix skill hands back: Problems first, then Done with the root cause, the fix and the prevention, the checks that pass, the files changed, and Next, which says to open one pull request with /ponderly:pr #50.](../images/bugfix-handoff.svg)
 
 The hand-back is the text of the skill's last question, with the header
 `Pull request`. Its options are:
@@ -180,13 +180,13 @@ The hand-back is the text of the skill's last question, with the header
 - **Stop here**: the skill posts nothing and stops.
 
 At both stops it tells you which branch the uncommitted fix sits on and which
-files it is in, and, when there is a ticket, that `/freethinking:pr <ticket>`
+files it is in, and, when there is a ticket, that `/ponderly:pr <ticket>`
 picks it up later.
 
 In the example there was no ticket, so the comment option was not offered.
 The fix sat on the branch of other work, `50-design-skills`, so the
 hand-back's Next said to open one pull request for both with
-`/freethinking:pr #50`. That pull request, #53, closed both #50 and #52.
+`/ponderly:pr #50`. That pull request, #53, closed both #50 and #52.
 
 ## 7. Open the pull request
 
@@ -194,7 +194,7 @@ If you picked `Open it now`, the `pr` skill starts on its own. Otherwise run
 it yourself with the ticket:
 
 ```
-/freethinking:pr #12
+/ponderly:pr #12
 ```
 
 On the default branch it first asks whether to create a branch. Then, because

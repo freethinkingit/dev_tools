@@ -7,11 +7,11 @@
 <circle cx="40" cy="18" r="6" fill="#febc2e"/>
 <circle cx="60" cy="18" r="6" fill="#28c840"/>
 <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
-<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — pr</text>
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — pr</text>
 <text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● Here is the full draft.</text>
 <text x="20" y="91" fill="#e6e6e6" xml:space="preserve"></text>
-<text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  **Repository:** `freethinkingit/dev_tools`, base `main`, branch `50-design-skills`. **Opened </text>
-<text x="38" y="131" fill="#e6e6e6" xml:space="preserve">by:** `sabind`, the active `gh` account. **Ready for review**, not a draft.</text>
+<text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  **Repository:** `sabind/ponderly`, base `main`, branch `50-design-skills`. **Opened by:** </text>
+<text x="38" y="131" fill="#e6e6e6" xml:space="preserve">`sabind`, the active `gh` account. **Ready for review**, not a draft.</text>
 <text x="20" y="151" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="171" fill="#e6e6e6" xml:space="preserve">  **Title:** `[#50] Add strategy, hld and lld skills with a document reviewer`</text>
 <text x="20" y="191" fill="#e6e6e6" xml:space="preserve"></text>
@@ -33,10 +33,10 @@
 <text x="20" y="511" fill="#e6e6e6" xml:space="preserve">  ## What</text>
 <text x="20" y="531" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="551" fill="#e6e6e6" xml:space="preserve">  Three new skills write a tech strategy, a high level design (HLD) and a low level design (LLD), </text>
-<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">each from the document above it, into a tree under `.freethinking/strategies/` and </text>
-<text x="38" y="591" fill="#e6e6e6" xml:space="preserve">`.freethinking/designs/&lt;strategy&gt;/&lt;hld&gt;/`. A new `document-reviewer` agent reads every draft </text>
-<text x="38" y="611" fill="#e6e6e6" xml:space="preserve">against its template and its parent before the author sees it. The workflow rule's eval target </text>
-<text x="38" y="631" fill="#e6e6e6" xml:space="preserve">now lets the `bugfix` and `pr` skills load, which they silently could not.</text>
+<text x="38" y="571" fill="#e6e6e6" xml:space="preserve">each from the document above it, into a tree under `.ponderly/strategies/` and </text>
+<text x="38" y="591" fill="#e6e6e6" xml:space="preserve">`.ponderly/designs/&lt;strategy&gt;/&lt;hld&gt;/`. A new `document-reviewer` agent reads every draft against </text>
+<text x="38" y="611" fill="#e6e6e6" xml:space="preserve">its template and its parent before the author sees it. The workflow rule's eval target now lets </text>
+<text x="38" y="631" fill="#e6e6e6" xml:space="preserve">the `bugfix` and `pr` skills load, which they silently could not.</text>
 <text x="20" y="651" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="671" fill="#e6e6e6" xml:space="preserve">  ## Changes</text>
 <text x="20" y="691" fill="#e6e6e6" xml:space="preserve"></text>
@@ -48,7 +48,7 @@
 <text x="38" y="811" fill="#e6e6e6" xml:space="preserve">against each other and against the plan above.</text>
 <text x="20" y="831" fill="#e6e6e6" xml:space="preserve">  - Three self-describing templates under each skill's folder, telling one worked example as a </text>
 <text x="38" y="851" fill="#e6e6e6" xml:space="preserve">tree: a links-product strategy, its shortener-service HLD and that service's visit-counter LLD. A </text>
-<text x="38" y="871" fill="#e6e6e6" xml:space="preserve">repository can replace one under `.freethinking/&lt;skill&gt;/template.md`.</text>
+<text x="38" y="871" fill="#e6e6e6" xml:space="preserve">repository can replace one under `.ponderly/&lt;skill&gt;/template.md`.</text>
 <text x="20" y="891" fill="#e6e6e6" xml:space="preserve">  - `document-reviewer` agent (Read, Glob, Grep only): judges every section against its template, </text>
 <text x="38" y="911" fill="#e6e6e6" xml:space="preserve">its parent and the document's other sections, flags figures stated with no source, and returns </text>
 <text x="38" y="931" fill="#e6e6e6" xml:space="preserve">Findings in the wave reviewer's shape.</text>
@@ -68,7 +68,7 @@
 <text x="38" y="1211" fill="#e6e6e6" xml:space="preserve">`pr-routes-to-pr-skill` gain a scaffold and a `skill-loads` grader: the `bugfix` and `pr` skills </text>
 <text x="38" y="1231" fill="#e6e6e6" xml:space="preserve">run `gh`/`git` while they load, and without Bash they never loaded in this target, so </text>
 <text x="38" y="1251" fill="#e6e6e6" xml:space="preserve">`states-symptom` failed and the pr case passed on the Skill call alone (#52).</text>
-<text x="20" y="1271" fill="#e6e6e6" xml:space="preserve">  - Spec record `.freethinking/specs/design-skills/`.</text>
+<text x="20" y="1271" fill="#e6e6e6" xml:space="preserve">  - Spec record `.ponderly/specs/design-skills/`.</text>
 <text x="20" y="1291" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="1311" fill="#e6e6e6" xml:space="preserve">  ## Testing</text>
 <text x="20" y="1331" fill="#e6e6e6" xml:space="preserve"></text>
@@ -142,6 +142,6 @@
 <text x="20" y="2691" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "Approved commits all 120 files on 50-design-skills with the </text>
 <text x="38" y="2711" fill="#a6e3a1" xml:space="preserve">message above, pushes the branch to origin, and opens the PR ready for review as sabind. </text>
 <text x="38" y="2731" fill="#a6e3a1" xml:space="preserve">Approve?"="Approved". You can now continue with these answers in mind.</text>
-<text x="920" y="2758" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · freethinking 0.15.0</text>
+<text x="920" y="2758" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly 0.15.0</text>
 </g>
 </svg>

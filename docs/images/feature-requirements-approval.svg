@@ -7,7 +7,7 @@
 <circle cx="40" cy="18" r="6" fill="#febc2e"/>
 <circle cx="60" cy="18" r="6" fill="#28c840"/>
 <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
-<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — start-task</text>
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — start-task</text>
 <text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● The tree stands as drawn, and the file already describes it: impromptu designs directly under </text>
 <text x="38" y="91" fill="#e6e6e6" xml:space="preserve">`designs/`, and the HLD file keeping its `hld-&lt;name&gt;.md` name. No further change to the </text>
 <text x="38" y="111" fill="#e6e6e6" xml:space="preserve">requirements.</text>
@@ -19,6 +19,6 @@
 <text x="20" y="231" fill="#a6e3a1" xml:space="preserve"></text>
 <text x="20" y="251" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "Do these requirements say what you want built?"="Approved". </text>
 <text x="38" y="271" fill="#a6e3a1" xml:space="preserve">You can now continue with these answers in mind.</text>
-<text x="920" y="298" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · freethinking 0.14.0</text>
+<text x="920" y="298" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-20 · ponderly 0.14.0</text>
 </g>
 </svg>

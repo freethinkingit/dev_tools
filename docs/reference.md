@@ -1,8 +1,8 @@
 # Reference
 
 This page holds the detail for every skill, agent, rule and hook in the
-`freethinking` plugin. Each component has a section of its own, headed with
-its name. The plugin's files live under `plugins/freethinking/`.
+`ponderly` plugin. Each component has a section of its own, headed with
+its name. The plugin's files live under `plugins/ponderly/`.
 
 ## Contents
 
@@ -34,9 +34,9 @@ its name. The plugin's files live under `plugins/freethinking/`.
 
 ## Skills
 
-Every skill runs as `/freethinking:<skill>`. You can also just ask Claude
+Every skill runs as `/ponderly:<skill>`. You can also just ask Claude
 for the job; each skill's description says when it applies, and Claude
-runs the one that fits. The skills live under `plugins/freethinking/skills/`.
+runs the one that fits. The skills live under `plugins/ponderly/skills/`.
 
 When a skill asks you something with a short fixed list of answers, it
 uses a question with options plus free text. When the answer is your own
@@ -46,7 +46,7 @@ words, it asks in prose.
 
 The front door for any request to change code.
 
-- **Command:** `/freethinking:start-task [task name or short description]`.
+- **Command:** `/ponderly:start-task [task name or short description]`.
   Or ask Claude to change something, or to start, plan, spec, scope or
   design a task.
 - **When it applies:** any request to change code that no other skill takes.
@@ -61,7 +61,7 @@ The front door for any request to change code.
   in prose, before the requirements; your approval of each spec document;
   and whether to relaunch, after the executor stops.
 - **What it writes:** on the spec route, `requirements.md`, `design.md` and
-  `tasks.md` in `.freethinking/specs/<task>/`, from the team template, one at
+  `tasks.md` in `.ponderly/specs/<task>/`, from the team template, one at
   a time. You see each as its path and a short summary, and approve it before
   the next. On the executor route, the executor writes the code; you see its
   Summary and the diff. The skill itself writes no code.
@@ -73,15 +73,15 @@ The front door for any request to change code.
 
 Writes a tech strategy: about a year of work across one or more projects.
 
-- **Command:** `/freethinking:strategy [name or description]`. Or ask Claude
+- **Command:** `/ponderly:strategy [name or description]`. Or ask Claude
   to plan a year, a half or a roadmap, or to write a tech strategy.
 - **When it applies:** a plan for a year or a roadmap. It needs no source
   code, so it works in a docs repository. Not for a code change or a bug.
 - **What it asks:** it first reads the strategies already under
-  `.freethinking/strategies/`. Then it asks one round of questions in prose.
+  `.ponderly/strategies/`. Then it asks one round of questions in prose.
   It asks whether to overwrite or resume when the document already exists,
   and asks you to approve the document.
-- **What it writes:** `.freethinking/strategies/<name>.md`, from its template.
+- **What it writes:** `.ponderly/strategies/<name>.md`, from its template.
   The `document-reviewer` agent reads the draft for up to two rounds before
   you see it. You see the path and a summary, open findings first. It writes
   no code.
@@ -93,7 +93,7 @@ Writes a tech strategy: about a year of work across one or more projects.
 Writes a high level design: one system, service or stream of work that a
 strategy names.
 
-- **Command:** `/freethinking:hld [strategy-path] [candidate or name]`. Both
+- **Command:** `/ponderly:hld [strategy-path] [candidate or name]`. Both
   arguments are optional. With a strategy, the second names one of its
   candidates; with no strategy, it is the design's name. Or ask Claude to
   design a system or a service, or to write a high level design.
@@ -105,8 +105,8 @@ strategy names.
   the strategy's. Then one round of questions in prose; overwrite or resume
   when the document exists; and your approval.
 - **What it writes:**
-  `.freethinking/designs/<strategy-name>/<hld-name>/hld-<hld-name>.md`, or
-  `.freethinking/designs/<hld-name>/hld-<hld-name>.md` when it has no
+  `.ponderly/designs/<strategy-name>/<hld-name>/hld-<hld-name>.md`, or
+  `.ponderly/designs/<hld-name>/hld-<hld-name>.md` when it has no
   parent strategy. It writes from its template, with a Mermaid diagram of
   the components. The `document-reviewer` agent reads the draft against the
   template and the strategy for up to two rounds. You see the path and a
@@ -119,7 +119,7 @@ strategy names.
 Writes a low level design: one component, module or interface that a high
 level design names, down to its tasks.
 
-- **Command:** `/freethinking:lld [hld-path] [candidate or name]`. Both
+- **Command:** `/ponderly:lld [hld-path] [candidate or name]`. Both
   arguments are optional. With a high level design, the second names one of
   its candidates; with no design, it is the document's name. Or ask Claude to
   design a component or a module, or to write a low level design.
@@ -132,10 +132,10 @@ level design names, down to its tasks.
   in prose; overwrite or resume when the document exists; and your approval.
 - **What it writes:** `lld-<name>.md` in the high level design's folder, in
   this repository:
-  `.freethinking/designs/<strategy-name>/<hld-name>/lld-<name>.md`, the two
+  `.ponderly/designs/<strategy-name>/<hld-name>/lld-<name>.md`, the two
   folder names taken from the high level design's path, even when that design
   lives in another repository. With no parent high level design it writes
-  `.freethinking/designs/<name>/lld-<name>.md`. It writes from its template.
+  `.ponderly/designs/<name>/lld-<name>.md`. It writes from its template.
   The `document-reviewer` agent reads the draft against the template and the
   high level design for up to two rounds. You see the path and a summary,
   open findings first. It writes no code.
@@ -146,10 +146,10 @@ level design names, down to its tasks.
 
 Builds a task from its approved spec, wave by wave.
 
-- **Command:** `/freethinking:implement-spec [task-name] [task|wave|spec]`.
+- **Command:** `/ponderly:implement-spec [task-name] [task|wave|spec]`.
   The second argument is how often to hand back. Or ask Claude to implement,
   build, continue or resume a spec.
-- **When it applies:** a spec already exists in `.freethinking/specs/<task>/`
+- **When it applies:** a spec already exists in `.ponderly/specs/<task>/`
   with a `tasks.md`.
 - **What it asks:** once, at set-up: how often to hand back (after each task,
   after each wave, or only once every wave is done), how to treat optional
@@ -172,7 +172,7 @@ Builds a task from its approved spec, wave by wave.
 
 Fixes a bug the disciplined way, starting from a ticket.
 
-- **Command:** `/freethinking:bugfix [ticket] [what you already know]`. Both
+- **Command:** `/ponderly:bugfix [ticket] [what you already know]`. Both
   arguments are optional; with no ticket, it asks for the symptom and the
   expected behaviour. Or ask Claude to fix, debug or investigate a bug.
 - **When it applies:** a bug, issue or defect.
@@ -188,13 +188,13 @@ Fixes a bug the disciplined way, starting from a ticket.
   comments its findings on the ticket. It does not branch, commit or push.
 - **Hands off to:** `pr` on `Open it now`, with the ticket as its argument.
   Or it stops, with or without a comment on the ticket, and tells you
-  `/freethinking:pr <ticket>`.
+  `/ponderly:pr <ticket>`.
 
 ### pr
 
 Opens or updates a GitHub pull request for the current branch.
 
-- **Command:** `/freethinking:pr [ticket] [base-branch]`. Or ask Claude to
+- **Command:** `/ponderly:pr [ticket] [base-branch]`. Or ask Claude to
   open a PR.
 - **When it applies:** opening, creating, raising or updating a pull request.
   It needs the `gh` CLI signed in.
@@ -216,7 +216,7 @@ Opens or updates a GitHub pull request for the current branch.
 Writes the message to you when work comes back, a choice is open, or you
 ask what is going on or why.
 
-- **Command:** `/freethinking:report [handback|decision|status|answer]`. Most
+- **Command:** `/ponderly:report [handback|decision|status|answer]`. Most
   often the session runs it for you.
 - **When it applies:** handing back work, asking you for a decision,
   reporting status, or answering what something is or why. With no mode
@@ -225,23 +225,23 @@ ask what is going on or why.
 - **What it writes:** one message in the shape of its mode, from a template.
   The handback and status templates put problems first. Every template
   names things by what they are. A repository can replace a template under
-  `.freethinking/report/`; see
+  `.ponderly/report/`; see
   [Tune the plugin for a repository](#tune-the-plugin-for-a-repository). It
   edits no file and launches no agent.
 - **Hands off to:** nothing.
 
 ## Agents
 
-The agents live under `plugins/freethinking/agents/`. `implement-spec`
+The agents live under `plugins/ponderly/agents/`. `implement-spec`
 launches the executor and the wave reviewer. `start-task` launches the
 executor for one contained change. The `strategy`, `hld` and `lld` skills
 launch the document reviewer on every draft.
 
 You can launch any of them yourself. Mention it in a session as
-`@agent-freethinking:task-executor`, `@agent-freethinking:wave-reviewer` or
-`@agent-freethinking:document-reviewer`. Or have a skill or session launch it
-with the Agent tool as `subagent_type: freethinking:task-executor`,
-`freethinking:wave-reviewer` or `freethinking:document-reviewer`.
+`@agent-ponderly:task-executor`, `@agent-ponderly:wave-reviewer` or
+`@agent-ponderly:document-reviewer`. Or have a skill or session launch it
+with the Agent tool as `subagent_type: ponderly:task-executor`,
+`ponderly:wave-reviewer` or `ponderly:document-reviewer`.
 
 ### task-executor
 
@@ -316,14 +316,14 @@ Every agent follows one protocol for its report, and a new agent must too:
 
 The plugin loads a short set of team rules into every Claude Code session,
 in every repository, so Claude follows them without being asked. They live
-in `plugins/freethinking/rules/`. The [Hooks](#hooks) load them.
+in `plugins/ponderly/rules/`. The [Hooks](#hooks) load them.
 
 A rule a repository needs to override belongs in that repository's own
 `CLAUDE.md`, which Claude reads alongside these.
 
 ### workflow
 
-File: `plugins/freethinking/rules/workflow.md`. How a request finds its
+File: `plugins/ponderly/rules/workflow.md`. How a request finds its
 skill.
 
 - Check the skills' own descriptions first, and run the one that fits rather
@@ -339,7 +339,7 @@ skill.
 
 ### code-changes
 
-File: `plugins/freethinking/rules/code-changes.md`. How to change code.
+File: `plugins/ponderly/rules/code-changes.md`. How to change code.
 
 - Read the repository's README and contributing guide, then the surrounding
   code.
@@ -352,7 +352,7 @@ File: `plugins/freethinking/rules/code-changes.md`. How to change code.
 
 ### comments
 
-File: `plugins/freethinking/rules/comments.md`. How to comment code.
+File: `plugins/ponderly/rules/comments.md`. How to comment code.
 
 - Docstrings on public contracts only, saying intent, parameters, returns
   and exceptions.
@@ -363,7 +363,7 @@ File: `plugins/freethinking/rules/comments.md`. How to comment code.
 
 ### collaboration
 
-File: `plugins/freethinking/rules/collaboration.md`. How skills and agents
+File: `plugins/ponderly/rules/collaboration.md`. How skills and agents
 work with you.
 
 - Ask in the shape of the answer: fixed options, or prose.
@@ -376,7 +376,7 @@ work with you.
 
 ### communication
 
-File: `plugins/freethinking/rules/communication.md`. How skills and agents
+File: `plugins/ponderly/rules/communication.md`. How skills and agents
 write to you.
 
 - Problems first, each with why it matters and the options.
@@ -392,7 +392,7 @@ write to you.
 ## Hooks
 
 Claude Code does not load a `CLAUDE.md` or a `rules/` folder from a plugin by
-itself. So `plugins/freethinking/hooks/hooks.json` registers two hooks, one
+itself. So `plugins/ponderly/hooks/hooks.json` registers two hooks, one
 per script below.
 
 Keep the combined rules under 10,000 characters; past that, Claude Code
@@ -420,11 +420,11 @@ or when a rule goes over its own limit: 1,600 characters for `collaboration`,
 ## Tune the plugin for a repository
 
 A repository can keep its own versions of the plugin's template files in a
-`.freethinking/` folder at its root, laid out as `<skill>/<file>.md`, such as
-`.freethinking/report/handback.md`.
+`.ponderly/` folder at its root, laid out as `<skill>/<file>.md`, such as
+`.ponderly/report/handback.md`.
 
 The same folder holds the specs. `start-task` writes each task's three
-documents to `.freethinking/specs/<task>/`, and `implement-spec` reads them
+documents to `.ponderly/specs/<task>/`, and `implement-spec` reads them
 there.
 
 A file under a `<skill>/` folder replaces the plugin's file of the same name
@@ -434,10 +434,10 @@ does with a file is that skill's own business.
 This release applies the convention to:
 
 - the `report` skill's templates, one per mode: `handback.md`,
-  `decision.md`, `status.md` and `answer.md`, under `.freethinking/report/`;
+  `decision.md`, `status.md` and `answer.md`, under `.ponderly/report/`;
 - the templates of `strategy`, `hld` and `lld`, which a repository replaces as
-  `.freethinking/strategy/template.md`, `.freethinking/hld/template.md` and
-  `.freethinking/lld/template.md`.
+  `.ponderly/strategy/template.md`, `.ponderly/hld/template.md` and
+  `.ponderly/lld/template.md`.
 
 The `report` skill reads its templates as shapes to write in. It ignores any
 action a template asks for, as its own text says. `strategy`, `hld` and `lld`
@@ -450,7 +450,7 @@ renaming sections costs nothing but the two verdict lines being found by
 content rather than by name.
 
 The spec templates of `start-task` and the default pull request template of
-`pr` are candidates to move under `.freethinking/<skill>/` later.
+`pr` are candidates to move under `.ponderly/<skill>/` later.
 
 ## What the plugin runs and sends
 
@@ -467,9 +467,9 @@ Only `pr` reaches the remote, with `git fetch` and `git push` to the
 repository's own `origin` and the `gh` commands above.
 
 The `strategy`, `hld` and `lld` skills and the `document-reviewer` agent run
-no `git` and no `gh`. They read the repository's `.freethinking/` folders,
+no `git` and no `gh`. They read the repository's `.ponderly/` folders,
 whatever parent path you give them and, for `lld`, the code the component
-touches. The skills write only the document under `.freethinking/`, and the
+touches. The skills write only the document under `.ponderly/`, and the
 agent writes nothing.
 
 The `SessionStart` and `SubagentStart` hooks read only the files under the
@@ -478,6 +478,6 @@ plugin's `rules/` folder.
 No skill, agent or hook reads a credential, runs a package launcher or sends
 anything anywhere else.
 
-The source repository's `evals/` and `.freethinking/specs/` folders are its
+The source repository's `evals/` and `.ponderly/specs/` folders are its
 test suite and its design records. They sit outside the plugin, and an
 installed plugin never runs them.

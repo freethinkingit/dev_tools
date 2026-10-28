@@ -7,7 +7,7 @@
 <circle cx="40" cy="18" r="6" fill="#febc2e"/>
 <circle cx="60" cy="18" r="6" fill="#28c840"/>
 <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
-<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">freethinking — bugfix</text>
+<text x="470" y="23" fill="#8a8aa0" text-anchor="middle" xml:space="preserve">ponderly — bugfix</text>
 <text x="20" y="71" fill="#e6e6e6" xml:space="preserve">● The `pr` skill fails to load in the workflow target too:</text>
 <text x="20" y="91" fill="#e6e6e6" xml:space="preserve"></text>
 <text x="20" y="111" fill="#e6e6e6" xml:space="preserve">  ```</text>
@@ -67,6 +67,6 @@
 <text x="20" y="1191" fill="#a6e3a1" xml:space="preserve">  Your questions have been answered: "Is that the root cause: the workflow eval target grants no </text>
 <text x="38" y="1211" fill="#a6e3a1" xml:space="preserve">Bash, so the bugfix and pr skills fail to load there and only states-symptom </text>
 <text x="38" y="1231" fill="#a6e3a1" xml:space="preserve">notices?"="Confirmed". You can now continue with these answers in mind.</text>
-<text x="920" y="1258" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · freethinking 0.15.0</text>
+<text x="920" y="1258" fill="#8a8aa0" text-anchor="end" xml:space="preserve">2026-10-22 · ponderly 0.15.0</text>
 </g>
 </svg>

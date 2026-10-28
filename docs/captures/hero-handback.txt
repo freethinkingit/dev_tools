@@ -1,7 +1,7 @@
-title: freethinking — implement-spec
+title: ponderly — implement-spec
 date: 2026-10-20
-plugin: 0.14.0
-source: freethinkingit/inline-email, session 4c0c154a-4af6-4bd3-b6c5-b6dbbc7a15b0
+plugin: ponderly 0.14.0
+source: inline-email, session 4c0c154a-4af6-4bd3-b6c5-b6dbbc7a15b0
 alt: An implement-spec wave 1 report: Problems first, a wrong statement about data-driven tones with two options, a CLI error position and one failed gallery build; then Done task by task with the requirements each meets, the checks, the files changed, and Next, which says wave 2 starts now.
 
 ● ## Problems

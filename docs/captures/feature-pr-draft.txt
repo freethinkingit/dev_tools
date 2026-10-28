@@ -1,12 +1,12 @@
-title: freethinking — pr
+title: ponderly — pr
 date: 2026-10-22
-plugin: 0.15.0
-source: freethinkingit/dev_tools, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
+plugin: ponderly 0.15.0
+source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
 alt: The pr skill shows its full draft of a pull request, with title, Why, What, Changes, Testing with an eval table, Risk and Notes for reviewers, and a commit message; it asks for approval and the author picks Approved.
 
 ● Here is the full draft.
 
-  **Repository:** `freethinkingit/dev_tools`, base `main`, branch `50-design-skills`. **Opened by:** `sabind`, the active `gh` account. **Ready for review**, not a draft.
+  **Repository:** `sabind/ponderly`, base `main`, branch `50-design-skills`. **Opened by:** `sabind`, the active `gh` account. **Ready for review**, not a draft.
 
   **Title:** `[#50] Add strategy, hld and lld skills with a document reviewer`
 
@@ -22,12 +22,12 @@ alt: The pr skill shows its full draft of a pull request, with title, Why, What,
 
   ## What
 
-  Three new skills write a tech strategy, a high level design (HLD) and a low level design (LLD), each from the document above it, into a tree under `.freethinking/strategies/` and `.freethinking/designs/<strategy>/<hld>/`. A new `document-reviewer` agent reads every draft against its template and its parent before the author sees it. The workflow rule's eval target now lets the `bugfix` and `pr` skills load, which they silently could not.
+  Three new skills write a tech strategy, a high level design (HLD) and a low level design (LLD), each from the document above it, into a tree under `.ponderly/strategies/` and `.ponderly/designs/<strategy>/<hld>/`. A new `document-reviewer` agent reads every draft against its template and its parent before the author sees it. The workflow rule's eval target now lets the `bugfix` and `pr` skills load, which they silently could not.
 
   ## Changes
 
   - `strategy`, `hld` and `lld` skills: each reads its parent first (earlier strategies, the strategy, or the HLD and the code), asks one round in prose, writes from its template, has the reviewer read the draft for at most two rounds, shows the path with open findings first and asks Approved or Changes needed, then hands off to the next level down. A figure is attributed to its source or carried to the author as a question. Each document needs its sections to make sense against each other and against the plan above.
-  - Three self-describing templates under each skill's folder, telling one worked example as a tree: a links-product strategy, its shortener-service HLD and that service's visit-counter LLD. A repository can replace one under `.freethinking/<skill>/template.md`.
+  - Three self-describing templates under each skill's folder, telling one worked example as a tree: a links-product strategy, its shortener-service HLD and that service's visit-counter LLD. A repository can replace one under `.ponderly/<skill>/template.md`.
   - `document-reviewer` agent (Read, Glob, Grep only): judges every section against its template, its parent and the document's other sections, flags figures stated with no source, and returns Findings in the wave reviewer's shape.
   - `start-task`'s description gains one clause sending a strategy or a design to the new skills.
   - Plugin README rows and sections for the three skills and the agent; root README gains the new eval target; version 0.15.0.
@@ -35,7 +35,7 @@ alt: The pr skill shows its full draft of a pull request, with title, Why, What,
   - Ten eval cases and four Makefile targets: per skill a happy path and an unreadable-parent or existing-file case; for the agent a contradiction, a clean document that draws no blocker, and an unsourced figure.
   - Two free checks: each skill's `name` matches its folder (two skills shipped as `name: hld` mid-branch and nothing caught it), and every frontmatter block parses as YAML (an unquoted `: ` made the harness skip two cases, and an unquoted ` #7` silently truncated `opens-pr-with-ticket`'s expected outcome). `evals/README.md` tells case authors to quote such values.
   - Workflow eval target grants Bash with the `bin` wrappers, and `bug-routes-to-bugfix` and `pr-routes-to-pr-skill` gain a scaffold and a `skill-loads` grader: the `bugfix` and `pr` skills run `gh`/`git` while they load, and without Bash they never loaded in this target, so `states-symptom` failed and the pr case passed on the Skill call alone (#52).
-  - Spec record `.freethinking/specs/design-skills/`.
+  - Spec record `.ponderly/specs/design-skills/`.
 
   ## Testing
 

@@ -19,11 +19,11 @@ anything. The images are from that session, run on plugin 0.15.0 on
 - Claude Code with the plugin installed:
 
   ```bash
-  claude plugin marketplace add freethinkingit/dev_tools
-  claude plugin install freethinking@freethinkingit
+  claude plugin marketplace add sabind/ponderly
+  claude plugin install ponderly@sabind
   ```
 
-  The [plugin README](../../plugins/freethinking/README.md#install) has the
+  The [plugin README](../../plugins/ponderly/README.md#install) has the
   rest of the install steps.
 - A git repository to work in.
 - The `gh` CLI, signed in, only if you go on to open a pull request with
@@ -34,7 +34,7 @@ anything. The images are from that session, run on plugin 0.15.0 on
 Type the skill with the change, in a sentence or two:
 
 ```
-/freethinking:start-task <the change, in a sentence or two>
+/ponderly:start-task <the change, in a sentence or two>
 ```
 
 You can also ask Claude for the change in your own words. The skill's
@@ -112,7 +112,7 @@ sequenceDiagram
     participant S as start-task
     participant E as task-executor
     participant R as report
-    A->>S: /freethinking:start-task and the change
+    A->>S: /ponderly:start-task and the change
     S->>S: read the code the change touches
     S-->>A: route statement and the Route question
     A->>S: Executor_Route (Recommended)
@@ -195,7 +195,7 @@ The image's last paragraph is about other work in the same session, not about
 this change.
 
 Next names the branch the change sits on, uncommitted, and recommends
-`/freethinking:pr` to open the pull request, with the ticket when your
+`/ponderly:pr` to open the pull request, with the ticket when your
 request named one. On the default branch, `pr` offers to create a branch, and
 it offers to commit the change.
 
@@ -207,7 +207,7 @@ In the example, the new case stayed uncommitted on the branch
 When you are ready, run `pr` with the ticket, if there is one:
 
 ```
-/freethinking:pr #12
+/ponderly:pr #12
 ```
 
 It walks the change with you, drafts the pull request, and asks for your

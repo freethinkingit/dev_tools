@@ -1,7 +1,7 @@
-title: freethinking — start-task
+title: ponderly — start-task
 date: 2026-10-22
-plugin: 0.15.0
-source: freethinkingit/dev_tools, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
+plugin: ponderly 0.15.0
+source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
 alt: The task-executor's Summary returns with status: done. It lists the five new files of the reads-back-without-ticket eval case, explains the prompt and its four regex graders, reports make validate passing and a scratch Node check of the patterns, gives the command to run the case, and lists what it is unsure of, including that the skill's own text in the run record could make the graders pass.
 
 ⏺ status: done
@@ -12,7 +12,7 @@ alt: The task-executor's Summary returns with status: done. It lists the five ne
   - ~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads-back-without-ticket/graders/states-context.md (new)
   - ~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix/reads-back-without-ticket/graders/reads-back-before-bash.md (new)
 
-  What the case is: the prompt is `/freethinking:bugfix ` followed by the session's advance context, word for word. Its frontmatter is tags [skill, bugfix], max_turns 10 and a single-quoted description and expected_outcome. There is no case.yaml and no scaffold: the workspace is empty, so the make command in the prompt cannot run. The Makefile's bugfix target still grants Bash, and that is what makes the real failure possible: running the command before the read-back. All four graders are regexes that search the whole run record (`target: trace`).
+  What the case is: the prompt is `/ponderly:bugfix ` followed by the session's advance context, word for word. Its frontmatter is tags [skill, bugfix], max_turns 10 and a single-quoted description and expected_outcome. There is no case.yaml and no scaffold: the workspace is empty, so the make command in the prompt cannot run. The Makefile's bugfix target still grants Bash, and that is what makes the real failure possible: running the command before the read-back. All four graders are regexes that search the whole run record (`target: trace`).
   - states-symptom: `'\bSymptom\b[*_]*\s*:'`, flags i
   - states-expected: `'\bExpected\b[*_]*\s*:'`, flags i
   - states-context: `'\bContext\b[*_]*\s*:'`, flags i
@@ -50,7 +50,7 @@ alt: The task-executor's Summary returns with status: done. It lists the five ne
   `make eval-skill-bugfix EVAL_ARGS="--case reads-back-without-ticket"`
 
   unsure:
-  - Whether a `/freethinking:bugfix` prompt and its expanded SKILL.md appear in the run record is inferred, not seen. No kept run record from a slash-command bugfix run was on disk. In the records I did read (e-EZG7P2, e-MDubbG), the user prompt does not appear, and SKILL.md's "what actually happens" line does not appear. If the expanded SKILL.md did appear, its `**Symptom**:` line would make all four graders pass whatever the model did. The first real run should be checked with `--keep-temp` to confirm.
+  - Whether a `/ponderly:bugfix` prompt and its expanded SKILL.md appear in the run record is inferred, not seen. No kept run record from a slash-command bugfix run was on disk. In the records I did read (e-EZG7P2, e-MDubbG), the user prompt does not appear, and SKILL.md's "what actually happens" line does not appear. If the expanded SKILL.md did appear, its `**Symptom**:` line would make all four graders pass whatever the model did. The first real run should be checked with `--keep-temp` to confirm.
   - The label graders assume the read-back uses "Symptom", "Expected" and "Context" followed by a colon, as SKILL.md writes them. A read-back in a different form, such as "Symptom —", would fail them.
   - The order grader treats only a Bash call before the read-back as a failure. A Read, Glob or Grep before it is allowed. I read "before it reproduces anything" as running something.
   - I left out allowed_tools, as reads-ticket-first does. I have not checked which read-only tools the harness gives by default.

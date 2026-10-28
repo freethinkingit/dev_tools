@@ -229,7 +229,7 @@ The `comments` rule. It has no eval cases yet, with the plugin or without.
 
 ## A real example
 
-[`.freethinking/specs/design-skills/`](../.freethinking/specs/design-skills/)
+[`.ponderly/specs/design-skills/`](../.ponderly/specs/design-skills/)
 is the spec for the `strategy`, `hld` and `lld` skills and the
 `document-reviewer` agent, merged in pull request #53. `start-task` wrote its
 requirements, design and tasks, and `implement-spec` built it task by task.

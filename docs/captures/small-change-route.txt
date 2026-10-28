@@ -1,12 +1,12 @@
-title: freethinking — start-task
+title: ponderly — start-task
 date: 2026-10-22
-plugin: 0.15.0
-source: freethinkingit/dev_tools, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
+plugin: ponderly 0.15.0
+source: sabind/ponderly, session 8a0ad5ce-6a20-40f3-9dae-e4e4d8c3519a
 alt: Claude runs start-task on the request to add an eval case that checks the bugfix skill's read-back, lists and reads the two existing bugfix eval cases, then asks how to build it: Executor_Route (Recommended), where the task-executor adds one case beside reads-ticket-first, or Spec_Route, which writes requirements, design and tasks first. The author picks Executor_Route.
 
-⏺ Skill(skill: freethinking:start-task, args: Add an eval case that checks the bugfix skill states Symptom, Expected and Context back to the author before it reproduces anything (its step 1 read-back). In this repository's session 8a0ad5ce on 2026-10-22, bugfix 0.15.0 was invoked with no ticket and an advance context that described the eval failure, and it went straight to running the eval case without stating the read-back. The author said: "add an eval case".)
+⏺ Skill(skill: ponderly:start-task, args: Add an eval case that checks the bugfix skill states Symptom, Expected and Context back to the author before it reproduces anything (its step 1 read-back). In this repository's session 8a0ad5ce on 2026-10-22, bugfix 0.15.0 was invoked with no ticket and an advance context that described the eval failure, and it went straight to running the eval case without stating the read-back. The author said: "add an eval case".)
 
-⏺ Bash(command: ls evals/ evals/skills/bugfix/ 2>/dev/null; ls evals/skills/bugfix/* | head -40; ls .freethinking/specs/ | grep -i read, description: List the bugfix eval cases)
+⏺ Bash(command: ls evals/ evals/skills/bugfix/ 2>/dev/null; ls evals/skills/bugfix/* | head -40; ls .ponderly/specs/ | grep -i read, description: List the bugfix eval cases)
 
 ⏺ Bash(command: cd ~/.superset/worktrees/developer-handbook/0k-consolidated-p-ugin-dc0007c4/evals/skills/bugfix && for f in reads-ticket-first/prompt.md reads-ticket-first/graders/* hands-off-to-pr/case.yaml hands-off-to-pr/prompt.md hands-off-to-pr/scaffold.sh; do echo "=== $f"; cat "$f"; done; ls hands-off-to-pr/graders; grep -n 'bugfix' ../../../Makefile | head, description: Read the two existing bugfix eval cases)
 
