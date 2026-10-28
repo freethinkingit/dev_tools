@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <mask id="ridges">
+      <rect width="1024" height="1024" fill="#fff"/>
+      <g fill="none" stroke="#000" stroke-width="38" stroke-linecap="round">
+        <path d="M300 600 Q 420 480 600 500"/>
+        <path d="M400 720 Q 540 610 720 650"/>
+      </g>
+    </mask>
+  </defs>
+  <g transform="translate(0,52)"><g fill="#26305A" mask="url(#ridges)">
+    <circle cx="300" cy="590" r="150"/>
+    <circle cx="420" cy="490" r="160"/>
+    <circle cx="590" cy="480" r="155"/>
+    <circle cx="730" cy="580" r="140"/>
+    <circle cx="360" cy="700" r="130"/>
+    <circle cx="560" cy="700" r="150"/>
+    <circle cx="700" cy="720" r="110"/>
+    <ellipse cx="520" cy="620" rx="300" ry="170"/>
+  </g>
+  <g fill="#E0A23C">
+    <path d="M430 70 Q 446 174 530 190 Q 446 206 430 310 Q 414 206 330 190 Q 414 174 430 70 Z"/>
+    <path d="M610 165 Q 619 222 670 235 Q 619 248 610 305 Q 601 248 550 235 Q 601 222 610 165 Z"/>
+    <path d="M515 246 Q 520 272 543 278 Q 520 284 515 310 Q 510 284 487 278 Q 510 272 515 246 Z"/>
+  </g>
+</g></svg>

@@ -64,13 +64,13 @@ The plan builds the substitution script first, applies it to the working tree an
     - **Property 4: Moved files keep their history**
     - **Validates: Requirements 1.1, 3.2**
 
-- [ ] 6. Carry the Draft_PRs onto the new names, after the owner has merged this branch and says go
-  - [ ] 6.1 Rebase #73 (`56-experience-first-explanations`) onto `origin/main` in its own worktree, apply the script to the files it adds or changes, then run the Name_Search and the Validation on it
+- [x] 6. Carry the Draft_PRs onto the new names, after the owner has merged this branch and says go
+  - [x] 6.1 Rebase #73 (`56-experience-first-explanations`) onto `origin/main` in its own worktree, apply the script to the files it adds or changes, then run the Name_Search and the Validation on it
     - Stop and show any conflict that is not a name change; commit and force-push only when the owner says so
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
-  - [ ] 6.2 Do the same for #71 (`63-canonical-source-hld`)
+  - [x] 6.2 Do the same for #71 (`63-canonical-source-hld`)
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
-  - [ ] 6.3 Delete the scratch scripts and report the remaining Exceptions to the owner
+  - [x] 6.3 Delete the scratch scripts and report the remaining Exceptions to the owner
     - The only Exception left is this spec's own folder
     - _Requirements: 4.3, 9.1_
 

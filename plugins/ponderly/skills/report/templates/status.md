@@ -2,7 +2,7 @@
 
 Each section is a `## <Name>` heading, in this order.
 
-1. **Problems.** Only when there is at least one Problem: a failed or stalled run, a check not run, a finding not fixed, a task that stopped, an assumption made for the author. One bullet each: what it is, why it matters, the options.
+1. **Problems.** Only when there is at least one Problem: a failed or stalled run, a check not run, a finding not fixed, a task that stopped, an assumption made for the author. One bullet each: who it lands on and how, what it is, why it matters, the options.
 2. **Running.** Each thing still running, and what it is doing now. Never what the session will do after it ends.
 3. **Finished.** Each thing that finished since the last Message, with its result. No result that was not seen.
 
@@ -18,8 +18,8 @@ Two `--case` flags ran only the last one, so that rerun covered `stops-at-starti
 
 ```text
 ## Problems
-- In the rerun of `stops-at-starting-checks`, the API stalled before the model did anything: one run hit the 300-second limit having spent one cent. It says nothing about the skill. Options: rerun that case alone, or accept the two runs that finished.
-- The rerun covered only `stops-at-starting-checks`, so the other case named has no rerun result. Two cases were named with `--case`, and when `--case` is given twice only the last one runs. Options: rerun the other case on its own, or leave it at its first result.
+- The operator may read a timeout as the skill misbehaving, and the owner would pay for a rerun: in the rerun of `stops-at-starting-checks`, the API stalled before the model did anything; one run hit the 300-second limit having spent one cent. It says nothing about the skill. Options: rerun that case alone, or accept the two runs that finished.
+- The owner has no rerun result for the other case named: the rerun covered only `stops-at-starting-checks`. Two cases were named with `--case`, and when `--case` is given twice only the last one runs. Options: rerun the other case on its own, or leave it at its first result.
 
 ## Running
 - The eval case `opens-pr-with-ticket`, on its own under `make eval-skill-pr`. It is running the pr skill against a sample ticket and grading the result.
