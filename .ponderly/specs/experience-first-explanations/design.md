@@ -60,8 +60,8 @@ flowchart LR
 | `evals/rules/communication/lays-out-before-asking/` | Proves 3.1, 3.2 | New case, graders | 6.2, 6.7 |
 | `evals/rules/collaboration/one-open-decision-at-a-time/` | Proves 5.1–5.3 | New case, graders | 6.3, 6.7 |
 | `checks/test_rules_size.py` | Rule sizes | `communication` limit 1900 | 4.3, 4.4 |
-| `plugins/freethinking/README.md` | What the plugin does | Rows for the two rules and the report skill; the limit sentence says 1,900 | 7.1, 4.4 |
-| `plugins/freethinking/.claude-plugin/plugin.json` | Version | 0.16.0 to 0.17.0 | 7.2 |
+| `plugins/ponderly/README.md` | What the plugin does | Rows for the two rules and the report skill; the limit sentence says 1,900 | 7.1, 4.4 |
+| `plugins/ponderly/.claude-plugin/plugin.json` | Version | 0.16.0 to 0.17.0 | 7.2 |
 
 ## Data Models
 
@@ -77,7 +77,7 @@ flowchart LR
 > - **Do not narrate.** Leave out the running account of tool calls and what is pending; the plan stated once before acting is not narration.
 > - **Lay out a problem, an explanation or a decision as the person it changes will live it.** What the thing is and what happens when it is used; each option as what that person sees or takes on, not its mechanism; the recommendation and why; what is needed from the author. The user leads when it changes what the built thing does, the operator when it changes how a skill or agent behaves in the session, the owner when it is a risk, a cost, a spec edit or unverified work; a second role only where its experience differs, none when no one feels it, as with a name or a version. The layout sits above an AskUserQuestion call in the same message and the tool holds only the options; a bare question is a decision not laid out.
 > - **Write plainly and stop.** One idea per sentence; end when the content ends, with no offer and no restatement.
-> - **Deliver with the skill.** To hand back work, ask for a decision, report status or answer what something is or why, use `/freethinking:report`, which holds each shape. A skill's own stops and questions keep their shape where the layout already precedes them, as does an agent reporting to its launcher.
+> - **Deliver with the skill.** To hand back work, ask for a decision, report status or answer what something is or why, use `/ponderly:report`, which holds each shape. A skill's own stops and questions keep their shape where the layout already precedes them, as does an agent reporting to its launcher.
 
 **The collaboration rule's batching bullet**, which brings that rule to 1,591 characters:
 

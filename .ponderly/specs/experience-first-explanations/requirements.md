@@ -109,7 +109,7 @@ When a skill or agent explains a problem or puts a choice to the author, it spea
 #### Acceptance Criteria
 
 1. THE Skill's status Template SHALL require each Problem bullet to open with who it lands on and how, before the Mechanism and the options, as the handback Template does.
-2. THE System SHALL check every template under `plugins/freethinking/skills/*/` and every skill's text for the old Problems shape, "what it is, why it matters, the options" without who it lands on, and SHALL report any found.
+2. THE System SHALL check every template under `plugins/ponderly/skills/*/` and every skill's text for the old Problems shape, "what it is, why it matters, the options" without who it lands on, and SHALL report any found.
 
 ### Requirement 7: The plugin's own documents follow
 
@@ -118,6 +118,6 @@ When a skill or agent explains a problem or puts a choice to the author, it spea
 #### Acceptance Criteria
 
 1. THE System SHALL update the README rows for `rules/communication.md`, `rules/collaboration.md` and the `report` skill to say what each now requires, in the rows' existing shape.
-2. THE System SHALL bump the plugin version in `plugins/freethinking/.claude-plugin/plugin.json` to the next minor version.
+2. THE System SHALL bump the plugin version in `plugins/ponderly/.claude-plugin/plugin.json` to the next minor version.
 3. THE System SHALL keep `make validate` passing.
 4. THE System SHALL leave the `pr` skill's walkthrough as it is; its change is #69.

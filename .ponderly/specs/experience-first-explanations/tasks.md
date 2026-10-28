@@ -7,21 +7,21 @@ The first wave rewrites the two rules, which everything else describes or proves
 ## Tasks
 
 - [x] 1. Rewrite the communication rule
-  - Replace the whole of `plugins/freethinking/rules/communication.md` with the text quoted under Data Models in `design.md`, landing it as written; a word may change only if the count stays at or under 1,900 characters. In `checks/test_rules_size.py`, set `RULE_LIMITS["communication"]` to 1900, the fallback of Requirement 4.4 the author chose on 2026-10-23. Ephemeral check: `wc -c` on the file is at most 1,900; `CLAUDE_PLUGIN_ROOT=plugins/freethinking plugins/freethinking/hooks/load-rules.sh | wc -c` is under 10,000; `make validate` passes
+  - Replace the whole of `plugins/ponderly/rules/communication.md` with the text quoted under Data Models in `design.md`, landing it as written; a word may change only if the count stays at or under 1,900 characters. In `checks/test_rules_size.py`, set `RULE_LIMITS["communication"]` to 1900, the fallback of Requirement 4.4 the author chose on 2026-10-23. Ephemeral check: `wc -c` on the file is at most 1,900; `CLAUDE_PLUGIN_ROOT=plugins/ponderly plugins/ponderly/hooks/load-rules.sh | wc -c` is under 10,000; `make validate` passes
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 2.1, 3.1, 3.2, 3.3, 4.1, 4.3, 4.4_
 
 - [x] 2. Split the collaboration rule's batching bullet
-  - In `plugins/freethinking/rules/collaboration.md`, replace the "Batch the questions" bullet with the "Batch facts, ask decisions one at a time" bullet quoted under Data Models in `design.md`, and change nothing else. Then read the four places the design names, `start-task`'s spec questions, `implement-spec`'s hand-back and Next, `bugfix`'s ticket comment and `pr`'s step 6 round, and confirm none tells the author to ask several open decisions in one message; report any that does under `unsure` rather than editing it. Ephemeral check: `wc -c` on the file is at most 1,600; `make validate` passes
+  - In `plugins/ponderly/rules/collaboration.md`, replace the "Batch the questions" bullet with the "Batch facts, ask decisions one at a time" bullet quoted under Data Models in `design.md`, and change nothing else. Then read the four places the design names, `start-task`'s spec questions, `implement-spec`'s hand-back and Next, `bugfix`'s ticket comment and `pr`'s step 6 round, and confirm none tells the author to ask several open decisions in one message; report any that does under `unsure` rather than editing it. Ephemeral check: `wc -c` on the file is at most 1,600; `make validate` passes
   - _Requirements: 4.2, 5.1, 5.2, 5.3, 5.4_
 
 - [x] 3. Bring the report templates into line
-  - [x] 3.1 Revise `plugins/freethinking/skills/report/templates/decision.md`
+  - [x] 3.1 Revise `plugins/ponderly/skills/report/templates/decision.md`
     - Section 1 asks for the choice and what happens to the leading role when it is used; section 2 asks for each option as what the leading role sees or takes on, then what it costs; the After text of the Worked_Example opens with what the owner takes on under the milestone choice and keeps the options and the recommendation. Ephemeral check: the file is under 3,000 characters; `make validate` passes
     - _Requirements: 2.2, 2.5, 2.6_
-  - [x] 3.2 Revise `plugins/freethinking/skills/report/templates/answer.md`
+  - [x] 3.2 Revise `plugins/ponderly/skills/report/templates/answer.md`
     - Section 1 asks for the thing as the leading role meets it, before "Why or how"; the After text of the Worked_Example leads with what the executor's reading means for whoever runs a standalone change, then the mechanism. Ephemeral check: the file is under 3,000 characters; `make validate` passes
     - _Requirements: 2.3, 2.5, 2.6_
-  - [x] 3.3 Revise `plugins/freethinking/skills/report/templates/handback.md`
+  - [x] 3.3 Revise `plugins/ponderly/skills/report/templates/handback.md`
     - Section 1's bullet shape opens with who it lands on and how, then what it is, why it matters and the options; each Problem in the After text does so, trimmed where needed to stay under the limit. Ephemeral check: the file is under 3,000 characters; `make validate` passes
     - _Requirements: 2.4, 2.5, 2.6_
 
@@ -37,11 +37,11 @@ The first wave rewrites the two rules, which everything else describes or proves
     - _Requirements: 6.3, 6.7_
 
 - [x] 5. Update the README rows and the version
-  - In `plugins/freethinking/README.md`, rewrite the rows for `rules/communication.md`, `rules/collaboration.md` and the `report` skill so each says what it now requires, in the rows' existing shape; change the sentence about the rules' own limits so it says collaboration 1,600 and communication 1,900. In `plugins/freethinking/.claude-plugin/plugin.json`, `"version": "0.17.0"`. Ephemeral check: `grep -c 'operator' plugins/freethinking/README.md` is at least 1; `make validate` passes, which runs `checks/test_listing.py` on the README
+  - In `plugins/ponderly/README.md`, rewrite the rows for `rules/communication.md`, `rules/collaboration.md` and the `report` skill so each says what it now requires, in the rows' existing shape; change the sentence about the rules' own limits so it says collaboration 1,600 and communication 1,900. In `plugins/ponderly/.claude-plugin/plugin.json`, `"version": "0.17.0"`. Ephemeral check: `grep -c 'operator' plugins/ponderly/README.md` is at least 1; `make validate` passes, which runs `checks/test_listing.py` on the README
   - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
 - [x] 7. Bring the status template into line and check the rest
-  - Revise `plugins/freethinking/skills/report/templates/status.md` so section 1's bullet shape opens with who it lands on and how, then what it is, why it matters, the options, and each Problem in its After text does so, as `handback.md` now does. Then search every file under `plugins/freethinking/skills/*/` (templates and SKILL.md files) and `plugins/freethinking/agents/` for the old shape, "what it is, why it matters, the options" without who it lands on, and report any other file that carries it under `unsure` without editing it. Ephemeral check: `wc -c` on status.md is under 3,000; `grep -rn 'what it is, why it matters' plugins/freethinking/` lists only lines that also say who it lands on; `make validate` passes
+  - Revise `plugins/ponderly/skills/report/templates/status.md` so section 1's bullet shape opens with who it lands on and how, then what it is, why it matters, the options, and each Problem in its After text does so, as `handback.md` now does. Then search every file under `plugins/ponderly/skills/*/` (templates and SKILL.md files) and `plugins/ponderly/agents/` for the old shape, "what it is, why it matters, the options" without who it lands on, and report any other file that carries it under `unsure` without editing it. Ephemeral check: `wc -c` on status.md is under 3,000; `grep -rn 'what it is, why it matters' plugins/ponderly/` lists only lines that also say who it lands on; `make validate` passes
   - _Requirements: 8.1, 8.2, 2.6_
 
 - [x] 6. Run the evals for the pull request
