@@ -45,21 +45,21 @@ The plan builds the substitution script first, applies it to the working tree an
     - This moves this spec too: from here on, tick boxes in `.ponderly/specs/ponderly-rename/tasks.md`
     - _Requirements: 3.2_
 
-- [ ] 5. Prove the rename
-  - [ ] 5.1 Run the Name_Search and confirm the only matches are the Exceptions
+- [x] 5. Prove the rename
+  - [x] 5.1 Run the Name_Search and confirm the only matches are the Exceptions
     - List any other match with its file and line, and fix it before going on
     - **Property 1: No Old_Name is left**
     - **Validates: Requirements 1.3, 3.1, 4.1, 5.3, 6.1, 9.1, 9.2**
-  - [ ] 5.2 Run `make validate` and `make check`, and report the result as it is
+  - [x] 5.2 Run `make validate` and `make check`, and report the result as it is
     - _Requirements: 2.3, 5.4_
-  - [ ] 5.3 Review the word diff against `main`
+  - [x] 5.3 Review the word diff against `main`
     - Run `git diff --word-diff=porcelain -M origin/main`, check each changed word is an Old form becoming its New form under the Substitution Table, and read the Judgment_Lines and the hand edits of wave 2 by eye; list anything else as a non-name change
     - **Property 2: Every other change is a name**
     - **Validates: Requirements 4.1, 4.2, 4.4**
-  - [ ] 5.4 Check that every `ponderly:<name>` outside the Records names a skill folder or agent file under `plugins/ponderly/`
+  - [x] 5.4 Check that every `ponderly:<name>` outside the Records names a skill folder or agent file under `plugins/ponderly/`
     - **Property 3: Every Namespace reference resolves**
     - **Validates: Requirements 1.2, 5.3**
-  - [ ] 5.5 Check that moved files keep their history
+  - [x] 5.5 Check that moved files keep their history
     - `git status` shows the moves as renames, and `git log --follow` on a sample from `plugins/ponderly/` and `.ponderly/` reaches commits from before the move
     - **Property 4: Moved files keep their history**
     - **Validates: Requirements 1.1, 3.2**
