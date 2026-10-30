@@ -319,17 +319,30 @@ findings, each anchored to lines at the head.
   own lines; `overlap` also merges two whose line ranges overlap; `keep`
   merges none, so two lenses that report the same lines give two findings. An arm that returns nothing in the right shape is
   relaunched once, then named as failed. The wave review comes next: the
-  `wave-reviewer` agent reads the change with the merged findings quoted.
-  When it returns findings, the second pass runs every arm once more with
-  the wave review's findings, and each arm keeps, withdraws or adds to its
-  own list. There is only one second pass.
+  `wave-reviewer` agent reads the change with the merged findings quoted,
+  judging style, structure, comments and tests against the repository's own
+  bar. When it returns findings, each one that names a problem the list does
+  not hold is folded into the list, anchored at the lines at the head that
+  hold its quote, unless that lens's arm is run again; one whose quote is not
+  found is left out and counted. The second pass runs once more only the arms
+  whose findings the wave review contradicted, with the wave review's
+  findings, and each keeps, withdraws or adds to its own list; a
+  contradiction no arm reruns for is settled by reading the code it quotes.
+  The second pass runs only when the budget allows: when the latest budget
+  line, whether Claude Code shows it or the session's prompt carries it,
+  shows less remaining than spent, no arm runs again and every
+  wave-review finding is folded or settled instead. The fold and the second
+  pass then go through the same merge, so a folded finding is checked,
+  collapsed, ordered and cut like any other. There is only one second pass.
 - **What it asks:** nothing; every input comes from the arguments and the
   repository.
 - **What it writes:** in a session, one line per finding, such as
   `high correctness src/cart.py:41-44 <message>`, then a count line: the
-  candidates the arms produced, how many the merge and the wave review
-  removed, the wave review's verdict, whether the second pass ran and any
-  failed arm. With `--json <path>`, it writes the same findings and counts as
+  candidates the arms produced, how many the merge, the cap of 40 and the
+  wave review removed, which add up with the final list to the candidates,
+  the wave review's verdict, any failed arm, how many wave-review findings
+  were folded and how many could not be anchored, which arms ran again or
+  that none did, and whether the budget stopped the second pass. With `--json <path>`, it writes the same findings and counts as
   JSON to that path, which must be outside the repository, and replies with
   the path and the count line. It changes no file in the repository and
   commits nothing.
@@ -462,7 +475,15 @@ changes nothing.
   requirement or design text they implement, if any; the files that cite
   them; and, when they come from a spec, the sentence "These changes come
   from a spec wave". Only that sentence waives a missing test; otherwise a
-  missing test is a finding.
+  missing test is a finding. From `review`, it carries instead the sentence
+  that the changes are a pull request reviewed for the review skill: then it
+  judges style, structure, comments and tests against the repository's own
+  bar, its `CLAUDE.md`, its contributing guide and the code around the
+  change, as well as the team rules, and reports a team-rule departure with
+  no concrete cost in the change as a `nit`. A departure with a concrete cost
+  gets the severity that cost would get if no team rule were named, so
+  breaking the team rule does not by itself make it a `blocker`. Every other
+  launch holds the changes to the team rules alone.
 - **What it returns:** Findings: a `verdict` (`holds` or `findings`), the
   `base` commit the diffs were measured against, then each problem with its
   `file`, an exact `quote`, the `problem` and a `severity` (`blocker`,
@@ -492,8 +513,8 @@ repository's own conventions, not the handbook rules; a departure from a rule
 is a finding only when it costs the change something concrete.
 
 - **Launched by:** the `review` skill, once per lens of its lenses file, all
-  at the same time, and once more per lens for the second pass when the wave
-  review returns findings.
+  at the same time, and once more for the second pass only for a lens whose
+  findings the wave review contradicted, when the budget allows.
 - **What the prompt carries:** the standard every lens shares and the lens's
   own section, quoted from the lenses file; the range, a base commit and a
   head commit or the working tree; the changed files; and the pull request's
@@ -732,7 +753,8 @@ The `start-task`, `implement-spec`, `bugfix`, `pr`, `readable-code`,
 agents run `git` on the current repository (status, diff, log, branch,
 rev-parse, merge-base, ls-files, show, `config --get`, `checkout -b`, in `pr`
 `remote get-url origin`, add and commit, and in `review` `cat-file`).
-`review` also runs `awk` to count a file's lines, and writes one file, outside
+`review` also runs `awk` to count a file's lines and to find the lines that
+hold a folded finding's quote, and writes one file, outside
 the repository, only when you give it `--json <path>`. Only `pr` reaches the remote with `git`, with `git fetch` and
 `git push` to the repository's own `origin`; beyond that, the skills reach
 GitHub only through the `gh` commands above.
