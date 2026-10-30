@@ -22,6 +22,10 @@ on the token the report's cost column is a list-price estimate, not a bill.
   one-dollar cap, so one pull request can cost the cap plus one dollar.
 - The test set is 25 pull requests, so a test-set run can cost up to 25 times
   that. The full set is 219 pull requests.
+- The test set can also be run as chunks, a few pull requests at a time with
+  `make prs`, so each chunk's cost is seen before the next is started. `make
+  collect` then gathers the chunks' findings into one run folder, so the
+  judge runs once over all of them; collect itself makes no model call.
 - The judge is a second model cost, always billed to `ANTHROPIC_API_KEY`, on
   top of the runs.
 
@@ -50,15 +54,22 @@ make check-tools          # stop naming the first missing tool or key
 make setup                # clone ReviewBench at REVIEWBENCH_COMMIT into .reviewbench/ and install it
 make image                # build IMAGE from the repository root
 make pr PR=0              # run the image on one test-set pull request
+make prs PRS="0 1 2 3 4"  # run the image on each listed test-set pull request, into one run folder
 make test-set             # run the image on the 25 test-set pull requests
 make full-set             # run the image on the 219 full-set pull requests
+make collect RUNS="<dir> <dir>"  # copy the listed run folders' findings into one new run folder
 make judge RUN=<dir>      # judge <dir>/findings into <dir>/scoring/results.json
 make report RUN=<dir>     # write and print <dir>/report.md
 make manifest             # validate ponderly.json with ReviewBench's validator
 ```
 
-`pr`, `test-set` and `full-set` run `check-tools`, `setup` and `image` first,
-and print the run folder under `runs/` to pass as `RUN`. Each target that works
+`pr`, `prs`, `test-set` and `full-set` run `check-tools`, `setup` and `image`
+first, and print the run folder under `runs/` to pass as `RUN`. `prs` runs
+every listed pull request even when one fails, and fails at the end if any
+did. `collect` prints its new run folder, `runs/<timestamp>-collected/`, to
+pass to `judge` and `report`. It stops when two folders hold findings for the
+same pull request, or when their model, effort, budget, image or plugin
+version differ, since those findings would not be one run. Each target that works
 on a run folder appends its command to the folder's `run.json`, so the report
 names the commands that made it.
 
@@ -69,7 +80,10 @@ Set any of these on the `make` command line or in your environment.
 - `REVIEWBENCH_COMMIT`: the ReviewBench commit `setup` checks out.
 - `IMAGE`: the image tag to build and run, `ponderly-review:dev` by default.
 - `PR`: the test-set pull request index for `make pr`, counting from 0.
+- `PRS`: the test-set pull request indices for `make prs`, separated by
+  spaces.
 - `RUN`: the run folder for `judge` and `report`.
+- `RUNS`: the run folders for `make collect`, separated by spaces.
 - `JUDGE_MODEL`: the judge model, `claude-sonnet-5` by default.
 - `JUDGE_BASE_URL`: the judge's API base URL, `https://api.anthropic.com` by
   default. `judge` declares the model at this URL in
