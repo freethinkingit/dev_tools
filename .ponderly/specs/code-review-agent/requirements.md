@@ -56,7 +56,7 @@ The `ponderly` plugin reviews code today only inside its own workflows: the `wav
 1. THE Review_Skill SHALL launch one Review_Arm per Lens, all in one message so they run at the same time, each with the Diff, the Pull_Request's title and body, and read access to the repository at the head commit.
 2. THE System SHALL include a security Lens among the Review_Arms, covering at least injection, authentication and authorisation, secrets in code, unsafe deserialisation and path traversal.
 3. THE System SHALL keep the set of Lenses in one place, so the Operator can add, remove or reword a Lens without changing the Review_Skill's steps.
-4. WHEN two Candidate_Findings describe the same underlying problem, THE System SHALL keep one, with the wider line range and the fuller message, so that the Findings hold no duplicates.
+4. WHEN two Candidate_Findings in the same file name the same defect and the same fix, THE System SHALL keep the one with the fuller message, with its own line range, so that the Findings hold no duplicates and no anchor is widened by a neighbour; WHERE the Reviewer passes `--duplicates keep`, THE System SHALL collapse none, and WHERE `--duplicates overlap`, THE System SHALL also collapse two Candidate_Findings whose line ranges overlap in the same file.
 5. THE System SHALL verify each Candidate_Finding's file exists at the head commit and its line range lies within that file, and drop any that does not.
 6. THE System SHALL return at most 40 Findings for one Pull_Request, keeping the highest severities, so that no output is truncated.
 7. IF a Review_Arm returns text that is not in the shape its launch asked for, THEN THE System SHALL treat that Review_Arm as having failed under Requirement 1.6, rather than guess at its findings.

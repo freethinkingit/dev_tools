@@ -81,6 +81,18 @@ class KeepTracesTest(unittest.TestCase):
             self.assertEqual(last.read(), "the review's reply")
         self.assertFalse(os.path.exists(sandbox))
 
+    def test_a_sandbox_sealed_read_only_is_still_removed(self):
+        sandbox, trace = self.make_sandbox("sealed")
+        sealed = os.path.join(sandbox, "sealed")
+        os.makedirs(sealed)
+        with open(os.path.join(sealed, "home"), "w", encoding="utf-8") as inner:
+            inner.write("x")
+        os.chmod(sealed, 0)
+        os.chmod(sandbox, 0o500)
+        self.write_aggregate([{"name": "sealed", "arms": {"with": [{"tracePath": trace}]}}])
+        self.module.keep_traces(self.results)
+        self.assertFalse(os.path.exists(sandbox))
+
     def test_a_results_folder_without_an_aggregate_file_is_left_alone(self):
         self.module.keep_traces(self.results)
         self.assertEqual(os.listdir(self.results), [])

@@ -292,7 +292,7 @@ smaller suite no weaker.
 Reviews a pull request through several lenses at once and returns its
 findings, each anchored to lines at the head.
 
-- **Command:** `/ponderly:review [base...head] [--json <path>]`. The range is
+- **Command:** `/ponderly:review [base...head] [--json <path>] [--duplicates same-defect|keep|overlap]`. The range is
   a `base...head` pair, or a base and a head as two words; with none, it
   reviews the branch's working tree against its merge base with the default
   branch. Text after the first line is read as the pull request's title and
@@ -302,7 +302,8 @@ findings, each anchored to lines at the head.
   whether it came from a spec or not. It stops when a side of a
   `base...head` names no commit; when only one of the first two words names
   a commit; when `--json` has no path or its path lies inside the
-  repository; when the range has no diff; when the skill's `lenses.md` is
+  repository; when `--duplicates` is given a word other than `same-defect`,
+  `keep` or `overlap`; when the range has no diff; when the skill's `lenses.md` is
   missing; or when the `review-arm` agent is missing. A missing
   `wave-reviewer` does not stop it; the merged findings are then the final
   ones.
@@ -312,7 +313,11 @@ findings, each anchored to lines at the head.
   It launches one `review-arm` agent per lens, all at the same time. It
   merges what they return: it drops a finding whose file or lines do not
   exist at the head, collapses duplicates, orders high, medium, low and
-  keeps at most 40. An arm that returns nothing in the right shape is
+  keeps at most 40. `--duplicates` sets how duplicates collapse:
+  `same-defect`, the default, merges two findings in one file only when they
+  name the same defect and the same fix, keeping the fuller message with its
+  own lines; `overlap` also merges two whose line ranges overlap; `keep`
+  merges none, so two lenses that report the same lines give two findings. An arm that returns nothing in the right shape is
   relaunched once, then named as failed. The wave review comes next: the
   `wave-reviewer` agent reads the change with the merged findings quoted.
   When it returns findings, the second pass runs every arm once more with

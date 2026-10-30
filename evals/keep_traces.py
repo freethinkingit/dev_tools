@@ -43,6 +43,17 @@ def sandbox_of(trace_path):
     return os.path.dirname(out_dir) if os.path.basename(out_dir) == "out" else out_dir
 
 
+def remove_sandbox(sandbox):
+    """Delete a kept sandbox; the runner seals parts of it read-only, so open them first."""
+    for folder, subfolders, files in os.walk(sandbox):
+        os.chmod(folder, 0o700)
+        for name in subfolders + files:
+            path = os.path.join(folder, name)
+            if not os.path.islink(path):
+                os.chmod(path, 0o700)
+    shutil.rmtree(sandbox, ignore_errors=True)
+
+
 def keep_traces(results_dir):
     aggregate_path = os.path.join(results_dir, "aggregate-result.json")
     if not os.path.exists(aggregate_path):
@@ -67,7 +78,7 @@ def keep_traces(results_dir):
                 sandboxes.add(sandbox_of(trace_path))
                 kept += 1
     for sandbox in sandboxes:
-        shutil.rmtree(sandbox, ignore_errors=True)
+        remove_sandbox(sandbox)
     print("keep_traces: kept {} trace(s) under {}".format(kept, traces_dir))
 
 

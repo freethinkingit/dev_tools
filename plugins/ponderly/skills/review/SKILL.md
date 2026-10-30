@@ -1,7 +1,7 @@
 ---
 name: review
-description: Review a pull request and return line-anchored findings. Use when asked to review this branch, review this pull request, review these commits or review a base...head range. Takes the range from the argument, or the branch's merge base with the default branch up to the working tree when there is none, launches one review-arm agent per lens in its lenses file, all at once, and merges what they return. The merge relaunches once an arm whose block is missing or malformed, then drops it and names its arm, checks every finding's file and lines at the head, collapses duplicates, orders high, medium, low and keeps at most 40. Has the wave-reviewer agent read the change with the merged findings quoted, and runs the arms once more when it returns findings. Returns the findings with their counts, the wave review's verdict and whether a second pass ran, or writes them as JSON to a path outside the repository with --json. Changes no file in the repository and commits nothing.
-argument-hint: "[base...head] [--json <path>]"
+description: Review a pull request and return line-anchored findings. Use when asked to review this branch, review this pull request, review these commits or review a base...head range. Takes the range from the argument, or the branch's merge base with the default branch up to the working tree when there is none, launches one review-arm agent per lens in its lenses file, all at once, and merges what they return. The merge relaunches once an arm whose block is missing or malformed, then drops it and names its arm, checks every finding's file and lines at the head, collapses duplicates as --duplicates says, orders high, medium, low and keeps at most 40. Has the wave-reviewer agent read the change with the merged findings quoted, and runs the arms once more when it returns findings. Returns the findings with their counts, the wave review's verdict and whether a second pass ran, or writes them as JSON to a path outside the repository with --json. Changes no file in the repository and commits nothing.
+argument-hint: "[base...head] [--json <path>] [--duplicates same-defect|keep|overlap]"
 allowed-tools: Bash(git status *) Bash(git rev-parse *) Bash(git merge-base *) Bash(git diff *) Bash(git show *) Bash(git ls-files *) Bash(git log *) Bash(git cat-file *) Bash(awk *)
 ---
 
@@ -21,17 +21,18 @@ Terms used below:
 
 ## Working with the author
 
-- **Stops.** Only when something is wrong: a `base...head` side that names no commit, a range with only one of its first two words naming a commit, a `--json` without a path or with a path inside the repository, a range with no diff, a missing `lenses.md`, and a missing `review-arm` agent. A missing `wave-reviewer` agent does not stop the review; step 5 says what follows.
+- **Stops.** Only when something is wrong: a `base...head` side that names no commit, a range with only one of its first two words naming a commit, a `--json` without a path or with a path inside the repository, a `--duplicates` whose word is not `same-defect`, `keep` or `overlap`, a range with no diff, a missing `lenses.md`, and a missing `review-arm` agent. A missing `wave-reviewer` agent does not stop the review; step 5 says what follows.
 - **How it asks.** It does not ask; every input comes from the arguments and the repository.
 - **Hand-backs.** The report of step 7, or the stop that ends the run.
 - **Hand-offs.** None; the author decides what to do with the findings.
 
 ## 1. Read the arguments
 
-The arguments are on the first line of the text above; everything after that line is the pull request's title, its first non-empty line, and its body, the rest. When the first line holds neither a range nor `--json`, there is no argument, and the whole text is the title and body.
+The arguments are on the first line of the text above; everything after that line is the pull request's title, its first non-empty line, and its body, the rest. When the first line holds neither a range nor `--json` nor `--duplicates`, there is no argument, and the whole text is the title and body.
 
-- **Range.** A word resolves when `git rev-parse --verify --quiet <word>^{commit}` succeeds. A word of the form `base...head` is the range, and both sides must resolve: when one does not, say which names no commit, and stop. Otherwise, when the first two words both resolve, they are the base and the head. When exactly one of the first two words resolves, say that a range needs a base and a head, or a `base...head`, and stop. When neither resolves, there is no range, and unless the first line holds `--json`, the whole text is the title and body.
+- **Range.** A word resolves when `git rev-parse --verify --quiet <word>^{commit}` succeeds. A word of the form `base...head` is the range, and both sides must resolve: when one does not, say which names no commit, and stop. Otherwise, when the first two words both resolve, they are the base and the head. When exactly one of the first two words resolves, say that a range needs a base and a head, or a `base...head`, and stop. When neither resolves, there is no range, and unless the first line holds `--json` or `--duplicates`, the whole text is the title and body.
 - **`--json <path>`.** The word after `--json` is the path. Missing: say that `--json` needs a path, and stop. Find the repository root with `git rev-parse --show-toplevel` and make the path absolute against the working directory. When it is the root or lies under it, say that the `--json` path must be outside the repository, naming both, and stop. When the path already exists, from an earlier review, read it with the Read tool before the first write, so the Write tool may overwrite it.
+- **`--duplicates <mode>`.** The word after `--duplicates` is the mode of step 4's duplicate collapse: `same-defect`, the default when the argument is absent, `keep` or `overlap`. Any other word, or none: say that `--duplicates` takes `same-defect`, `keep` or `overlap`, and stop.
 
 A title or body that is not given is passed on as "none given".
 
@@ -65,7 +66,7 @@ Then, in order:
 
 1. **Normalise** each candidate's `file` to forward slashes, with no leading `./` or `/`.
 2. **Check it at the head.** For a head commit, the file exists when `git cat-file -e <head>:<file>` succeeds, and its line count is `git show <head>:<file> | awk 'END{print NR}'`; for the working tree, the file exists when it is in the working tree, and its line count is `awk 'END{print NR}' <file>`. Drop a candidate whose file is absent, or whose lines are not 1 ≤ `start_line` ≤ `end_line` ≤ that line count.
-3. **Collapse duplicates.** Two candidates in the same file that describe the same underlying problem become one: keep the one whose message is fuller, give it the union of the two line ranges, from the smaller `start_line` to the larger `end_line`, and drop the other.
+3. **Collapse duplicates**, as `--duplicates` says. `same-defect`, the default: two candidates in the same file become one only when they name the same defect and the same fix; a different `category` is a sign they do not, since each lens reports its own kind of problem, so a correctness finding on a line and a performance finding spanning it stay two findings. `overlap`: two candidates in the same file whose line ranges overlap also become one. `keep`: no candidate is collapsed. When two become one, keep the one whose message is fuller, with its own `start_line` and `end_line`, never a union of the two ranges, and drop the other.
 4. **Order** high, then medium, then low, keeping the lenses' order within a severity.
 5. **Cap** at 40, dropping from the lowest severity.
 
