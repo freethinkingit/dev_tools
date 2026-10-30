@@ -521,10 +521,14 @@ File: `plugins/ponderly/rules/tests.md`. How tests are written.
 - One test per code path, corner case or gotcha.
 - One input per test: no loop, `subTest` or `parametrize`. Only a seeded
   property test a spec names may loop.
-- Test the boundaries: zero, one, the limit, the limit plus one, empty, NaN
-  and negative, not exhaustive tables.
-- Test behaviour, not values. No test restates an implementation constant,
-  checks its own input or checks a library.
+- Test the boundaries: zero, one, the limit, one past it, empty, NaN and
+  negative, not exhaustive tables.
+- Test behaviour, not values. No test restates an internal constant, checks
+  its own input or a library, or asserts a parameter nothing relies on, so a
+  test breaks only when a change could break something.
+- Pin contracts: a value other code, systems or people rely on is a literal
+  in its test, not its constant, so changing the constant breaks the test,
+  and the test's name says who relies on it.
 - Parsers get awkward input, such as joined emoji, non-Latin scripts, a very
   long string, zero-width characters and a byte-order mark. Each gets the
   outcome its contract defines, and none throws.

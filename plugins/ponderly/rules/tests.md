@@ -2,10 +2,11 @@
 
 How tests are written in any repository this handbook applies to.
 
-- **One test per path.** Write one for each code path, corner case or gotcha.
+- **One test per path.** One per code path, corner case or gotcha.
 - **One input per test.** No loop, `subTest` or `parametrize`; only a seeded property test a spec names may loop.
-- **Test the boundaries.** Use zero, one, the limit, the limit plus one, empty, NaN and negative, not exhaustive tables or cross products.
-- **Test behaviour, not values.** No test restates an implementation constant, checks its own input or checks a library.
-- **Parsers get awkward input.** Feed joined emoji, non-Latin scripts, a very long string, whitespace only, zero-width and control characters and a byte-order mark. Each gets the outcome the input's contract defines, accepted or refused with a clear error, and none throws.
-- **The name is a promise.** A test's name is a behaviour sentence the test fully asserts.
-- **Fake at the boundary.** Small in-memory fakes, shared in one place, enforce the real contract.
+- **Test the boundaries.** Zero, one, the limit, one past it, empty, NaN and negative; no exhaustive tables.
+- **Test behaviour, not values.** No test restates an internal constant, checks its own input or a library, or asserts a parameter nothing relies on.
+- **Pin contracts.** A value others rely on is a literal, not its constant, and the test's name says who relies on it.
+- **Parsers get awkward input.** Joined emoji, non-Latin script, a long string, whitespace only, zero-width and control characters and a byte-order mark get their contract's outcome; none throws.
+- **The name is a promise.** A test's name is a behaviour sentence it fully asserts.
+- **Fake at the boundary.** Small shared in-memory fakes enforce the real contract.
