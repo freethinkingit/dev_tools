@@ -487,7 +487,9 @@ changes nothing.
 
 Reviews one pull request through one lens, such as correctness or security.
 It gathers the diff itself, verifies each problem against the code at the
-head, and changes nothing.
+head, and changes nothing. Its bar for style, comments and tests is the
+repository's own conventions, not the handbook rules; a departure from a rule
+is a finding only when it costs the change something concrete.
 
 - **Launched by:** the `review` skill, once per lens of its lenses file, all
   at the same time, and once more per lens for the second pass when the wave

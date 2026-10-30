@@ -6,7 +6,7 @@ The first wave lays down what needs nothing else: the five lenses, the `review-a
 
 ## Tasks
 
-- [ ] 1. Write the review skill and its arm
+- [x] 1. Write the review skill and its arm
   - [x] 1.1 Draft `plugins/ponderly/skills/review/lenses.md`
     - One `##` section per lens, in this order: correctness, reliability, security, maintainability, testing. Each section says in one paragraph what the lens looks for and what it leaves to another lens, and names its ReviewBench categories: correctness; reliability and performance; security, covering at least injection, authentication and authorisation, secrets in code, unsafe deserialisation and path traversal; maintainability, documentation, api-architecture and accessibility; testing. Ground each paragraph in ReviewBench's methodology and golden set: what its true positives look like (verifiable, in scope, actionable), what its false positives look like (incorrect or unverifiable claims, duplicates, style nits below the project's bar, advice that would not improve the change), and the golden set's weight of that category (correctness 1,068 of 2,623 true positives, maintainability 365, reliability 362, documentation 306, testing 223, security 98, api-architecture 81, performance 63, accessibility 57 on the full set). A short preamble says the skill reads the file and launches one arm per section, so a section added here is an arm added. This is a draft for task 1.7, where the author edits it; say so in the Summary. Ephemeral check: `make validate` passes
     - _Requirements: 2.2, 2.3_
@@ -25,7 +25,7 @@ The first wave lays down what needs nothing else: the five lenses, the `review-a
   - [x] 1.7 Tune the lenses with the author (the author, by hand)
     - The author reads the draft `lenses.md`, edits it directly or says section by section what each lens should look for, leave out and lean towards, and the changes are applied in the same turn until the author says the lenses are good. The section names and order stay as task 1.1 set them, since the skill and the eval cases name them. Record in the Summary which sections changed
     - _Requirements: 2.2, 2.3_
-  - [ ] 1.6 Run the review evals (the author, by hand)
+  - [x] 1.6 Run the review evals (the author, by hand)
     - `make eval-skill-review EVAL_ARGS="--runs 1"`, whose default ceiling is ten dollars, then `make eval-agent-review-arm EVAL_ARGS="--runs 1"`; on a pass, confirm the skill target at `--runs 2`. Report each printed table, the date, the plugin version and the exact command; a failed grader goes back to task 1.2 or 1.3 as a fix
     - _Requirements: 9.2, 9.3_
 
