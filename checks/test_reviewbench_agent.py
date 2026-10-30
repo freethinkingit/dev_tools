@@ -1,14 +1,18 @@
 """Proves benchmarks/reviewbench/agent/agent.py, the ReviewBench adapter, end to end.
 
 Each test runs the adapter as a subprocess with python3 -I, as the image does,
-and fakes Claude Code at its boundary with the stub STUB_SOURCE, written into
-a temporary directory and named by RB_CLAUDE_BIN. STUB_PLAN tells the stub
-what each call does, one action per call separated by commas, the last action
-repeating; the stub appends a line per call to STUB_LOG with the
-CLAUDE_CODE_* variables, CLAUDE_CODE_OAUTH_TOKEN among them, ANTHROPIC_API_KEY and HOME it was given and the uid it ran as. The time limits are scaled down to
+except one that calls run_claude in-process, and fakes Claude Code at its
+boundary with the stub STUB_SOURCE, written into a temporary directory and
+named by RB_CLAUDE_BIN. STUB_PLAN tells the stub what each call does, one
+action per call separated by commas, the last action repeating; the stub
+appends a line per call to STUB_LOG with the CLAUDE_CODE_* variables,
+CLAUDE_CODE_OAUTH_TOKEN among them, ANTHROPIC_API_KEY and HOME it was given,
+the uid it ran as and its arguments. The time limits are scaled down to
 seconds through RB_TIMEOUT_SECONDS and RB_TOTAL_SECONDS.
 """
 
+import datetime
+import importlib.util
 import json
 import os
 import signal
@@ -39,6 +43,7 @@ with open(log_path, "a", encoding="utf-8") as log:
         if name.startswith("CLAUDE_CODE_") or name in ("ANTHROPIC_API_KEY", "HOME")
     }
     variables["uid"] = os.getuid()
+    variables["argv"] = sys.argv[1:]
     log.write(json.dumps(variables) + "\\n")
 with open(log_path, encoding="utf-8") as log:
     call = len(log.readlines())
@@ -120,6 +125,46 @@ if action == "grandchild_then_sleep":
     with open(os.environ["STUB_GRANDCHILD_PID"], "w", encoding="utf-8") as handle:
         handle.write(str(grandchild.pid))
     time.sleep(60)
+if action == "leaks_credentials":
+    credentials = "{} {}".format(os.environ.get("ANTHROPIC_API_KEY", ""),
+                                 os.environ.get("CLAUDE_CODE_OAUTH_TOKEN", ""))
+    session_dir = os.path.join(os.environ["HOME"], ".claude", "projects", "-work-repo")
+    os.makedirs(session_dir, exist_ok=True)
+    with open(os.path.join(session_dir, "session.jsonl"), "w", encoding="utf-8") as handle:
+        handle.write(json.dumps({"type": "user", "text": "credentials " + credentials}) + "\\n")
+    print("credentials " + credentials, file=sys.stderr, flush=True)
+    write_review([dict(GOOD, message="credentials " + credentials)])
+    finish()
+if action == "unparseable_with_stderr":
+    print("review run stderr", file=sys.stderr, flush=True)
+    write_unparseable()
+    finish()
+if action == "good_with_stderr":
+    print("repair run stderr", file=sys.stderr, flush=True)
+    write_review([GOOD])
+    finish()
+if action == "good_then_fail":
+    write_review([GOOD])
+    sys.exit(1)
+if action == "final_then_sleep":
+    write_review([GOOD])
+    print(json.dumps(RESULT), flush=True)
+    time.sleep(60)
+if action == "first_then_sleep":
+    with open(review_path, "w", encoding="utf-8") as handle:
+        json.dump({"pass": "first", "verdict": "holds", "second_pass": False,
+                   "counts": {"candidates": 1, "removed_by_merge": 0,
+                              "removed_by_review": 0, "failed_arms": []},
+                   "findings": [GOOD]}, handle)
+    time.sleep(60)
+if action == "final_then_exit_shortly":
+    write_review([GOOD])
+    time.sleep(3)
+    finish()
+if action == "marker_then_exit_5":
+    with open(os.environ["STUB_EXIT_MARKER"], "w", encoding="utf-8"):
+        pass
+    sys.exit(5)
 sys.exit(3)
 '''
 
@@ -185,6 +230,22 @@ class AdapterTestCase(unittest.TestCase):
         with open(self.out_path, encoding="utf-8") as handle:
             return json.load(handle)
 
+    def evidence_path(self, *names):
+        return os.path.join(self.directory, "logs", *names)
+
+    def evidence_bytes(self, *names):
+        with open(self.evidence_path(*names), "rb") as handle:
+            return handle.read()
+
+    def every_evidence_file(self):
+        """Return the bytes of every file under logs/, joined."""
+        contents = []
+        for directory, _, names in os.walk(self.evidence_path()):
+            for name in names:
+                with open(os.path.join(directory, name), "rb") as handle:
+                    contents.append(handle.read())
+        return b"".join(contents)
+
 
 class AFindingsFileExistsExactlyWhenTheReviewProducedParseableFindings(AdapterTestCase):
     """Property 4: A findings file exists exactly when the review produced parseable findings."""
@@ -244,7 +305,7 @@ class AFindingsFileExistsExactlyWhenTheReviewProducedParseableFindings(AdapterTe
     @unittest.skipIf(os.getuid() == 0, "the adapter switches user only when it runs as root")
     def test_a_non_root_adapter_ignores_an_unknown_claude_user_and_runs_claude_as_its_own_user(self):
         own_home = os.path.expanduser("~")
-        completed = self.run_adapter("good", HOME=own_home, RB_CLAUDE_USER="no-such-user-4f9c2e")
+        completed = self.run_adapter("good", HOME=own_home, RB_CLAUDE_USER="no-such-user-4f9c2e", RB_KEEP_TRANSCRIPTS="0")
         self.assertEqual(completed.returncode, 0)
         self.assertTrue(os.path.exists(self.out_path))
         [variables] = self.stub_calls()
@@ -302,6 +363,7 @@ class ClaudeCodeIsGivenTheSettings(AdapterTestCase):
         self.assertEqual(variables["ANTHROPIC_API_KEY"], API_KEY)
         self.assertNotIn(API_KEY.encode("utf-8"), completed.stdout)
         self.assertNotIn(API_KEY.encode("utf-8"), completed.stderr)
+        self.assertNotIn(API_KEY.encode("utf-8"), self.every_evidence_file())
 
     def test_the_oauth_token_alone_reaches_claude_code_unprinted_and_the_findings_file_is_written(self):
         del self.env["ANTHROPIC_API_KEY"]
@@ -312,6 +374,7 @@ class ClaudeCodeIsGivenTheSettings(AdapterTestCase):
         self.assertEqual(variables["CLAUDE_CODE_OAUTH_TOKEN"], OAUTH_TOKEN)
         self.assertNotIn(OAUTH_TOKEN.encode("utf-8"), completed.stdout)
         self.assertNotIn(OAUTH_TOKEN.encode("utf-8"), completed.stderr)
+        self.assertNotIn(OAUTH_TOKEN.encode("utf-8"), self.every_evidence_file())
 
 
 class TheAdapterStaysInsideItsTimeLimits(AdapterTestCase):
@@ -346,6 +409,171 @@ class TheAdapterStaysInsideItsTimeLimits(AdapterTestCase):
             os.kill(pid, signal.SIGKILL)
         except ProcessLookupError:
             pass
+
+
+class NoCredentialInTheEvidence(AdapterTestCase):
+    """Property 1: No credential in the evidence."""
+
+    def setUp(self):
+        super().setUp()
+        self.env["HOME"] = os.path.join(self.directory, "home")
+        self.env["CLAUDE_CODE_OAUTH_TOKEN"] = OAUTH_TOKEN
+
+    def test_the_copied_transcript_holds_redacted_in_place_of_the_api_key_and_the_oauth_token(self):
+        self.run_adapter("leaks_credentials")
+        transcript = self.evidence_bytes("transcripts", "-work-repo", "session.jsonl")
+        self.assertIn(b"credentials [redacted] [redacted]", transcript)
+        self.assertNotIn(API_KEY.encode("utf-8"), transcript)
+        self.assertNotIn(OAUTH_TOKEN.encode("utf-8"), transcript)
+
+    def test_claude_log_holds_redacted_in_place_of_the_api_key_and_the_oauth_token(self):
+        self.run_adapter("leaks_credentials")
+        claude_log = self.evidence_bytes("claude.log")
+        self.assertIn(b"credentials [redacted] [redacted]", claude_log)
+        self.assertNotIn(API_KEY.encode("utf-8"), claude_log)
+        self.assertNotIn(OAUTH_TOKEN.encode("utf-8"), claude_log)
+
+    def test_review_json_holds_redacted_and_no_evidence_file_holds_the_api_key_or_the_oauth_token(self):
+        self.run_adapter("leaks_credentials")
+        self.assertIn(b"credentials [redacted] [redacted]", self.evidence_bytes("review.json"))
+        evidence = self.every_evidence_file()
+        self.assertNotIn(API_KEY.encode("utf-8"), evidence)
+        self.assertNotIn(OAUTH_TOKEN.encode("utf-8"), evidence)
+
+    def test_the_findings_file_holds_redacted_in_place_of_the_api_key_and_the_oauth_token(self):
+        self.run_adapter("leaks_credentials")
+        with open(self.out_path, "rb") as handle:
+            findings_file = handle.read()
+        self.assertIn(b"credentials [redacted] [redacted]", findings_file)
+        self.assertNotIn(API_KEY.encode("utf-8"), findings_file)
+        self.assertNotIn(OAUTH_TOKEN.encode("utf-8"), findings_file)
+
+    def test_a_default_run_does_not_pass_no_session_persistence_to_claude(self):
+        self.run_adapter("good")
+        [variables] = self.stub_calls()
+        self.assertNotIn("--no-session-persistence", variables["argv"])
+
+    def test_rb_keep_transcripts_0_runs_claude_without_session_persistence_and_keeps_no_transcripts(self):
+        self.run_adapter("leaks_credentials", RB_KEEP_TRANSCRIPTS="0")
+        [variables] = self.stub_calls()
+        self.assertIn("--no-session-persistence", variables["argv"])
+        self.assertTrue(os.path.exists(self.evidence_path("adapter.log")))
+        self.assertFalse(os.path.exists(self.evidence_path("transcripts")))
+
+
+class TheEvidenceFolder(AdapterTestCase):
+    def test_claude_log_holds_the_review_runs_stderr_and_then_the_repair_runs(self):
+        completed = self.run_adapter("unparseable_with_stderr,good_with_stderr")
+        self.assertEqual(completed.returncode, 0)
+        self.assertEqual(self.evidence_bytes("claude.log"), b"review run stderr\nrepair run stderr\n")
+
+    def test_adapter_log_lines_carry_a_utc_timestamp_and_name_each_phase_in_order(self):
+        self.run_adapter("unparseable,good")
+        lines = self.evidence_bytes("adapter.log").decode("utf-8").splitlines()
+        messages = []
+        for line in lines:
+            timestamp, message = line.split(" ", 1)
+            datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+            messages.append(message)
+        phases = [
+            "start octo/shop #17",
+            "claude started",
+            "claude finished with exit code 0",
+            "repair started",
+            "repair finished with exit code 0",
+            "wrote 1 findings to {}".format(self.out_path),
+        ]
+        self.assertEqual([message for message in messages if message in phases], phases)
+
+    def test_review_json_is_a_copy_of_the_review_file(self):
+        self.run_adapter("good")
+        with open(self.env["RB_REVIEW_PATH"], "rb") as handle:
+            review = handle.read()
+        self.assertEqual(self.evidence_bytes("review.json"), review)
+
+    @unittest.skipIf(os.getuid() == 0, "root writes into a read-only folder")
+    def test_an_unwritable_evidence_folder_still_exits_0_and_writes_the_findings_file(self):
+        os.makedirs(self.evidence_path(), mode=0o500)
+        self.addCleanup(os.chmod, self.evidence_path(), 0o700)
+        completed = self.run_adapter("good")
+        self.assertEqual(completed.returncode, 0)
+        self.assertTrue(os.path.exists(self.out_path))
+        self.assertEqual(os.listdir(self.evidence_path()), [])
+
+    def test_a_non_zero_claude_exit_still_leaves_adapter_log_and_review_json(self):
+        completed = self.run_adapter("good_then_fail")
+        self.assertEqual(completed.returncode, 1)
+        self.assertTrue(os.path.exists(self.evidence_path("adapter.log")))
+        self.assertTrue(os.path.exists(self.evidence_path("review.json")))
+
+
+class TheFindingsDoNotDependOnHowClaudeCodeEnded(AdapterTestCase):
+    """Property 2: The findings do not depend on how Claude Code ended."""
+
+    def test_a_final_file_then_a_sleep_is_ended_after_the_grace_with_exit_0_the_findings_of_good_and_a_log_line(self):
+        self.run_adapter("good")
+        findings_of_good = self.findings_file()["findings"]
+        completed = self.run_adapter("final_then_sleep", RB_FINAL_GRACE_SECONDS="1", RB_TIMEOUT_SECONDS="8")
+        self.assertEqual(completed.returncode, 0)
+        self.assertEqual(self.findings_file()["findings"], findings_of_good)
+        adapter_log = self.evidence_bytes("adapter.log").decode("utf-8")
+        self.assertRegex(adapter_log, r"ended claude \d+ s after the review file turned final")
+
+    def test_the_cost_reported_by_a_run_ended_after_the_grace_reaches_the_findings_file(self):
+        completed = self.run_adapter("final_then_sleep", RB_FINAL_GRACE_SECONDS="1", RB_TIMEOUT_SECONDS="8")
+        self.assertEqual(completed.returncode, 0)
+        self.assertEqual(self.findings_file()["usage"]["cost_usd"], 0.5)
+        adapter_log = self.evidence_bytes("adapter.log").decode("utf-8")
+        self.assertRegex(adapter_log, r"ended claude \d+ s after the review file turned final")
+
+
+class TheGraceEndNeverComesEarly(AdapterTestCase):
+    """Property 3: The grace end never comes early."""
+
+    def test_a_first_pass_file_then_a_sleep_is_not_ended_by_the_grace_and_is_killed_at_the_time_limit(self):
+        started = time.monotonic()
+        completed = self.run_adapter("first_then_sleep", RB_FINAL_GRACE_SECONDS="1", RB_TIMEOUT_SECONDS="5")
+        elapsed = time.monotonic() - started
+        self.assertEqual(completed.returncode, 0)
+        self.assertGreaterEqual(elapsed, 5)
+        adapter_log = self.evidence_bytes("adapter.log").decode("utf-8")
+        self.assertIn("claude killed after 5 seconds; reading the interim review file", adapter_log)
+        self.assertNotIn("turned final", adapter_log)
+
+    def test_a_final_file_and_an_exit_within_the_grace_is_not_killed_and_logs_no_grace_line(self):
+        completed = self.run_adapter("final_then_exit_shortly", RB_FINAL_GRACE_SECONDS="6", RB_TIMEOUT_SECONDS="10")
+        self.assertEqual(completed.returncode, 0)
+        adapter_log = self.evidence_bytes("adapter.log").decode("utf-8")
+        self.assertIn("claude finished with exit code 0", adapter_log)
+        self.assertNotIn("turned final", adapter_log)
+
+    def test_claude_code_exiting_on_its_own_between_the_final_check_and_the_kill_is_not_a_grace_end(self):
+        spec = importlib.util.spec_from_file_location("reviewbench_agent", AGENT)
+        agent = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(agent)
+        marker = os.path.join(self.directory, "exited")
+        checks = []
+
+        def final_once_the_stub_has_exited(path):
+            checks.append(path)
+            deadline = time.monotonic() + 10
+            while not os.path.exists(marker) and time.monotonic() < deadline:
+                time.sleep(0.05)
+            # The stub writes the marker just before it exits.
+            time.sleep(1)
+            return True
+
+        original = agent.review_is_final
+        agent.review_is_final = final_once_the_stub_has_exited
+        self.addCleanup(setattr, agent, "review_is_final", original)
+        env = dict(self.env, STUB_PLAN="marker_then_exit_5", STUB_EXIT_MARKER=marker)
+        exit_code, _, ended = agent.run_claude(
+            [self.env["RB_CLAUDE_BIN"]], "prompt", self.directory, env, 10,
+            grace_seconds=0, review_path=self.env["RB_REVIEW_PATH"],
+        )
+        self.assertEqual(len(checks), 1)
+        self.assertEqual(exit_code, 5)
+        self.assertIsNone(ended)
 
 
 if __name__ == "__main__":

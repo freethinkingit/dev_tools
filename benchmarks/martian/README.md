@@ -60,10 +60,14 @@ make report               # write and print <dir>/report.md
 `prs.json` is committed, so `make prs` is needed only to rebuild it from the
 golden files. `run` fetches each pull request's base and head from GitHub into
 `work/`, logs and skips a pull request it cannot fetch or whose container
-fails, and fails only when no pull request produced findings. `convert`,
-`judge` and `report` work on `RUN`, which defaults to the newest folder under
-`runs/`, so `make run convert judge report` works on the folder the run just
-made. Each of them appends its command to the folder's `run.json`.
+fails, and fails only when no pull request produced findings. After each
+container, passed or failed, it copies that pull request's evidence (the
+adapter's log, Claude Code's log, the review file and the session transcripts)
+into `logs/<key>/` in the run folder, and logs `no evidence for <key>` when the
+container left none. `convert`, `judge` and `report` work on `RUN`, which
+defaults to the newest folder under `runs/`, so `make run convert judge report`
+works on the folder the run just made. Each of them appends its command to the
+folder's `run.json`.
 
 ## Variables
 
@@ -86,6 +90,13 @@ These three reach the image and are recorded in `run.json`:
 - `RB_CONFIG_EFFORT`: its effort level, `high` by default.
 - `RB_CONFIG_BUDGET_USD`: the cost cap of one pull request's session in
   dollars, `15` by default.
+
+These two reach the image but are not recorded in `run.json`:
+
+- `RB_KEEP_TRANSCRIPTS`: `1` by default; `0` runs Claude Code without session
+  persistence, so the evidence holds no transcripts.
+- `RB_FINAL_GRACE_SECONDS`: the seconds after the review file turns final
+  before Claude Code is ended, `60` by default.
 
 ## The judge endpoint
 

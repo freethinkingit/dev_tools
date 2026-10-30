@@ -10,14 +10,15 @@
 #   make prs PRS="<n> ..."    run the image on each listed Test_Set pull request into runs/<timestamp>-prs<first>-<last>/
 #   make test-set             run the image on the Test_Set into runs/<timestamp>-test/
 #   make full-set             run the image on the Full_Set into runs/<timestamp>-full/
-#   make collect RUNS="<dir> ..."  copy the listed run folders' findings into runs/<timestamp>-collected/ for one judge
+#   make collect RUNS="<dir> ..."  copy the listed run folders' findings and evidence folders into runs/<timestamp>-collected/ for one judge
 #   make judge RUN=<dir>      judge <dir>/findings into <dir>/scoring/results.json with JUDGE_MODEL at JUDGE_BASE_URL
 #   make report RUN=<dir>     write and print <dir>/report.md
 #   make manifest             validate ponderly.json with the clone's schema/validate-manifest.mjs
 #
 # The run targets and collect print the run folder to pass as RUN. RB_CONFIG_MODEL,
-# RB_CONFIG_EFFORT and RB_CONFIG_BUDGET_USD in the environment reach the
-# adapter in the image, and run.json records them.
+# RB_CONFIG_EFFORT, RB_CONFIG_BUDGET_USD, RB_KEEP_TRANSCRIPTS and
+# RB_FINAL_GRACE_SECONDS in the environment reach the adapter in the image;
+# run.json records the first three.
 
 REVIEWBENCH_COMMIT ?= 228f2a8d662c9c1c12d25757e23c52c9a6170d5a
 IMAGE ?= ponderly-review:dev

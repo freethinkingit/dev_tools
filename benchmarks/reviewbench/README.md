@@ -57,7 +57,7 @@ make pr PR=0              # run the image on one test-set pull request
 make prs PRS="0 1 2 3 4"  # run the image on each listed test-set pull request, into one run folder
 make test-set             # run the image on the 25 test-set pull requests
 make full-set             # run the image on the 219 full-set pull requests
-make collect RUNS="<dir> <dir>"  # copy the listed run folders' findings into one new run folder
+make collect RUNS="<dir> <dir>"  # copy the listed run folders' findings and evidence folders into one new run folder
 make judge RUN=<dir>      # judge <dir>/findings into <dir>/scoring/results.json
 make report RUN=<dir>     # write and print <dir>/report.md
 make manifest             # validate ponderly.json with ReviewBench's validator
@@ -72,6 +72,35 @@ same pull request, or when their model, effort, budget, image or plugin
 version differ, since those findings would not be one run. Each target that works
 on a run folder appends its command to the folder's `run.json`, so the report
 names the commands that made it.
+
+## What a run folder holds
+
+A run folder under `runs/` holds `findings/`, one findings file per pull
+request, which is all ReviewBench reads; `scoring/`, the judge's output;
+`run.json`, the run's settings and commands; `report.md`; and
+`logs/try-agent.log`, the output of ReviewBench's `try-agent.sh` for every
+attempt run into the folder. Beside them,
+`logs/<PR_Key>/` keeps each pull request's evidence for working out what the
+review did: `adapter.log`, the adapter's lines, each with a UTC timestamp;
+`claude.log`, Claude Code's standard error, for the review session and then
+any repair session; `review.json`, the review file as the skill left it; and
+`transcripts/`, Claude Code's session transcripts, left out when
+`RB_KEEP_TRANSCRIPTS` is `0`. When a pull request is run again into the same
+folder, the earlier attempt's findings file and evidence move to
+`logs/<PR_Key>.before-<UTC timestamp>/`, so the judge sees only the latest.
+`collect` carries the evidence along: the source folder that holds the pull
+request's findings keeps `logs/<PR_Key>/`, or, when none holds them, the last
+source listed that has the folder; the other sources' copies go to
+`logs/<PR_Key>.before-<source folder name>/`.
+
+`report.md` has a header naming the run and its commands, then the sections
+Overall, By severity, By category, Duration and cost, and Review health. Review
+health counts, from the `review.json` files, the readable and unreadable review
+files and the findings files, how often the wave review held the findings,
+returned findings or gave no verdict, how often a second pass relaunched
+arms, which lenses lost an arm, the mean and largest number of candidates, and
+the mean number of findings removed by the merge, by the cap and by the wave
+review.
 
 ## Variables
 
@@ -98,6 +127,14 @@ These three reach the image and are recorded in `run.json`:
 - `RB_CONFIG_EFFORT`: its effort level, `high` by default.
 - `RB_CONFIG_BUDGET_USD`: the cost cap of one pull request's session in
   dollars, `15` by default.
+
+These two reach the image too, and are not recorded in `run.json`:
+
+- `RB_KEEP_TRANSCRIPTS`: `1` by default, which copies Claude Code's session
+  transcripts into the evidence; `0` runs Claude Code with
+  `--no-session-persistence` and copies none.
+- `RB_FINAL_GRACE_SECONDS`: the seconds Claude Code may keep running after the
+  review file turns final before the adapter ends it, `60` by default.
 
 ## Put it on the leaderboard
 

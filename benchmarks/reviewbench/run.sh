@@ -11,8 +11,8 @@
 #   run.sh record <run folder> <command>
 #
 # <command> is the make command that called it, appended to the run folder's
-# run.json. collect copies the listed run folders' findings into one new run
-# folder for a single judge. Reads REVIEWBENCH_COMMIT, IMAGE, JUDGE_MODEL and JUDGE_BASE_URL from the
+# run.json. collect copies the listed run folders' findings and evidence folders
+# into one new run folder for a single judge. Reads REVIEWBENCH_COMMIT, IMAGE, JUDGE_MODEL and JUDGE_BASE_URL from the
 # environment, which the Makefile sets. Runs by hand only, never in CI: every
 # run and judge is a real model call.
 set -euo pipefail
@@ -22,6 +22,7 @@ root="$(cd "$here/../.." && pwd)"
 clone="$here/.reviewbench"
 plugin_manifest="$root/plugins/ponderly/.claude-plugin/plugin.json"
 reviewbench_url="https://github.com/review-bench/ReviewBench"
+try_agent_work="${TRY_AGENT_WORK:-$clone/.try-agent}"
 
 usage() { sed -n '5,11p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2; }
 
@@ -64,16 +65,91 @@ try_agent() {
   local run_dir="$1"; shift
   (
     cd "$run_dir"
-    TRY_AGENT_WORK="${TRY_AGENT_WORK:-$clone/.try-agent}" \
+    TRY_AGENT_WORK="$try_agent_work" \
       "$clone/scripts/try-agent.sh" "$IMAGE" "$@" \
-      -e ANTHROPIC_API_KEY -e CLAUDE_CODE_OAUTH_TOKEN -e RB_CONFIG_MODEL -e RB_CONFIG_EFFORT -e RB_CONFIG_BUDGET_USD
+      -e ANTHROPIC_API_KEY -e CLAUDE_CODE_OAUTH_TOKEN -e RB_CONFIG_MODEL -e RB_CONFIG_EFFORT -e RB_CONFIG_BUDGET_USD \
+      -e RB_KEEP_TRANSCRIPTS -e RB_FINAL_GRACE_SECONDS
   ) 2>&1 | tee -a "$run_dir/logs/try-agent.log"
+}
+
+set_manifest() {
+  case "$1" in
+    test) echo "$clone/corpus/test/test.json" ;;
+    full) echo "$clone/corpus/manifest.json" ;;
+  esac
+}
+
+manifest_indices() {
+  seq 0 $(($(jq length "$1") - 1))
+}
+
+# Derived as try-agent.sh derives it, so the key names the folder the runner wrote under out/.
+pr_key() {
+  local manifest="$1" index="$2" entry nwo pr head
+  entry="$(jq -c ".[$index]" "$manifest")"
+  nwo="$(jq -r .nwo <<<"$entry")"; pr="$(jq -r .pr_number <<<"$entry")"
+  head="$(jq -r .head <<<"$entry")"
+  echo "${nwo/\//_}_${pr}-${head:0:8}"
+}
+
+# The runner deletes out/<PR_Key>/ when that pull request runs again, so the run folder's copy is the one that lasts.
+copy_evidence() {
+  local run_dir="$1" set_name="$2"; shift 2
+  local manifest index key
+  manifest="$(set_manifest "$set_name")"
+  if [ $# -eq 0 ]; then
+    set -- $(manifest_indices "$manifest")
+  fi
+  for index in "$@"; do
+    key="$(pr_key "$manifest" "$index")"
+    if [ -d "$try_agent_work/out/$key/logs" ]; then
+      cp -R "$try_agent_work/out/$key/logs" "$run_dir/logs/$key" || echo "could not copy the evidence for $key" >&2
+    else
+      echo "no evidence for $key" >&2
+    fi
+  done
+}
+
+# try-agent.sh skips a pull request whose commits it cannot fetch before it clears out/<PR_Key>/,
+# so an earlier run's logs would pass for this attempt's evidence.
+clear_cached_evidence() {
+  local set_name="$1"; shift
+  local manifest index key
+  manifest="$(set_manifest "$set_name")"
+  if [ $# -eq 0 ]; then
+    set -- $(manifest_indices "$manifest")
+  fi
+  for index in "$@"; do
+    key="$(pr_key "$manifest" "$index")"
+    rm -rf "$try_agent_work/out/$key/logs" || echo "could not clear the cached evidence for $key" >&2
+  done
+}
+
+# The judge reads every findings/*.json, so an earlier attempt's findings leave findings/ along with its evidence.
+set_aside_earlier_attempt() {
+  local run_dir="$1" key="$2"
+  local findings="$run_dir/findings/$key.json" evidence="$run_dir/logs/$key"
+  [ -e "$findings" ] || [ -e "$evidence" ] || return 0
+  local base="$run_dir/logs/$key.before-$(date -u +%Y-%m-%dT%H-%M-%SZ)"
+  local earlier="$base" suffix=2
+  while [ -e "$earlier" ]; do
+    earlier="$base-$suffix"
+    suffix=$((suffix + 1))
+  done
+  if [ -e "$evidence" ]; then
+    mv "$evidence" "$earlier" || return
+  else
+    mkdir -p "$earlier" || return
+  fi
+  if [ -e "$findings" ]; then
+    mv "$findings" "$earlier/findings.json" || return
+  fi
 }
 
 run_set() {
   local set_kind="$1" command="$2"; shift 2
   : "${IMAGE:?IMAGE is not set}"
-  local set_label pr_index
+  local set_label pr_index key
   case "$set_kind" in
     pr)
       [ $# -le 1 ] || usage
@@ -122,20 +198,41 @@ run_set() {
   # One failed pull request in a prs list does not stop the rest; the status reports it at the end.
   local status=0
   case "$set_kind" in
-    pr) try_agent "$run_dir" --set test --pr "$pr_index" || status=$? ;;
-    prs)
+    pr | prs)
       for pr_index in "$@"; do
+        key="$(pr_key "$(set_manifest test)" "$pr_index")"
+        clear_cached_evidence test "$pr_index"
+        set_aside_earlier_attempt "$run_dir" "$key" || echo "could not set aside the earlier attempt of $key" >&2
         try_agent "$run_dir" --set test --pr "$pr_index" || status=$?
+        copy_evidence "$run_dir" test "$pr_index"
       done ;;
-    *) try_agent "$run_dir" --set "$set_kind" || status=$? ;;
+    *)
+      clear_cached_evidence "$set_kind"
+      try_agent "$run_dir" --set "$set_kind" || status=$?
+      copy_evidence "$run_dir" "$set_kind" ;;
   esac
   echo "run folder: $run_dir" >&2
   return "$status"
 }
 
+# The source with the pull request's findings keeps logs/<PR_Key>/, or else the last source listed with
+# that folder; report.py skips the other sources' copies, which go to logs/<PR_Key>.before-<source>/.
+evidence_keeper() {
+  local key="$1"; shift
+  local source_dir keeper=""
+  for source_dir in "$@"; do
+    [ -d "$source_dir/logs/$key" ] || continue
+    if [ -e "$source_dir/findings/$key.json" ]; then
+      echo "$source_dir"; return
+    fi
+    keeper="$source_dir"
+  done
+  echo "$keeper"
+}
+
 collect() {
   local command="$1"; shift
-  local first="$1" source_dir earlier finding name
+  local first="$1" source_dir earlier finding name evidence target
   local shared_fields='{model, effort, budget_usd, image, plugin_version}'
   for source_dir in "$@"; do
     if [ ! -f "$source_dir/run.json" ]; then
@@ -169,6 +266,20 @@ collect() {
     for finding in "$source_dir"/findings/*.json; do
       [ -e "$finding" ] || continue
       cp "$finding" "$run_dir/findings/"
+    done
+    for evidence in "$source_dir"/logs/*/; do
+      [ -d "$evidence" ] || continue
+      name="$(basename "$evidence")"
+      if [[ "$name" == *.before-* ]] || [ "$(evidence_keeper "$name" "$@")" = "$source_dir" ]; then
+        target="$run_dir/logs/$name"
+      else
+        target="$run_dir/logs/$name.before-$(basename "$source_dir")"
+      fi
+      if [ -e "$target" ]; then
+        echo "$(basename "$target") is in more than one source; kept the first, not $source_dir's" >&2
+        continue
+      fi
+      cp -R "${evidence%/}" "$target"
     done
   done
   local records=()

@@ -3,7 +3,7 @@
     python3 benchmarks/reviewbench/report.py <run folder>
 
 Reads the judge's ``scoring/results.json``, the ``usage`` of every
-``findings/*.json``, and the ``run.json`` the harness writes, then writes
+``findings/*.json``, every ``logs/<PR_Key>/review.json``, and the ``run.json`` the harness writes, then writes
 ``report.md`` into the run folder and prints it. A field ``run.json`` lacks is
 reported as "unknown", except the plugin version, which is then read from
 ``plugin.json`` and marked so. Exits 1 naming the file when ``scoring/results.json``
@@ -173,6 +173,113 @@ def usage_section(usages, findings_count):
     ])
 
 
+REVIEW_FIELDS = ("pass", "verdict", "second_pass", "counts")
+COUNT_FIELDS = ("candidates", "removed_by_merge", "removed_by_review", "failed_arms")
+SET_ASIDE_MARKER = ".before-"
+
+
+def is_count(value):
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def is_readable_review(review):
+    if not isinstance(review, dict):
+        return False
+    if any(field not in review for field in REVIEW_FIELDS):
+        return False
+    counts = review["counts"]
+    if not isinstance(counts, dict) or any(field not in counts for field in COUNT_FIELDS):
+        return False
+    numbers = [counts["candidates"], counts["removed_by_merge"], counts["removed_by_review"]]
+    if not all(is_count(number) for number in numbers):
+        return False
+    return isinstance(counts["failed_arms"], list)
+
+
+def read_reviews(run_dir):
+    """Return one entry per pull request's ``logs/<PR_Key>/review.json``: the parsed object, or None when unreadable.
+
+    An entry is None when the file does not parse as JSON or lacks ``pass``, ``verdict``, ``second_pass``,
+    ``counts`` or one of the counts the health section reads. Earlier attempts set aside in
+    ``logs/<PR_Key>.before-<timestamp>/`` are not pull requests of the run and are skipped.
+    """
+    reviews = []
+    for path in sorted((Path(run_dir) / "logs").glob("*/review.json")):
+        if SET_ASIDE_MARKER in path.parent.name:
+            continue
+        try:
+            review = read_json(path)
+        except (OSError, UnicodeDecodeError, ValueError):
+            review = None
+        if not is_readable_review(review):
+            review = None
+        reviews.append(review)
+    return reviews
+
+
+def health_section(reviews, findings_count):
+    """Return the "Review health" section text for the entries ``read_reviews`` returned."""
+    heading = ["## Review health", ""]
+    if not reviews:
+        return "\n".join(heading + ["No review files were found in this run's logs folder."])
+    readable = [review for review in reviews if review is not None]
+    unreadable_count = len(reviews) - len(readable)
+    holds = sum(1 for review in readable if review["verdict"] == "holds")
+    findings = sum(1 for review in readable if review["verdict"] == "findings")
+    no_verdict = len(readable) - holds - findings
+    second_passes = sum(1 for review in readable if review["second_pass"] is True)
+    failed_lenses = {}
+    lost_an_arm = 0
+    for review in readable:
+        lenses = set(str(lens) for lens in review["counts"]["failed_arms"])
+        if lenses:
+            lost_an_arm += 1
+        for lens in lenses:
+            failed_lenses[lens] = failed_lenses.get(lens, 0) + 1
+    lines = heading + [
+        "Each pull request's review file records what the review skill did: whether the wave review held the "
+        "findings, whether a second pass relaunched arms, which arms failed and how many candidates the merge, "
+        "the cap of 40 and the wave review removed. A review file that does not parse, or lacks any of those fields "
+        "other than the cap's count, is counted as unreadable and left out of every other line. A review file that "
+        "lacks only the cap's count was written before the review skill recorded it; it stays readable and is left "
+        "out of the cap's mean only. A review that failed "
+        "keeps its review file but writes no findings file, so the review-file count can exceed the findings-file "
+        "count.",
+        "",
+        "- Pull requests with a readable review file: {}".format(len(readable)),
+        "- Unreadable review files: {}".format(unreadable_count),
+        "- Findings files: {}".format(findings_count),
+        "- Wave review held: {}; returned findings: {}; no verdict: {}".format(holds, findings, no_verdict),
+        "- Second pass relaunched arms: {}".format(second_passes),
+        "- Lost at least one arm: {}".format(lost_an_arm),
+    ]
+    for lens in sorted(failed_lenses):
+        lines.append("  - {}: failed on {}".format(lens, failed_lenses[lens]))
+    if readable:
+        candidates = [review["counts"]["candidates"] for review in readable]
+        removed_by_merge = [review["counts"]["removed_by_merge"] for review in readable]
+        removed_by_review = [review["counts"]["removed_by_review"] for review in readable]
+        recorded_caps = [review["counts"].get("removed_by_cap") for review in readable]
+        removed_by_cap = [removed for removed in recorded_caps if is_count(removed)]
+        if removed_by_cap:
+            mean_removed_by_cap = "{:.1f}".format(sum(removed_by_cap) / len(removed_by_cap))
+        else:
+            mean_removed_by_cap = UNKNOWN
+        lines += [
+            "- Candidates per pull request: mean {:.1f}, largest {}".format(
+                sum(candidates) / len(candidates), max(candidates)
+            ),
+            "- Mean findings removed by the merge: {:.1f}".format(sum(removed_by_merge) / len(removed_by_merge)),
+            "- Mean findings removed by the cap of 40: {} ({} of {} review files record it)".format(
+                mean_removed_by_cap, len(removed_by_cap), len(readable)
+            ),
+            "- Mean findings removed by the wave review: {:.1f}".format(
+                sum(removed_by_review) / len(removed_by_review)
+            ),
+        ]
+    return "\n".join(lines)
+
+
 def header_section(run_info, results):
     commands = run_info.get("commands") or []
     if commands:
@@ -211,6 +318,7 @@ def render_report(run_dir):
         "## By category\n\nThe same numbers for the golden set's problems of each category alone.\n\n"
         + stratum_table(results, "by_category", "Category"),
         usage_section(read_usages(run_dir), findings_count),
+        health_section(read_reviews(run_dir), findings_count),
     ]
     return "\n\n".join(sections) + "\n"
 

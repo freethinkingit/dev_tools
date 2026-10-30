@@ -2,8 +2,9 @@
 
 The report states each metric group of the judge's results, computes grounded
 F1, sums the model cost Claude Code reported, names the run's settings from
-``run.json`` or says they are unknown, and exits 1 naming the judge target when
-the judge's results file is absent.
+``run.json`` or says they are unknown, counts the review files' verdicts, second
+passes, failed arms and candidates in its review health section, and exits 1
+naming the judge target when the judge's results file is absent.
 """
 
 import contextlib
@@ -89,6 +90,24 @@ def make_run(folder, results=None, findings=None, run_record=None):
     if run_record is not None:
         write_json(run_dir / "run.json", run_record)
     return run_dir
+
+
+def review_file(verdict, second_pass, candidates, removed_by_merge, removed_by_review, failed_arms):
+    return {
+        "pass": "final",
+        "verdict": verdict,
+        "second_pass": second_pass,
+        "counts": {
+            "candidates": candidates,
+            "removed_by_merge": removed_by_merge,
+            "removed_by_review": removed_by_review,
+            "failed_arms": failed_arms,
+        },
+    }
+
+
+def health_text(run_dir):
+    return report.render_report(run_dir).split("## Review health")[1]
 
 
 def run_main(run_dir):
@@ -190,6 +209,111 @@ class ReviewBenchReportTest(unittest.TestCase):
         self.assertIn("- Judge model: unknown", written)
         self.assertIn("- Date: unknown", written)
         self.assertIn("Commands that produced it:\n\nunknown", written)
+
+    def test_three_review_files_count_verdicts_second_pass_failed_lens_candidates_and_findings_files(self):
+        with tempfile.TemporaryDirectory() as folder:
+            run_dir = make_run(
+                folder,
+                results=results_with_every_group(),
+                findings={"pr-0.json": {"findings": []}, "pr-1.json": {"findings": []}},
+                run_record=RUN_RECORD,
+            )
+            write_json(run_dir / "logs" / "pr-0" / "review.json", review_file("holds", False, 4, 1, 0, []))
+            write_json(
+                run_dir / "logs" / "pr-1" / "review.json", review_file("findings", True, 10, 2, 6, ["security"])
+            )
+            write_json(run_dir / "logs" / "pr-2" / "review.json", review_file(None, False, 1, 0, 0, []))
+            health = health_text(run_dir)
+        self.assertIn("- Pull requests with a readable review file: 3", health)
+        self.assertIn("- Unreadable review files: 0", health)
+        self.assertIn("- Findings files: 2", health)
+        self.assertIn("- Wave review held: 1; returned findings: 1; no verdict: 1", health)
+        self.assertIn("- Second pass relaunched arms: 1", health)
+        self.assertIn("- Lost at least one arm: 1\n  - security: failed on 1", health)
+        self.assertIn("- Candidates per pull request: mean 5.0, largest 10", health)
+        self.assertIn("- Mean findings removed by the merge: 1.0", health)
+        self.assertIn("- Mean findings removed by the wave review: 2.0", health)
+
+    def test_no_review_files_print_the_health_section_with_the_no_review_files_sentence(self):
+        with tempfile.TemporaryDirectory() as folder:
+            run_dir = make_run(folder, results=results_with_every_group(), run_record=RUN_RECORD)
+            health = health_text(run_dir)
+        self.assertEqual(health, "\n\nNo review files were found in this run's logs folder.\n")
+
+    def test_a_review_file_that_does_not_parse_is_counted_unreadable_and_left_out_of_the_other_counts(self):
+        with tempfile.TemporaryDirectory() as folder:
+            run_dir = make_run(folder, results=results_with_every_group(), run_record=RUN_RECORD)
+            write_json(run_dir / "logs" / "pr-0" / "review.json", review_file("holds", False, 4, 1, 0, []))
+            (run_dir / "logs" / "pr-1").mkdir(parents=True)
+            (run_dir / "logs" / "pr-1" / "review.json").write_text("{not json", encoding="utf-8")
+            health = health_text(run_dir)
+        self.assertIn("- Pull requests with a readable review file: 1", health)
+        self.assertIn("- Unreadable review files: 1", health)
+        self.assertIn("- Wave review held: 1; returned findings: 0; no verdict: 0", health)
+        self.assertIn("- Candidates per pull request: mean 4.0, largest 4", health)
+
+    def test_a_review_file_without_counts_is_counted_unreadable_and_left_out_of_the_other_counts(self):
+        without_counts = review_file("findings", True, 10, 2, 6, ["security"])
+        del without_counts["counts"]
+        with tempfile.TemporaryDirectory() as folder:
+            run_dir = make_run(folder, results=results_with_every_group(), run_record=RUN_RECORD)
+            write_json(run_dir / "logs" / "pr-0" / "review.json", review_file("holds", False, 4, 1, 0, []))
+            write_json(run_dir / "logs" / "pr-1" / "review.json", without_counts)
+            health = health_text(run_dir)
+        self.assertIn("- Pull requests with a readable review file: 1", health)
+        self.assertIn("- Unreadable review files: 1", health)
+        self.assertIn("- Wave review held: 1; returned findings: 0; no verdict: 0", health)
+        self.assertIn("- Second pass relaunched arms: 0", health)
+
+    def test_review_files_with_the_cap_count_print_its_mean_beside_the_merge_and_the_review(self):
+        capped = review_file("findings", False, 50, 2, 3, [])
+        capped["counts"]["removed_by_cap"] = 5
+        uncapped = review_file("holds", False, 4, 1, 0, [])
+        uncapped["counts"]["removed_by_cap"] = 0
+        with tempfile.TemporaryDirectory() as folder:
+            run_dir = make_run(folder, results=results_with_every_group(), run_record=RUN_RECORD)
+            write_json(run_dir / "logs" / "pr-0" / "review.json", capped)
+            write_json(run_dir / "logs" / "pr-1" / "review.json", uncapped)
+            health = health_text(run_dir)
+        self.assertIn(
+            "- Mean findings removed by the merge: 1.5\n"
+            "- Mean findings removed by the cap of 40: 2.5 (2 of 2 review files record it)\n"
+            "- Mean findings removed by the wave review: 1.5",
+            health,
+        )
+
+    def test_an_older_review_file_without_the_cap_count_stays_readable_and_is_left_out_of_the_cap_mean_only(self):
+        capped = review_file("findings", False, 50, 2, 3, [])
+        capped["counts"]["removed_by_cap"] = 5
+        with tempfile.TemporaryDirectory() as folder:
+            run_dir = make_run(folder, results=results_with_every_group(), run_record=RUN_RECORD)
+            write_json(run_dir / "logs" / "pr-0" / "review.json", capped)
+            write_json(run_dir / "logs" / "pr-1" / "review.json", review_file("holds", False, 4, 1, 0, []))
+            health = health_text(run_dir)
+        self.assertIn("- Pull requests with a readable review file: 2", health)
+        self.assertIn("- Unreadable review files: 0", health)
+        self.assertIn("- Mean findings removed by the merge: 1.5", health)
+        self.assertIn("- Mean findings removed by the cap of 40: 5.0 (1 of 2 review files record it)", health)
+
+    def test_review_files_none_of_which_record_the_cap_count_print_its_mean_as_unknown(self):
+        with tempfile.TemporaryDirectory() as folder:
+            run_dir = make_run(folder, results=results_with_every_group(), run_record=RUN_RECORD)
+            write_json(run_dir / "logs" / "pr-0" / "review.json", review_file("holds", False, 4, 1, 0, []))
+            health = health_text(run_dir)
+        self.assertIn("- Mean findings removed by the cap of 40: unknown (0 of 1 review files record it)", health)
+
+    def test_a_review_file_in_a_set_aside_before_folder_is_not_counted(self):
+        with tempfile.TemporaryDirectory() as folder:
+            run_dir = make_run(folder, results=results_with_every_group(), run_record=RUN_RECORD)
+            write_json(run_dir / "logs" / "pr-0" / "review.json", review_file("holds", False, 4, 1, 0, []))
+            write_json(
+                run_dir / "logs" / "pr-0.before-20261029T100000Z" / "review.json",
+                review_file("findings", True, 10, 2, 3, ["security"]),
+            )
+            health = health_text(run_dir)
+        self.assertIn("- Pull requests with a readable review file: 1", health)
+        self.assertIn("- Wave review held: 1; returned findings: 0; no verdict: 0", health)
+        self.assertIn("- Second pass relaunched arms: 0", health)
 
 
 if __name__ == "__main__":
