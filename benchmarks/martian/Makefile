@@ -21,7 +21,7 @@ MARTIAN_REPO := https://github.com/withmartian/code-review-benchmark.git
 MARTIAN_COMMIT ?= e616e849755441da38f18bf3adba2c9583b03803
 IMAGE ?= ponderly-review:dev
 MARTIAN_BASE_URL ?= https://api.anthropic.com/v1/
-MARTIAN_MODEL ?= claude-sonnet-5
+MARTIAN_MODEL ?= claude-opus-4-5-20251101
 ONLY ?=
 RUN ?= $(shell ls -d runs/*/ 2>/dev/null | tail -n 1 | sed 's:/$$::')
 

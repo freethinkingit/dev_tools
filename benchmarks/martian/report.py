@@ -9,8 +9,10 @@ script, and writes and prints
 ``<run folder>/report.md``: precision, recall and F1 for each reviewed tool
 under Martian's Strict, Core and All profiles, scored as Martian's dashboard
 scores them, with the judge model, the image settings and the date taken from
-``<run folder>/run.json`` ("unknown" for any field it lacks). Exits 1 naming
-the file or folder that is missing.
+``<run folder>/run.json`` ("unknown" for any field it lacks). A review whose
+judging had failed calls is left out of the scores and named at the top, and
+when every review's judging failed the report says there is no score. Exits 1
+naming the file or folder that is missing.
 """
 
 import json
@@ -68,17 +70,28 @@ def f1(precision, recall):
     return 2 * precision * recall / (precision + recall)
 
 
+def judge_failures(evaluations):
+    """Return ``(pr_url, tool, failed_calls)`` for each review whose judging had failed calls."""
+    failures = []
+    for pr_url, tool_evals in sorted(evaluations.items()):
+        for tool, review in sorted(tool_evals.items()):
+            if review.get("errors_count", 0) > 0:
+                failures.append((pr_url, tool, review["errors_count"]))
+    return failures
+
+
 def score(evaluations, golden_categories):
     """Return ``{tool: {profile: {tp, fp, fn, prs, precision, recall, f1}}}``.
 
     A match to a golden comment outside a profile's categories counts as
     neither a true nor a false positive under that profile; false positives
-    are the same under every profile.
+    are the same under every profile. A review whose judging had failed calls
+    is left out, since Martian's judge counts a failed comparison as no match.
     """
     totals = {}
     for tool_evals in evaluations.values():
         for tool, review in tool_evals.items():
-            if review.get("skipped"):
+            if review.get("skipped") or review.get("errors_count", 0) > 0:
                 continue
             tool_totals = totals.setdefault(
                 tool, {name: {"tp": 0, "fp": 0, "fn": 0, "prs": 0} for name, _ in PROFILES})
@@ -106,8 +119,8 @@ def percent(value):
     return "{:.1f}%".format(value * 100)
 
 
-def render(totals, run):
-    """Return the report's Markdown text for ``score``'s totals and the run settings."""
+def render(totals, run, failures=()):
+    """Return the report's Markdown text for ``score``'s totals, the run settings and ``judge_failures``."""
     commands = run.get("commands") or []
     lines = [
         "# Martian Code Review Bench, offline",
@@ -129,6 +142,20 @@ def render(totals, run):
         "golden comments, unmatched findings and missed golden comments. A dash means the "
         "ratio is undefined because its denominator was zero.",
     ]
+    if failures:
+        lines += [
+            "",
+            "## Judge errors",
+            "",
+            "{} judge calls failed in {} reviews, which are left out of the scores below. "
+            "Read their errors in scoring/evaluations.json and run the judge target again, "
+            "which judges them anew.".format(sum(calls for _, _, calls in failures), len(failures)),
+            "",
+        ]
+        lines += ["- {} ({}): {} failed calls".format(pr_url, tool, calls) for pr_url, tool, calls in failures]
+    if not totals:
+        lines += ["", "No score: no review was judged without errors."]
+        return "\n".join(lines) + "\n"
     for name, profile_categories in PROFILES:
         lines += [
             "",
@@ -160,7 +187,8 @@ def main(argv=None):
         Path(args[1]) if len(args) == 2 else DEFAULT_GOLDEN_DIR)
     run_path = run_dir / "run.json"
     run = json.loads(run_path.read_text(encoding="utf-8")) if run_path.is_file() else {}
-    text = render(score(json.loads(evaluations_path.read_text(encoding="utf-8")), golden_categories), run)
+    evaluations = json.loads(evaluations_path.read_text(encoding="utf-8"))
+    text = render(score(evaluations, golden_categories), run, judge_failures(evaluations))
     (run_dir / "report.md").write_text(text, encoding="utf-8")
     print(text, end="")
 

@@ -81,8 +81,12 @@ Set any of these on the `make` command line or in your environment.
 - `MARTIAN_BASE_URL`: the judge's OpenAI-compatible API base URL,
   `https://api.anthropic.com/v1/` by default, Anthropic's OpenAI-compatible
   endpoint.
-- `MARTIAN_MODEL`: the judge model, `claude-sonnet-5` by default. Override
-  both for an OpenAI judge.
+- `MARTIAN_MODEL`: the judge model, `claude-opus-4-5-20251101` by default,
+  one of the three judges Martian publishes results for. Martian's judge
+  sends `temperature` on every call, which newer Claude models such as
+  `claude-sonnet-5` refuse, so a judge model must accept it. Override both
+  for an OpenAI judge. The report leaves out any review whose judging had
+  failed calls and lists it under Judge errors.
 
 These three reach the image and are recorded in `run.json`:
 
