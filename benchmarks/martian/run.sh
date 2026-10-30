@@ -9,15 +9,16 @@
 # <index> runs only that entry of prs.json, counting from 0. The run folder is
 # runs/<timestamp>/ beside this script: run.json, findings/<key>.json and
 # logs/run.log; repository caches go to work/. ANTHROPIC_API_KEY,
-# RB_CONFIG_MODEL, RB_CONFIG_EFFORT and RB_CONFIG_BUDGET_USD are passed
-# through to the container by name. A pull request whose base or head cannot
-# be fetched, or whose container fails, is logged and skipped; the script
-# exits 1 only when no findings file was written.
+# CLAUDE_CODE_OAUTH_TOKEN, RB_CONFIG_MODEL, RB_CONFIG_EFFORT and
+# RB_CONFIG_BUDGET_USD are passed through to the container by name. A pull
+# request whose base or head cannot be fetched, or whose container fails, is
+# logged and skipped; the script exits 1 only when no findings file was
+# written.
 #
 # Needs docker, git and jq.
 set -euo pipefail
 
-usage() { sed -n '7,15p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2; }
+usage() { sed -n '7,16p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2; }
 [ $# -ge 1 ] && [ $# -le 2 ] || usage
 image="$1"
 only="${2:-}"
@@ -93,7 +94,7 @@ for i in $indices; do
     -e RB_AGENT=ponderly -e RB_REPO=/work/repo \
     -e RB_DIFF=/work/pr/diff.patch -e RB_PR_JSON=/work/pr/pr.json -e RB_OUT=/work/out/findings.json \
     -e RB_ATTEMPT=1 \
-    -e ANTHROPIC_API_KEY -e RB_CONFIG_MODEL -e RB_CONFIG_EFFORT -e RB_CONFIG_BUDGET_USD \
+    -e ANTHROPIC_API_KEY -e CLAUDE_CODE_OAUTH_TOKEN -e RB_CONFIG_MODEL -e RB_CONFIG_EFFORT -e RB_CONFIG_BUDGET_USD \
     "$image" || status=$?
 
   file="$out/findings.json"

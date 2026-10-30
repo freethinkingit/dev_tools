@@ -10,9 +10,10 @@
 #
 # RUN defaults to the newest folder under runs/, so `make run convert judge
 # report` works on the folder the run target just made. run and judge make
-# model calls on your own keys (ANTHROPIC_API_KEY for the image, MARTIAN_API_KEY
-# for the judge) and never run in CI; each target stops first, naming the tool
-# or key it needs that is missing. The judge reads MARTIAN_BASE_URL and
+# model calls on your own keys (ANTHROPIC_API_KEY or a Claude subscription's
+# CLAUDE_CODE_OAUTH_TOKEN for the image, MARTIAN_API_KEY for the judge) and
+# never run in CI; each target stops first, naming the tool or key it needs
+# that is missing. The judge reads MARTIAN_BASE_URL and
 # MARTIAN_MODEL; override both for an OpenAI judge. Each target that works on
 # a run folder appends its command to the folder's run.json.
 
@@ -37,6 +38,12 @@ define REQUIRE
 		*) command -v $$name >/dev/null 2>&1 ;; \
 	esac || { echo "missing: $$name" >&2; exit 1; }; \
 done
+endef
+
+# $(1) is a list of environment variables, the target stopping when none of them is set.
+define REQUIRE_ONE_OF
+@for name in $(1); do test -n "$$(printenv $$name)" && exit 0; done; \
+	echo "missing: one of $(1)" >&2; exit 1
 endef
 
 define REQUIRE_RUN
@@ -65,7 +72,8 @@ prs:
 	python3 prs.py
 
 run:
-	$(call REQUIRE,docker git jq ANTHROPIC_API_KEY)
+	$(call REQUIRE,docker git jq)
+	$(call REQUIRE_ONE_OF,ANTHROPIC_API_KEY CLAUDE_CODE_OAUTH_TOKEN)
 	./run.sh "$(IMAGE)" $(ONLY)
 
 convert:

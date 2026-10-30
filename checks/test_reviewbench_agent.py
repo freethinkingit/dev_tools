@@ -5,7 +5,7 @@ and fakes Claude Code at its boundary with the stub STUB_SOURCE, written into
 a temporary directory and named by RB_CLAUDE_BIN. STUB_PLAN tells the stub
 what each call does, one action per call separated by commas, the last action
 repeating; the stub appends a line per call to STUB_LOG with the
-CLAUDE_CODE_* variables, ANTHROPIC_API_KEY and HOME it was given and the uid it ran as. The time limits are scaled down to
+CLAUDE_CODE_* variables, CLAUDE_CODE_OAUTH_TOKEN among them, ANTHROPIC_API_KEY and HOME it was given and the uid it ran as. The time limits are scaled down to
 seconds through RB_TIMEOUT_SECONDS and RB_TOTAL_SECONDS.
 """
 
@@ -22,6 +22,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AGENT = os.path.join(ROOT, "benchmarks", "reviewbench", "agent", "agent.py")
 ADAPTER_WAIT_SECONDS = 30
 API_KEY = "sk-ant-test-4f9c2e"
+OAUTH_TOKEN = "sk-ant-oat-test-7d1b3a"
 
 STUB_SOURCE = '''
 import json
@@ -256,6 +257,14 @@ class TheAdapterChecksItsInputs(AdapterTestCase):
         self.assertFalse(os.path.exists(self.out_path))
         self.assertEqual(self.stub_calls(), [])
 
+    def test_neither_the_api_key_nor_the_oauth_token_exits_2_naming_both_before_calling_claude(self):
+        del self.env["ANTHROPIC_API_KEY"]
+        completed = self.run_adapter("good")
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn(b"ANTHROPIC_API_KEY or CLAUDE_CODE_OAUTH_TOKEN", completed.stderr)
+        self.assertFalse(os.path.exists(self.out_path))
+        self.assertEqual(self.stub_calls(), [])
+
 
 class TheFindingsFile(AdapterTestCase):
     def test_an_empty_findings_list_exits_0_and_writes_a_file_with_no_findings(self):
@@ -283,6 +292,16 @@ class ClaudeCodeIsGivenTheSettings(AdapterTestCase):
         self.assertEqual(variables["ANTHROPIC_API_KEY"], API_KEY)
         self.assertNotIn(API_KEY.encode("utf-8"), completed.stdout)
         self.assertNotIn(API_KEY.encode("utf-8"), completed.stderr)
+
+    def test_the_oauth_token_alone_reaches_claude_code_unprinted_and_the_findings_file_is_written(self):
+        del self.env["ANTHROPIC_API_KEY"]
+        completed = self.run_adapter("good", CLAUDE_CODE_OAUTH_TOKEN=OAUTH_TOKEN)
+        self.assertEqual(completed.returncode, 0)
+        self.assertTrue(os.path.exists(self.out_path))
+        [variables] = self.stub_calls()
+        self.assertEqual(variables["CLAUDE_CODE_OAUTH_TOKEN"], OAUTH_TOKEN)
+        self.assertNotIn(OAUTH_TOKEN.encode("utf-8"), completed.stdout)
+        self.assertNotIn(OAUTH_TOKEN.encode("utf-8"), completed.stderr)
 
 
 class TheAdapterStaysInsideItsTimeLimits(AdapterTestCase):

@@ -94,7 +94,7 @@ The `ponderly` plugin reviews code today only inside its own workflows: the `wav
 1. THE Image SHALL run Claude Code headlessly with the plugin from this repository's working tree built in at image build time, so that no network call to GitHub or to a marketplace happens at run time.
 2. WHEN the Image starts, THE Adapter SHALL read the Contract's inputs from the environment variables and mounted files the Contract names, run the Review_Skill on the mounted repository, and write the Findings_File at the path `RB_OUT` names.
 3. THE Adapter SHALL read the model from `RB_CONFIG_MODEL` and the effort from `RB_CONFIG_EFFORT`, with defaults when unset, and print the settings it applies on standard error, as the Contract asks.
-4. THE Adapter SHALL read the API key from `ANTHROPIC_API_KEY`, send it nowhere but Claude Code, and print it nowhere.
+4. THE Adapter SHALL read the credential from `ANTHROPIC_API_KEY` or, for a local run on a Claude subscription, the token from `CLAUDE_CODE_OAUTH_TOKEN`, require that one of the two is set, send it nowhere but Claude Code, and print it nowhere.
 5. THE Adapter SHALL end the review run within 25 minutes of starting and, when a repair run follows it, end that run before 29 minutes 30 seconds from the start, writing a Findings_File with the Findings it has, so the Contract's 30-minute limit is never hit.
 6. IF Claude Code exits non-zero, or its output holds no Findings in the expected shape, THEN THE Adapter SHALL exit non-zero without writing a Findings_File, so that ReviewBench retries rather than scores an empty review.
 7. IF the Review_Skill returns no Findings, THEN THE Adapter SHALL write a Findings_File with an empty `findings` array and exit 0.
@@ -112,7 +112,7 @@ The `ponderly` plugin reviews code today only inside its own workflows: the `wav
 4. THE Harness SHALL judge with the Anthropic provider and a model the Operator names, defaulting to the Claude Sonnet model the leaderboard uses, read from the environment.
 5. THE Harness SHALL run only by hand and never in CI, as the evals do, and `make validate` SHALL stay free of model calls.
 6. WHEN a run on a Set ends, THE Harness SHALL print the Score_Report with each number's meaning stated before it, including the model cost of the run from Claude Code's own usage output.
-7. IF `docker`, `node`, `jq` or `ANTHROPIC_API_KEY` is missing, THEN THE Harness SHALL stop before any model call and name what is missing.
+7. IF `docker`, `node` or `jq` is missing, or neither `ANTHROPIC_API_KEY` nor `CLAUDE_CODE_OAUTH_TOKEN` is set for a run, or `ANTHROPIC_API_KEY` is unset for the judge, which ReviewBench's judge client reads, THEN THE Harness SHALL stop before any model call and name what is missing.
 
 ### Requirement 7: Record the evidence
 

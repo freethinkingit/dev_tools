@@ -4,7 +4,8 @@ Reads the contract's RB_* variables and /work/pr/pr.json, runs Claude Code
 headlessly on /work/repo with the plugin at /opt/ponderly, and writes the
 Findings_File at RB_OUT. Exits 0 with the file when the review file parses,
 1 with no file otherwise, so that ReviewBench retries, and 2 when a required
-variable or input is missing.
+variable or input is missing. The credential is ANTHROPIC_API_KEY or, on a
+Claude subscription, CLAUDE_CODE_OAUTH_TOKEN; one of the two must be set.
 """
 
 import json
@@ -26,8 +27,8 @@ REQUIRED_VARIABLES = (
     "RB_HEAD",
     "RB_OUT",
     "RB_AGENT",
-    "ANTHROPIC_API_KEY",
 )
+CREDENTIAL_VARIABLES = ("ANTHROPIC_API_KEY", "CLAUDE_CODE_OAUTH_TOKEN")
 PLUGIN_DIR = "/opt/ponderly"
 DEFAULT_CLAUDE_USER = "reviewer"
 REPAIR_BUDGET_USD = "1"
@@ -57,6 +58,8 @@ def first_missing_variable(env):
     for name in REQUIRED_VARIABLES:
         if not env.get(name):
             return name
+    if not any(env.get(name) for name in CREDENTIAL_VARIABLES):
+        return " or ".join(CREDENTIAL_VARIABLES)
     return None
 
 

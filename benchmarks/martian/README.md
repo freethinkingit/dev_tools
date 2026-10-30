@@ -15,8 +15,10 @@ Both the run and the judge are real model calls on your own keys, so the
 harness runs by hand and never in CI, and `make validate` never calls it.
 
 - Each pull request is one Claude Code session in the image, billed to
-  `ANTHROPIC_API_KEY` and capped at `RB_CONFIG_BUDGET_USD`, fifteen dollars by
-  default. When the review's findings file needs repair, the adapter runs a
+  `ANTHROPIC_API_KEY` in dollars, or, when only `CLAUDE_CODE_OAUTH_TOKEN` is
+  set, to your Claude subscription's usage windows, in which case the cost
+  each findings file records is a list-price estimate, not a bill. It is capped at
+  `RB_CONFIG_BUDGET_USD`, fifteen dollars by default. When the review's findings file needs repair, the adapter runs a
   repair session with its own one-dollar cap, so one pull request can cost the
   cap plus one dollar. A whole run is 50 pull requests, so it can cost up to
   50 times that.
@@ -31,9 +33,11 @@ Start with `make run ONLY=0`, one pull request, before a whole run.
   check-tools` names the first of `docker`, `gh`, `uv`, `jq` and
   `MARTIAN_API_KEY` that is missing, and each target checks the tools and key
   it needs before it starts.
-- `ANTHROPIC_API_KEY` in your environment for the image.
-- `MARTIAN_API_KEY` in your environment for the judge: the key of whichever
-  endpoint `MARTIAN_BASE_URL` names.
+- For the image, either `ANTHROPIC_API_KEY` or, on a Claude subscription, the
+  token `claude setup-token` prints, exported in your shell as
+  `CLAUDE_CODE_OAUTH_TOKEN`. `make run` stops when neither is set.
+- `MARTIAN_API_KEY` in your environment for the judge, whichever credential
+  the image used: the key of whichever endpoint `MARTIAN_BASE_URL` names.
 - The image, built by the ReviewBench harness with
   `make -C ../reviewbench image`.
 

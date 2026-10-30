@@ -144,7 +144,7 @@ Its `model: opus` becomes `model: inherit`, as do `task-executor`'s and `documen
 
 | Operation | Input | Output | Requirements |
 |-----------|-------|--------|--------------|
-| check the environment | `RB_NWO`, `RB_PR_NUMBER`, `RB_BASE`, `RB_HEAD`, `RB_OUT`, `RB_AGENT`, `ANTHROPIC_API_KEY` | exit 2 naming the first missing one | 5.2, 5.4 |
+| check the environment | `RB_NWO`, `RB_PR_NUMBER`, `RB_BASE`, `RB_HEAD`, `RB_OUT`, `RB_AGENT`, and one of `ANTHROPIC_API_KEY` or `CLAUDE_CODE_OAUTH_TOKEN` (the subscription token `claude setup-token` prints, for local runs; the author's addition of 2026-10-29) | exit 2 naming the first missing one | 5.2, 5.4 |
 | read settings | `RB_CONFIG_MODEL` (default `opus`), `RB_CONFIG_EFFORT` (default `high`), `RB_CONFIG_BUDGET_USD` (default `15`) | the line `model=<m> effort=<e> budget_usd=<b>` on stderr | 5.3 |
 | build the prompt | `pr.json` title and body | `/ponderly:review <base>...<head> --json /tmp/review.json` then the title and body | 5.2 |
 | run Claude Code | the prompt on stdin; after a kill, the child's output is read with a timeout and a process group already gone is not an error; flags `-p --output-format json --plugin-dir /opt/ponderly --permission-mode bypassPermissions --model --effort --max-budget-usd --no-session-persistence --add-dir /tmp`; cwd `/work/repo`; when the adapter runs as root, the child runs as the user `RB_CLAUDE_USER` names, default `reviewer`, through `subprocess`'s `user`, `group` and `extra_groups=[]` arguments, with `HOME` set to that user's home directory, and when it does not, as the adapter's own user with `RB_CLAUDE_USER` ignored and a line on stderr saying so; env with `DISABLE_TELEMETRY=1`, `DISABLE_AUTOUPDATER=1`, `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`, and `CLAUDE_CODE_EFFORT_LEVEL=<effort>`, `CLAUDE_CODE_SUBAGENT_MODEL=<model>` and `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1`, which the Claude Code docs say take precedence over every agent's `effort` and `model` frontmatter and over a model or effort Claude passes at a launch; killed at 25 minutes | exit code, stdout JSON (`total_cost_usd`, `duration_ms`, `usage`) | 5.1, 5.5, 5.8 |
@@ -163,7 +163,7 @@ Its `model: opus` becomes `model: inherit`, as do `task-executor`'s and `documen
 
 | Target | What it does | Requirements |
 |--------|--------------|--------------|
-| `check-tools` | stops naming the first of `docker`, `node`, `jq`, `ANTHROPIC_API_KEY` that is missing | 6.7 |
+| `check-tools` | stops naming the first of `docker`, `node`, `jq` that is missing, or that neither `ANTHROPIC_API_KEY` nor `CLAUDE_CODE_OAUTH_TOKEN` is set; the `judge` target requires `ANTHROPIC_API_KEY` itself, since ReviewBench's judge client reads it | 6.7 |
 | `setup` | clones ReviewBench at `REVIEWBENCH_COMMIT` into `.reviewbench/`, `npm ci` there | 6.2 |
 | `image` | builds `ponderly-review:dev` | 6.1 |
 | `pr PR=<n>` | runs the image on one Test_Set pull request into `runs/<timestamp>-pr<n>/` | 6.1, 6.3 |
@@ -172,13 +172,13 @@ Its `model: opus` becomes `model: inherit`, as do `task-executor`'s and `documen
 | `report RUN=<dir>` | `python3 report.py <dir>` writes and prints `<dir>/report.md` | 6.6, 7.1 |
 | `manifest` | validates `ponderly.json` with the clone's `schema/validate-manifest.mjs`, which requires the file to be named after its `name` | 8.2 |
 
-`run.sh` passes `-e ANTHROPIC_API_KEY -e RB_CONFIG_MODEL -e RB_CONFIG_EFFORT -e RB_CONFIG_BUDGET_USD` through, writes `run.json` as the Data Models give it, writes the runner's log to `<dir>/logs/try-agent.log`, and never runs in CI; `.github/workflows/validate.yml` is not changed to call it (Requirement 6.5).
+`run.sh` passes `-e ANTHROPIC_API_KEY -e CLAUDE_CODE_OAUTH_TOKEN -e RB_CONFIG_MODEL -e RB_CONFIG_EFFORT -e RB_CONFIG_BUDGET_USD` through, by name only, writes `run.json` as the Data Models give it, writes the runner's log to `<dir>/logs/try-agent.log`, and never runs in CI; `.github/workflows/validate.yml` is not changed to call it (Requirement 6.5).
 
 ### Martian harness (`benchmarks/martian/Makefile`, `run.sh`, `convert.py`, `report.py`, `prs.json`, `README.md`)
 
 | Target | What it does | Requirements |
 |--------|--------------|--------------|
-| `check-tools` | stops naming the first of `docker`, `gh`, `uv`, `jq`, `MARTIAN_API_KEY` that is missing; `run`, `judge`, `prs` and `setup` each check their own tools and key first, through the same check (`run`: `docker`, `git`, `jq`, `ANTHROPIC_API_KEY`; `judge`: `uv`, `jq`, `MARTIAN_API_KEY`; `prs`: `gh`; `setup`: `git`, `uv`) | 10.6 |
+| `check-tools` | stops naming the first of `docker`, `gh`, `uv`, `jq`, `MARTIAN_API_KEY` that is missing; `run`, `judge`, `prs` and `setup` each check their own tools and key first, through the same check (`run`: `docker`, `git`, `jq`, and one of `ANTHROPIC_API_KEY` or `CLAUDE_CODE_OAUTH_TOKEN`, both passed through by name; `judge`: `uv`, `jq`, `MARTIAN_API_KEY`; `prs`: `gh`; `setup`: `git`, `uv`) | 10.6 |
 | `setup` | clones `withmartian/code-review-benchmark` at `MARTIAN_COMMIT` into `.martian/`, gitignored, and runs `uv sync` in its `offline/` | 10.4 |
 | `prs` | reads the five golden files, resolves each pull request's base and head with `gh api repos/{owner}/{repo}/pulls/{n}`, and writes `prs.json` | 10.1 |
 | `run` | the loop over `prs.json` into `runs/<timestamp>/findings/`, the same `docker run` as ReviewBench's runner, the same `-e` pass-through, and writes `run.json` | 10.2 |
@@ -300,7 +300,7 @@ Run folder `benchmarks/martian/runs/<timestamp>/`: `run.json`, `findings/`, `ben
 | The `wave-reviewer` does not return | PARTIAL | The skill returns the first-pass findings, says the wave review did not return, runs no second pass | 1.6 |
 | A finding names a file absent at head or lines beyond it | VALIDATION | Dropped by the merge, and again by the adapter's `validate`, counted on stderr | 2.5 |
 | More than 40 valid findings | LIMIT | The lowest severities are dropped to 40 | 2.6 |
-| A required `RB_*` variable or `ANTHROPIC_API_KEY` is missing | CONFIG | The adapter exits 2 naming it, before any model call | 5.2, 5.4 |
+| A required `RB_*` variable is missing, or neither `ANTHROPIC_API_KEY` nor `CLAUDE_CODE_OAUTH_TOKEN` is set | CONFIG | The adapter exits 2 naming it, before any model call | 5.2, 5.4 |
 | Claude Code exits non-zero or its review file is missing | FAILURE | The adapter exits 1 and writes nothing, so ReviewBench retries | 5.6 |
 | The review file does not parse or an entry lacks a field | REPAIR | One repair run; a file that still does not parse exits 1; entries still refused are dropped and counted, the rest are written and the adapter exits 0 | 5.6 |
 | Claude Code still running at 25 minutes | TIMEOUT | Killed; the interim review file, if it parses, becomes the Findings_File and the adapter exits 0; otherwise exit 1; a repair that follows gets only the time left before 29 minutes 30 seconds | 5.5 |

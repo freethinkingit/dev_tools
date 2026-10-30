@@ -1,7 +1,9 @@
 # ReviewBench harness for the review skill. Run by hand, never in CI: the run
-# and judge targets are real model calls billed to ANTHROPIC_API_KEY.
+# and judge targets are real model calls. A run takes ANTHROPIC_API_KEY or a
+# Claude subscription's CLAUDE_CODE_OAUTH_TOKEN; the judge needs ANTHROPIC_API_KEY.
 #
-#   make check-tools          stop naming the first of docker, node, jq, ANTHROPIC_API_KEY that is missing
+#   make check-tools          stop naming the first of docker, node, jq that is missing, or that neither
+#                             ANTHROPIC_API_KEY nor CLAUDE_CODE_OAUTH_TOKEN is set
 #   make setup                clone ReviewBench at REVIEWBENCH_COMMIT into .reviewbench/ and npm ci there
 #   make image                build $(IMAGE) from the repository root
 #   make pr PR=<n>            run the image on Test_Set pull request <n> into runs/<timestamp>-pr<n>/
@@ -25,7 +27,7 @@ export REVIEWBENCH_COMMIT IMAGE JUDGE_MODEL JUDGE_BASE_URL
 
 REPO_ROOT := ../..
 
-.PHONY: check-tools setup image pr test-set full-set judge report manifest require-run require-pr
+.PHONY: check-tools setup image pr test-set full-set judge report manifest require-run require-pr require-judge-key
 
 check-tools:
 	@./run.sh check-tools
@@ -45,7 +47,7 @@ test-set: check-tools setup image
 full-set: check-tools setup image
 	./run.sh run full "make full-set"
 
-judge: require-run check-tools setup
+judge: require-run check-tools require-judge-key setup
 	./run.sh judge "$(RUN)" "make judge RUN=$(RUN) JUDGE_MODEL=$(JUDGE_MODEL) JUDGE_BASE_URL=$(JUDGE_BASE_URL)"
 
 report: require-run
@@ -57,6 +59,10 @@ manifest: setup
 
 require-pr:
 	@case "$(PR)" in '' | *[!0-9]*) echo "PR=<n> is required, a Test_Set pull request index such as 0" >&2; exit 2 ;; esac
+
+# ReviewBench's judge client reads ANTHROPIC_API_KEY itself; a subscription token does not serve it.
+require-judge-key:
+	@test -n "$$ANTHROPIC_API_KEY" || { echo "missing: ANTHROPIC_API_KEY is not set; the judge needs it" >&2; exit 1; }
 
 require-run:
 	@test -n "$(RUN)" || { echo "RUN=<run folder> is required, as make pr, test-set or full-set printed it" >&2; exit 2; }

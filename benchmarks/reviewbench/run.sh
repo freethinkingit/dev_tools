@@ -29,8 +29,8 @@ check_tools() {
       echo "missing: $tool is not on PATH" >&2; exit 1
     fi
   done
-  if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
-    echo "missing: ANTHROPIC_API_KEY is not set" >&2; exit 1
+  if [ -z "${ANTHROPIC_API_KEY:-}" ] && [ -z "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]; then
+    echo "missing: neither ANTHROPIC_API_KEY nor CLAUDE_CODE_OAUTH_TOKEN is set" >&2; exit 1
   fi
 }
 
@@ -97,7 +97,7 @@ run_set() {
     cd "$run_dir"
     TRY_AGENT_WORK="${TRY_AGENT_WORK:-$clone/.try-agent}" \
       "$clone/scripts/try-agent.sh" "$IMAGE" "${runner_args[@]}" \
-      -e ANTHROPIC_API_KEY -e RB_CONFIG_MODEL -e RB_CONFIG_EFFORT -e RB_CONFIG_BUDGET_USD
+      -e ANTHROPIC_API_KEY -e CLAUDE_CODE_OAUTH_TOKEN -e RB_CONFIG_MODEL -e RB_CONFIG_EFFORT -e RB_CONFIG_BUDGET_USD
   ) 2>&1 | tee "$run_dir/logs/try-agent.log" || status=$?
   echo "run folder: $run_dir" >&2
   return "$status"

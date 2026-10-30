@@ -10,9 +10,11 @@ the image on ReviewBench's leaderboard.
 
 ## What it costs
 
-Every run and every judge is a real model call billed to your own
-`ANTHROPIC_API_KEY`, so the harness runs by hand and never in CI, and
-`make validate` never calls it.
+Every run and every judge is a real model call on your own account, so the
+harness runs by hand and never in CI, and `make validate` never calls it.
+A run bills `ANTHROPIC_API_KEY` in dollars, or, when only
+`CLAUDE_CODE_OAUTH_TOKEN` is set, your Claude subscription's usage windows;
+on the token the report's cost column is a list-price estimate, not a bill.
 
 - Each pull request is one Claude Code session in the image, capped at
   `RB_CONFIG_BUDGET_USD`, fifteen dollars by default. When the review's
@@ -20,17 +22,23 @@ Every run and every judge is a real model call billed to your own
   one-dollar cap, so one pull request can cost the cap plus one dollar.
 - The test set is 25 pull requests, so a test-set run can cost up to 25 times
   that. The full set is 219 pull requests.
-- The judge is a second model cost on the same key, on top of the runs.
+- The judge is a second model cost, always billed to `ANTHROPIC_API_KEY`, on
+  top of the runs.
 
 Start with `make pr PR=0`, one pull request, before a whole set.
 
 ## What you need
 
 - `docker`, `node`, `jq`, `git` and `python3` on your `PATH`. `make
-  check-tools` names the first of `docker`, `node` and `jq` that is missing;
-  `setup` clones with `git` and `report` runs with `python3`.
-- `ANTHROPIC_API_KEY` in your environment. The image reads it for the review
-  and the judge reads it for the scoring.
+  check-tools` names the first of `docker`, `node` and `jq` that is missing,
+  or that neither credential below is set; `setup` clones with `git` and
+  `report` runs with `python3`.
+- For the runs, either `ANTHROPIC_API_KEY` or, on a Claude subscription, the
+  token `claude setup-token` prints, exported in your shell as
+  `CLAUDE_CODE_OAUTH_TOKEN`. The image reads whichever is set for the review.
+- For the judge, `ANTHROPIC_API_KEY` in every case: ReviewBench's judge client
+  reads it for the scoring, and `make judge` stops when it is unset. The
+  leaderboard steps below use the key too.
 
 ## Run it
 
