@@ -314,8 +314,10 @@ def main():
         account,
     )
     usage = usage_of(stdout)
-    if "time_in_ms" not in usage:
-        usage["time_in_ms"] = int((time.monotonic() - started) * 1000)
+    # Claude Code's duration_ms has reported 40 seconds for an eleven-minute review, so the
+    # adapter's own clock is the floor and the larger of the two is recorded.
+    elapsed_ms = int((time.monotonic() - started) * 1000)
+    usage["time_in_ms"] = max(usage.get("time_in_ms", 0), elapsed_ms)
     if killed:
         log("claude killed after {:.0f} seconds; reading the interim review file".format(timeout_seconds))
     elif exit_code != 0:

@@ -99,6 +99,11 @@ if action == "empty":
 if action == "empty_with_failed_arm":
     write_review([], failed_arms=["security"])
     finish()
+if action == "slow_with_a_short_duration":
+    time.sleep(2)
+    write_review([GOOD])
+    finish({"total_cost_usd": 0.5, "duration_ms": 50,
+            "usage": {"input_tokens": 1, "output_tokens": 1}})
 if action == "two_models":
     write_review([GOOD])
     finish({"total_cost_usd": 0.5, "duration_ms": 1234,
@@ -271,6 +276,11 @@ class TheFindingsFile(AdapterTestCase):
         completed = self.run_adapter("empty")
         self.assertEqual(completed.returncode, 0)
         self.assertEqual(self.findings_file()["findings"], [])
+
+    def test_a_duration_claude_code_under_reports_is_raised_to_the_adapters_own_clock(self):
+        completed = self.run_adapter("slow_with_a_short_duration")
+        self.assertEqual(completed.returncode, 0)
+        self.assertGreaterEqual(self.findings_file()["usage"]["time_in_ms"], 2000)
 
     def test_model_usage_for_two_models_gives_total_tokens_as_the_sum_over_both(self):
         completed = self.run_adapter("two_models")
