@@ -2,7 +2,7 @@
 name: document-reviewer
 description: Reviews one strategy, high level design or low level design against its template and its parent, section by section, reading the three itself and changing nothing, and returns Findings, a verdict followed by each problem with its section, an exact quote and a severity. Use it directly on any such document; the strategy, hld and lld skills launch it on every draft before showing it to the author.
 tools: Read, Glob, Grep
-model: opus
+model: inherit
 effort: high
 ---
 

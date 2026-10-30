@@ -1,3 +1,8 @@
 .kiro
 evals/results/
 __pycache__/
+benchmarks/reviewbench/.reviewbench/
+benchmarks/reviewbench/runs/
+benchmarks/martian/.martian/
+benchmarks/martian/runs/
+benchmarks/martian/work/

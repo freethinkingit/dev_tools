@@ -41,6 +41,7 @@ runs the one that fits.
 - `bugfix`: when you have a bug to fix, starting from its ticket.
 - `readable-code`: when you want the code a branch changes to read plainly, with no behaviour change.
 - `tighten-tests`: when you want a branch's tests slimmed to the ones that prove something, with the suite proved no weaker.
+- `review`: when you want a pull request, a branch or a range of commits reviewed; it reads the change through each lens at once and returns findings anchored to lines.
 - `pr`: when you want to open or update a pull request for the current branch.
 - `report`: when work comes back, a decision is open, or you ask for status or why something happened; the session usually runs it for you.
 
@@ -51,6 +52,7 @@ Each skill's arguments, questions and outputs are in the Reference's [Skills](ht
 - `task-executor`: builds one well-specified change, from a spec task or a change you describe, and proves it.
 - `wave-reviewer`: reviews one set of changes against the requirements and design they implement.
 - `document-reviewer`: reviews one strategy, high level design or low level design against its template and its parent.
+- `review-arm`: reviews one pull request through one lens, such as correctness or security, and returns the problems it verified, each anchored to its lines.
 
 How to launch each agent, what its prompt carries and what it returns are in the Reference's [Agents](https://github.com/sabind/ponderly/blob/main/docs/reference.md#agents) section.
 
@@ -80,11 +82,13 @@ signed in on your machine; `bugfix` also comments on issues and hands off to
 `gh pr list`, `gh pr create` and `gh pr edit`. `tighten-tests` runs
 `gh issue create`, only when you say yes to filing the gaps it found.
 
-The `start-task`, `implement-spec`, `bugfix`, `pr`, `readable-code` and
-`tighten-tests` skills and the `wave-reviewer` agent run `git` on the current
-repository (status, diff, log, branch, rev-parse, merge-base, ls-files, show,
-`config --get`, `checkout -b`, and in `pr` `remote get-url origin`, add and
-commit). Only `pr` reaches the remote with `git`, with `git fetch` and
+The `start-task`, `implement-spec`, `bugfix`, `pr`, `readable-code`,
+`tighten-tests` and `review` skills and the `wave-reviewer` and `review-arm`
+agents run `git` on the current repository (status, diff, log, branch,
+rev-parse, merge-base, ls-files, show, `config --get`, `checkout -b`, in `pr`
+`remote get-url origin`, add and commit, and in `review` `cat-file`).
+`review` also runs `awk` to count a file's lines, and writes one file, outside
+the repository, only when you give it `--json <path>`. Only `pr` reaches the remote with `git`, with `git fetch` and
 `git push` to the repository's own `origin`; beyond that, the skills reach
 GitHub only through the `gh` commands above.
 

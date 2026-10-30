@@ -104,6 +104,7 @@ make eval-hook                      # the hook
 make eval-agent-task-executor       # the task-executor agent
 make eval-agent-wave-reviewer       # the wave-reviewer agent
 make eval-agent-document-reviewer   # the document-reviewer agent
+make eval-agent-review-arm          # the review-arm agent
 make eval                           # everything
 make eval-skill-pr EVAL_ARGS="--runs 2 --ablation with-without"   # pass extra flags through
 make eval EVAL_MAX_COST_USD=5                                     # raise the per-invocation cost ceiling
@@ -120,7 +121,8 @@ cases' scaffold scripts, whose project trees live under `evals/fixtures/`;
 Bash, Write and Edit; and `bin` first on the PATH for the wrappers the scaffolds
 write, wherever Bash is granted. `eval` carries the union so the whole suite
 runs. Each invocation runs under a list-price ceiling, `EVAL_MAX_COST_USD`,
-default $2.
+default $2. `make eval-skill-review` defaults to $10, because one review
+launches six to eleven agents; a value on the command line still wins.
 
 Each case runs three times by default; iterate with `EVAL_ARGS="--runs 1"`,
 confirm as [`evals/README.md`](../evals/README.md) says (2 runs for
@@ -142,6 +144,8 @@ The repository is laid out as:
 - `evals/`: the eval cases, kept outside the plugin folder for the reason
   [Evals](#evals) gives.
 - `checks/`: the free unit tests.
+- `benchmarks/`: the ReviewBench and Martian harnesses that score the `review`
+  skill, kept outside the plugin folder and never shipped with it.
 - `.ponderly/specs/`: the design records of past tasks.
 - `.claude-plugin/marketplace.json`: the marketplace entry that points at the
   plugin folder.
