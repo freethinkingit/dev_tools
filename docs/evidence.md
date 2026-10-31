@@ -51,6 +51,12 @@ Claude Code without the plugin, and the table gains a column for each arm and
 the difference. That doubles the cost, so raise the cost ceiling with
 `EVAL_MAX_COST_USD`. [`evals/README.md`](../evals/README.md) has the rest.
 
+The `review` skill is also scored against two public code review benchmarks,
+which run by hand in Docker and never in CI:
+[ReviewBench](../benchmarks/reviewbench/README.md) and
+[Martian's 50 pull requests](../benchmarks/martian/README.md). Each README
+says what a run costs and which targets to run.
+
 ## Results against Claude Code without the plugin
 
 These are the four rule targets that were run with and without the plugin.
@@ -229,13 +235,14 @@ plugin loaded, which check that the component does its job, except the
 `comments` rule, which has none.
 
 The skills: `bugfix`, `hld`, `implement-spec`, `lld`, `pr`, `readable-code`,
-`report`, `start-task`, `strategy` and `tighten-tests`. Their targets are
-`make eval-skill-<name>`. Without the plugin the skill does not exist, and
+`report`, `review`, `start-task`, `strategy` and `tighten-tests`. Their targets
+are `make eval-skill-<name>`. Without the plugin the skill does not exist, and
 their graders check for what the skill does and writes.
 
-The agents: `document-reviewer`, `task-executor` and `wave-reviewer`. Their
-targets are `make eval-agent-<name>`. Without the plugin the agent does not
-exist, and their graders check for what the agent does and reports.
+The agents: `document-reviewer`, `review-arm`, `task-executor` and
+`wave-reviewer`. Their targets are `make eval-agent-<name>`. Without the plugin
+the agent does not exist, and their graders check for what the agent does and
+reports.
 
 The hooks: the two cases under `evals/hook/`, run by `make eval-hook`. They
 check that the plugin's hooks load the rules into a session and into a

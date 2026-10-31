@@ -1,0 +1,5 @@
+# The review image copies only these two folders; the root also holds the
+# benchmark clones, so everything else stays out of the build context.
+*
+!plugins/ponderly
+!benchmarks/reviewbench/agent

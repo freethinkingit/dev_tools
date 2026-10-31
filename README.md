@@ -48,6 +48,8 @@ flowchart LR
     tighten-tests -->|"code not yet readable"| readable-code
     tighten-tests -->|"each gap found"| start-task
     tighten-tests --> pr
+    review -->|"each lens"| review-arm
+    review -->|"the merged findings"| wave-reviewer
 ```
 
 [The Reference](docs/reference.md) describes each skill and agent, including

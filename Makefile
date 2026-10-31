@@ -30,8 +30,11 @@
 # kept in CASE_ARGS so EVAL_ARGS on the command line still adds to them. The
 # cost ceiling is per invocation, so raise it for the whole suite: make eval
 # EVAL_MAX_COST_USD=5. Results go to evals/results/<timestamp>/ at the
-# repository root (gitignored). Paste the table the command prints into the
-# PR's Testing section.
+# repository root (gitignored), and every run's trace.jsonl and last message
+# are copied there as traces/<case>-<arm>-run<n>.jsonl and .md by
+# evals/keep_traces.py, which then deletes the runner's kept sandboxes, so a
+# failed grader can be read without a paid rerun. Paste the table the command
+# prints into the PR's Testing section.
 
 PLUGIN := plugins/ponderly
 EVAL_MAX_COST_USD ?= 2
@@ -51,9 +54,12 @@ mkdir -p "$$run/.github"; \
 cp .github/pull_request_template.md "$$run/.github/"; \
 git -C "$$run" init -q; \
 mkdir -p "$$results"; \
-claude plugin eval "$$run" --trust-plugin --ablation none --no-publish \
+status=0; \
+claude plugin eval "$$run" --trust-plugin --ablation none --no-publish --keep-temp \
 	--max-cost-usd $(EVAL_MAX_COST_USD) --output-dir "$$results" \
-	$(EVAL_ARGS) $(CASE_ARGS) $(1)
+	$(EVAL_ARGS) $(CASE_ARGS) $(1) || status=$$?; \
+python3 evals/keep_traces.py "$$results"; \
+exit $$status
 endef
 
 SKILLS := $(notdir $(patsubst %/,%,$(wildcard evals/skills/*/)))
@@ -107,6 +113,11 @@ eval-rule-workflow: CASE_ARGS += --allow-tools Bash --scaffold
 eval-rule-workflow: export PATH := bin:$(PATH)
 eval-skill-report: CASE_ARGS += --allow-tools Bash Write Edit --scaffold
 eval-skill-report: export PATH := bin:$(PATH)
+eval-skill-review: CASE_ARGS += --allow-tools Bash --scaffold
+eval-skill-review: EVAL_MAX_COST_USD = 10
+eval-skill-review: export PATH := bin:$(PATH)
+eval-agent-review-arm: CASE_ARGS += --allow-tools Bash --scaffold
+eval-agent-review-arm: export PATH := bin:$(PATH)
 
 # Runs all evals and needs all flags
 eval: CASE_ARGS += --scaffold

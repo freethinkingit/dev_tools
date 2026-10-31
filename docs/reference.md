@@ -15,12 +15,14 @@ its name. The plugin's files live under `plugins/ponderly/`.
   - [bugfix](#bugfix)
   - [readable-code](#readable-code)
   - [tighten-tests](#tighten-tests)
+  - [review](#review)
   - [pr](#pr)
   - [report](#report)
 - [Agents](#agents)
   - [task-executor](#task-executor)
   - [wave-reviewer](#wave-reviewer)
   - [document-reviewer](#document-reviewer)
+  - [review-arm](#review-arm)
   - [The report protocol](#the-report-protocol)
 - [Rules](#rules)
   - [workflow](#workflow)
@@ -285,6 +287,67 @@ smaller suite no weaker.
   `start-task` for each gap, or the issue it is filed as; `pr` once the
   hand-back is accepted. It commits, branches and pushes nothing.
 
+### review
+
+Reviews a pull request through several lenses at once and returns its
+findings, each anchored to lines at the head.
+
+- **Command:** `/ponderly:review [base...head] [--json <path>] [--duplicates same-defect|keep|overlap]`. The range is
+  a `base...head` pair, or a base and a head as two words; with none, it
+  reviews the branch's working tree against its merge base with the default
+  branch. Text after the first line is read as the pull request's title and
+  body. Or ask Claude to review this branch, this pull request or these
+  commits.
+- **When it applies:** you want a change read by a reviewer before merge,
+  whether it came from a spec or not. It stops when a side of a
+  `base...head` names no commit; when only one of the first two words names
+  a commit; when `--json` has no path or its path lies inside the
+  repository; when `--duplicates` is given a word other than `same-defect`,
+  `keep` or `overlap`; when the range has no diff; when the skill's `lenses.md` is
+  missing; or when the `review-arm` agent is missing. A missing
+  `wave-reviewer` does not stop it; the merged findings are then the final
+  ones.
+- **What it does:** it reads its lenses file,
+  `plugins/ponderly/skills/review/lenses.md`, whose `##` sections are the
+  lenses: correctness, reliability, security, maintainability and testing.
+  It launches one `review-arm` agent per lens, all at the same time. It
+  merges what they return: it drops a finding whose file or lines do not
+  exist at the head, collapses duplicates, orders high, medium, low and
+  keeps at most 40. `--duplicates` sets how duplicates collapse:
+  `same-defect`, the default, merges two findings in one file only when they
+  name the same defect and the same fix, keeping the fuller message with its
+  own lines; `overlap` also merges two whose line ranges overlap; `keep`
+  merges none, so two lenses that report the same lines give two findings. An arm that returns nothing in the right shape is
+  relaunched once, then named as failed. The wave review comes next: the
+  `wave-reviewer` agent reads the change with the merged findings quoted,
+  judging style, structure, comments and tests against the repository's own
+  bar. When it returns findings, each one that names a problem the list does
+  not hold is folded into the list, anchored at the lines at the head that
+  hold its quote, unless that lens's arm is run again; one whose quote is not
+  found is left out and counted. The second pass runs once more only the arms
+  whose findings the wave review contradicted, with the wave review's
+  findings, and each keeps, withdraws or adds to its own list; a
+  contradiction no arm reruns for is settled by reading the code it quotes.
+  The second pass runs only when the budget allows: when the latest budget
+  line, whether Claude Code shows it or the session's prompt carries it,
+  shows less remaining than spent, no arm runs again and every
+  wave-review finding is folded or settled instead. The fold and the second
+  pass then go through the same merge, so a folded finding is checked,
+  collapsed, ordered and cut like any other. There is only one second pass.
+- **What it asks:** nothing; every input comes from the arguments and the
+  repository.
+- **What it writes:** in a session, one line per finding, such as
+  `high correctness src/cart.py:41-44 <message>`, then a count line: the
+  candidates the arms produced, how many the merge, the cap of 40 and the
+  wave review removed, which add up with the final list to the candidates,
+  the wave review's verdict, any failed arm, how many wave-review findings
+  were folded and how many could not be anchored, which arms ran again or
+  that none did, and whether the budget stopped the second pass. With `--json <path>`, it writes the same findings and counts as
+  JSON to that path, which must be outside the repository, and replies with
+  the path and the count line. It changes no file in the repository and
+  commits nothing.
+- **Hands off to:** nothing; you decide what to do with the findings.
+
 ### pr
 
 Opens or updates a GitHub pull request for the current branch, once you
@@ -360,13 +423,14 @@ The agents live under `plugins/ponderly/agents/`. `implement-spec`,
 `readable-code` and `tighten-tests` launch the executor and the wave
 reviewer. `start-task` launches the executor for one contained change.
 The `strategy`, `hld` and `lld` skills launch the document reviewer on
-every draft.
+every draft. `review` launches the review arms and the wave reviewer.
 
 You can launch any of them yourself. Mention it in a session as
-`@agent-ponderly:task-executor`, `@agent-ponderly:wave-reviewer` or
-`@agent-ponderly:document-reviewer`. Or have a skill or session launch it
-with the Agent tool as `subagent_type: ponderly:task-executor`,
-`ponderly:wave-reviewer` or `ponderly:document-reviewer`.
+`@agent-ponderly:task-executor`, `@agent-ponderly:wave-reviewer`,
+`@agent-ponderly:document-reviewer` or `@agent-ponderly:review-arm`. Or have
+a skill or session launch it with the Agent tool as
+`subagent_type: ponderly:task-executor`, `ponderly:wave-reviewer`,
+`ponderly:document-reviewer` or `ponderly:review-arm`.
 
 ### task-executor
 
@@ -405,12 +469,21 @@ changes nothing.
 - **Launched by:** `implement-spec`, at the end of every wave, and once more
   over the whole run when you chose to hand back only at the end;
   `readable-code`, once over its readability pass; and `tighten-tests`, once
-  over the slimmed tests, to find any requirement left with no test.
+  over the slimmed tests, to find any requirement left with no test; and
+  `review`, once per review, with the merged findings quoted.
 - **What the prompt carries:** the files that changed, or a git range; the
   requirement or design text they implement, if any; the files that cite
   them; and, when they come from a spec, the sentence "These changes come
   from a spec wave". Only that sentence waives a missing test; otherwise a
-  missing test is a finding.
+  missing test is a finding. From `review`, it carries instead the sentence
+  that the changes are a pull request reviewed for the review skill: then it
+  judges style, structure, comments and tests against the repository's own
+  bar, its `CLAUDE.md`, its contributing guide and the code around the
+  change, as well as the team rules, and reports a team-rule departure with
+  no concrete cost in the change as a `nit`. A departure with a concrete cost
+  gets the severity that cost would get if no team rule were named, so
+  breaking the team rule does not by itself make it a `blocker`. Every other
+  launch holds the changes to the team rules alone.
 - **What it returns:** Findings: a `verdict` (`holds` or `findings`), the
   `base` commit the diffs were measured against, then each problem with its
   `file`, an exact `quote`, the `problem` and a `severity` (`blocker`,
@@ -431,12 +504,37 @@ changes nothing.
   each problem with its `section`, an exact `quote`, the `problem` and a
   `severity` (`blocker`, `should-fix` or `nit`), and what it is `unsure` of.
 
+### review-arm
+
+Reviews one pull request through one lens, such as correctness or security.
+It gathers the diff itself, verifies each problem against the code at the
+head, and changes nothing. Its bar for style, comments and tests is the
+repository's own conventions, not the handbook rules; a departure from a rule
+is a finding only when it costs the change something concrete.
+
+- **Launched by:** the `review` skill, once per lens of its lenses file, all
+  at the same time, and once more for the second pass only for a lens whose
+  findings the wave review contradicted, when the budget allows.
+- **What the prompt carries:** the standard every lens shares and the lens's
+  own section, quoted from the lenses file; the range, a base commit and a
+  head commit or the working tree; the changed files; and the pull request's
+  title and body. For the second pass, it also carries the `wave-reviewer`'s
+  Findings and the first pass's merged findings, and the arm keeps, withdraws
+  or adds to its own.
+- **What it returns:** an arm block: the `lens`, then each finding with its
+  `file`, a `start_line` and `end_line` at the head, a `severity` (`high`,
+  `medium` or `low`), a `category` its lens carries and a one-line
+  `message` saying what is wrong, why it matters and what would fix it; then
+  what it is `unsure` of.
+
 ### The report protocol
 
 Every agent follows one protocol for its report, and a new agent must too:
 
 - The first line is its status: `status: done` or `stopped` for the
-  executor, `verdict: holds` or `findings` for the reviewers.
+  executor, and `verdict: holds` or `findings` for the wave and document
+  reviewers. `review-arm` returns an arm block instead, whose first line is
+  `lens:` and names its lens; only the `review` skill reads it.
 - It has one field for each thing the launcher must act on.
 - It always has an `unsure` field.
 - It quotes exactly whatever it quotes.
@@ -650,11 +748,14 @@ signed in on your machine; `bugfix` also comments on issues and hands off to
 `gh pr list`, `gh pr create` and `gh pr edit`. `tighten-tests` runs
 `gh issue create`, only when you say yes to filing the gaps it found.
 
-The `start-task`, `implement-spec`, `bugfix`, `pr`, `readable-code` and
-`tighten-tests` skills and the `wave-reviewer` agent run `git` on the current
-repository (status, diff, log, branch, rev-parse, merge-base, ls-files, show,
-`config --get`, `checkout -b`, and in `pr` `remote get-url origin`, add and
-commit). Only `pr` reaches the remote with `git`, with `git fetch` and
+The `start-task`, `implement-spec`, `bugfix`, `pr`, `readable-code`,
+`tighten-tests` and `review` skills and the `wave-reviewer` and `review-arm`
+agents run `git` on the current repository (status, diff, log, branch,
+rev-parse, merge-base, ls-files, show, `config --get`, `checkout -b`, in `pr`
+`remote get-url origin`, add and commit, and in `review` `cat-file`).
+`review` also runs `awk` to count a file's lines and to find the lines that
+hold a folded finding's quote, and writes one file, outside
+the repository, only when you give it `--json <path>`. Only `pr` reaches the remote with `git`, with `git fetch` and
 `git push` to the repository's own `origin`; beyond that, the skills reach
 GitHub only through the `gh` commands above.
 
