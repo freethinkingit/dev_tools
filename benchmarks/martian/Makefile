@@ -86,9 +86,9 @@ judge:
 	$(REQUIRE_RUN)
 	@test -f "$(RUN)/benchmark_data.json" || { echo "$(RUN)/benchmark_data.json not found; run the convert target first" >&2; exit 1; }
 	cp "$(RUN)/benchmark_data.json" $(OFFLINE)/results/benchmark_data.json
-	cd $(OFFLINE) && uv run python -m code_review_benchmark.step2_extract_comments --tool ponderly --force
-	cd $(OFFLINE) && uv run python -m code_review_benchmark.step2_5_dedup_candidates --tool ponderly --force
-	cd $(OFFLINE) && uv run python -m code_review_benchmark.step3_judge_comments --tool ponderly --force \
+	cd $(OFFLINE) && uv run --frozen python -m code_review_benchmark.step2_extract_comments --tool ponderly --force
+	cd $(OFFLINE) && uv run --frozen python -m code_review_benchmark.step2_5_dedup_candidates --tool ponderly --force
+	cd $(OFFLINE) && uv run --frozen python -m code_review_benchmark.step3_judge_comments --tool ponderly --force \
 		--dedup-groups results/$(notdir $(MODEL_DIR))/dedup_groups.json
 	mkdir -p "$(RUN)/scoring"
 	cp $(MODEL_DIR)/evaluations.json "$(RUN)/scoring/evaluations.json"
